@@ -30,4 +30,3 @@ test_script:
   - npm --version
   - npm run lint
   - npm run test
-

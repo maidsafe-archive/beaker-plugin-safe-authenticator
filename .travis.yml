@@ -2,24 +2,18 @@ sudo: false
 
 matrix:
   include:
-  - os: linux
   - os: osx
 
-language: generic
+language: node_js
 
-osx_image: xcode7.3
+node_js:
+  - "6"
 
 cache:
   directories:
     - node_modules
 
-addons:
-  apt:
-    packages:
-      - xvfb
-
 install:
-  - export CXX="g++-4.8"
   - nvm --version
   - nvm install 6.9.1
   - node --version
@@ -35,3 +29,4 @@ before_script:
 script:
   - npm run lint
   - npm run test
+  
