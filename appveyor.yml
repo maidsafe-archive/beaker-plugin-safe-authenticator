@@ -1,0 +1,32 @@
+os: unstable
+
+environment:
+  nodejs_version: "6.9.1"
+
+cache:
+  - node_modules
+
+install:
+  - ps: Install-Product node $env:nodejs_version x64
+  - node --version
+  - npm --version
+  - set CI=true
+  - set PATH=%APPDATA%\npm;%PATH%
+  - npm i
+
+matrix:
+  fast_finish: true
+
+build: off
+
+version: '{build}'
+
+shallow_clone: true
+
+clone_depth: 1
+
+test_script:
+  - node --version
+  - npm --version
+  - npm run lint
+  - npm run test

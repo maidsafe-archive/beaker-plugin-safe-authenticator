@@ -1,0 +1,63 @@
+{
+  "name": "beaker-plugin-safe-authenticator",
+  "version": "0.1.0",
+  "description": "SAFE Browser add-on for authenticating user to access SAFE Network",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.test.js",
+    "lint": "eslint src test *.js",
+    "build": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.development.js --progress --profile --colors",
+    "package": "concurrently --kill-others \"npm run package-app\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maidsafe/beaker-plugin-safe-authenticator.git"
+  },
+  "author": {
+    "name": "MaidSafe",
+    "email": "qa@maidsafe.net",
+    "url": "https://github.com/maidsafe"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maidsafe/beaker-plugin-safe-authenticator/issues"
+  },
+  "keywords": [
+    "maidsafe",
+    "safe authenticator",
+    "beaker",
+    "browser",
+    "safe",
+    "network",
+    "plugin",
+    "protocol"
+  ],
+  "homepage": "https://github.com/maidsafe/beaker-plugin-safe-authenticator#readme",
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.7",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "babel-register": "^6.18.0",
+    "concurrently": "^3.1.0",
+    "copy-webpack-plugin": "^4.0.1",
+    "cross-env": "^3.1.3",
+    "eslint": "^3.10.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.7.1",
+    "mocha": "^3.1.2",
+    "redux-devtools": "^3.3.1",
+    "should": "^11.1.1",
+    "webpack": "^1.13.3"
+  },
+  "dependencies": {
+    "react": "^15.4.0",
+    "react-dom": "^15.4.0",
+    "react-redux": "^4.4.6",
+    "redux": "^3.6.0"
+  }
+}
