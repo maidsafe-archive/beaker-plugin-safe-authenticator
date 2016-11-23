@@ -23,11 +23,6 @@ install:
   - npm --version
   - npm i
 
-before_script:
-  - sh -e /etc/init.d/xvfb start &
-  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - sleep 3
-
 script:
   - npm run lint
   - npm test
