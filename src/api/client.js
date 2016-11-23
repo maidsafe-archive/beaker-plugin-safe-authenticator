@@ -14,3 +14,17 @@ export const onNetworkStateChange = (cb) => {
   }
   clientManager.setNetworkListener(cb);
 };
+
+/**
+ * User login
+ * @param {string} location
+ * @param {string} secret
+ * @returns {Promise}
+ */
+export const login = (location, secret) => {
+  if (typeof location !== 'string' || typeof secret !== 'string') {
+    return Promise.reject('Location or Secret must be of string');
+  }
+
+  return clientManager.login(location, secret);
+};

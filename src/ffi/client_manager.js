@@ -47,6 +47,15 @@ class ClientManager extends FfiApi {
     this.networkStateChangeListener(this.networkState);
   }
 
+  // User login
+  login(locator, secret) {
+    const executor = (resolve, reject) => {
+      return resolve();
+    };
+
+    return new Promise(executor);
+  }
+
   /*
    * Drop client handle
    * */
