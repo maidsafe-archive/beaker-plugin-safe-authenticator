@@ -1,4 +1,3 @@
-/* eslint-disable func-names */
 /* eslint-disable no-underscore-dangle */
 import FfiApi from './FfiApi';
 import CONST from './constants.json';
@@ -8,6 +7,10 @@ const _networkStateChangeListener = Symbol('networkStateChangeListener');
 const _clientHandle = Symbol('clientHandle');
 
 class ClientManager extends FfiApi {
+  static manifest = {
+    setNetworkListener: 'sync'
+  };
+
   constructor() {
     super();
     this[_networkState] = CONST.NETWORK_STATES.DISCONNECTED;
@@ -23,7 +26,14 @@ class ClientManager extends FfiApi {
     return this[_clientHandle];
   }
 
+  /**
+   * Set SAFE Network connectivity state listener
+   * @param cb - callback to be invoked on network state change
+   */
   setNetworkListener(cb) {
+    if (typeof cb !== 'function') {
+      throw new Error('Network listener callback should be a function');
+    }
     this.networkStateChangeListener = cb;
     this.networkStateChangeListener(this.networkState);
   }

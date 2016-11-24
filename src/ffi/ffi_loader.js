@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
 import CONST from './constants.json';
 
@@ -15,13 +14,15 @@ class FfiLoader {
       // this.mods.forEach(() => {});
       //
       // const safeCore = ffi.Library(libPath, ffiFunctions);
-      //
-      // this.mods.forEach(mod => {
+
+      /* eslint-disable arrow-parens */
+      this.mods.forEach(mod => {
       //   if (!(mod instanceof FfiApi)) {
       //     return;
       //   }
       //   mod.setSafeCore(safeCore);
-      // });
+      });
+      /* eslint-enable arrow-parens */
 
       resolve();
     });

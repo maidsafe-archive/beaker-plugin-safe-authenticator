@@ -1,4 +1,4 @@
-import * as client from './client';
+import client from '../ffi/client_manager';
 
 const safeAuthApi = [
   {
