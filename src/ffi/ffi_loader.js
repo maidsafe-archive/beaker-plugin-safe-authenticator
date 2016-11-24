@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
 import CONST from './constants.json';
 
 class FfiLoader {
   constructor() {
     this.mods = [];
   }
-
+  /* eslint-disable no-unused-vars */
   loadLibrary(libPath = CONST.DEFAULT_LIB_PATH) {
     return new Promise((resolve) => {
       // const ffiFunctions = {};
@@ -26,6 +25,7 @@ class FfiLoader {
 
       resolve();
     });
+    /* eslint-enable no-unused-vars */
   }
 }
 
