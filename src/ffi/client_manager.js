@@ -68,9 +68,9 @@ class ClientManager extends FfiApi {
    */
   login(locator, secret) {
     return new Promise((resolve, reject) => {
-      const credentialsValid = this._isUserCredentialsValid(locator, secret);
-      if (credentialsValid instanceof Error) {
-        return reject(credentialsValid);
+      const validationErr = this._isUserCredentialsValid(locator, secret);
+      if (validationErr instanceof Error) {
+        return reject(validationErr);
       }
 
       this.clientHandle = 1; // TODO set authorised client handle id
@@ -86,9 +86,9 @@ class ClientManager extends FfiApi {
    */
   createAccount(locator, secret) {
     return new Promise((resolve, reject) => {
-      const credentialsValid = this._isUserCredentialsValid(locator, secret);
-      if (credentialsValid instanceof Error) {
-        return reject(credentialsValid);
+      const validationErr = this._isUserCredentialsValid(locator, secret);
+      if (validationErr) {
+        return reject(validationErr);
       }
 
       this.clientHandle = 1; // TODO set authorised client handle id
@@ -106,18 +106,31 @@ class ClientManager extends FfiApi {
 
   /* eslint-disable class-methods-use-this */
   _isUserCredentialsValid(locator, secret) {
-    if (typeof locator !== 'string' || typeof secret !== 'string') {
-      return new Error(i18n.__('messages.must_be_string', i18n.__('Locator or Secret')));
+  /* eslint-enable class-methods-use-this */
+    if (!locator) {
+      return new Error(i18n.__('messages.should_not_be_null', i18n.__('Locator')));
     }
 
-    const userLocator = locator.trim();
-    const userSecret = secret.trim();
+    if (!secret) {
+      return new Error(i18n.__('messages.should_not_be_null', i18n.__('Secret')));
+    }
 
-    if (!(userLocator && userSecret)) {
-      return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Locator or Secret')));
+    if (typeof locator !== 'string') {
+      return new Error(i18n.__('messages.must_be_string', i18n.__('Locator')));
+    }
+
+    if (typeof secret !== 'string') {
+      return new Error(i18n.__('messages.must_be_string', i18n.__('Secret')));
+    }
+
+    if (!locator.trim()) {
+      return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Locator')));
+    }
+
+    if (!secret.trim()) {
+      return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Secret')));
     }
   }
-  /* eslint-enable class-methods-use-this */
 }
 
 const clientManager = new ClientManager();
