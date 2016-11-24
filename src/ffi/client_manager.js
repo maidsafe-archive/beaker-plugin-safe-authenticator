@@ -13,6 +13,21 @@ class ClientManager extends FfiApi {
     createAccount: 'promise'
   };
 
+  static _isUserCredentialsValid(locator, secret) {
+    if (typeof locator !== 'string' || typeof secret !== 'string') {
+      return { isValid: false, msg: 'Locator or Secret must be of string' };
+    }
+
+    const userLocator = locator.trim();
+    const userSecret = secret.trim();
+
+    if (!(userLocator && userSecret)) {
+      return { isValid: false, msg: 'Locator or Secret should not be empty' };
+    }
+
+    return { isValid: true };
+  }
+
   constructor() {
     super();
     this[_networkState] = CONST.NETWORK_STATES.DISCONNECTED;
@@ -67,9 +82,11 @@ class ClientManager extends FfiApi {
    */
   login(locator, secret) {
     const executor = (resolve, reject) => {
-      if (typeof locator !== 'string' || typeof secret !== 'string') {
-        return reject('Locator or Secret must be of string');
+      const credentialsValid = this._isUserCredentialsValid(locator, secret);
+      if (!credentialsValid.isValid) {
+        return reject(credentialsValid.msg);
       }
+
       this.clientHandle = 1; // TODO set authorised client handle id
       return resolve();
     };
@@ -85,9 +102,11 @@ class ClientManager extends FfiApi {
    */
   createAccount(locator, secret) {
     const executor = (resolve, reject) => {
-      if (typeof locator !== 'string' || typeof secret !== 'string') {
-        return reject('Locator or Secret must be of string');
+      const credentialsValid = this._isUserCredentialsValid(locator, secret);
+      if (!credentialsValid.isValid) {
+        return reject(credentialsValid.msg);
       }
+
       this.clientHandle = 1; // TODO set authorised client handle id
       return resolve();
     };
