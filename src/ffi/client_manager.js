@@ -8,7 +8,9 @@ const _clientHandle = Symbol('clientHandle');
 
 class ClientManager extends FfiApi {
   static manifest = {
-    setNetworkListener: 'sync'
+    setNetworkListener: 'sync',
+    login: 'promise',
+    createAccount: 'promise'
   };
 
   constructor() {
@@ -55,6 +57,42 @@ class ClientManager extends FfiApi {
 
     this.networkState = CONST.NETWORK_STATES.CONNECTED;
     this.networkStateChangeListener(this.networkState);
+  }
+
+  /**
+   * User login
+   * @param {string} locator
+   * @param {string} secret
+   * @returns {Promise}
+   */
+  login(locator, secret) {
+    const executor = (resolve, reject) => {
+      if (typeof locator !== 'string' || typeof secret !== 'string') {
+        return reject('Locator or Secret must be of string');
+      }
+      this.clientHandle = 1; // TODO set authorised client handle id
+      return resolve();
+    };
+
+    return new Promise(executor);
+  }
+
+  /**
+   * Create new account
+   * @param {string} locator
+   * @param {string} secret
+   * @returns {Promise}
+   */
+  createAccount(locator, secret) {
+    const executor = (resolve, reject) => {
+      if (typeof locator !== 'string' || typeof secret !== 'string') {
+        return reject('Locator or Secret must be of string');
+      }
+      this.clientHandle = 1; // TODO set authorised client handle id
+      return resolve();
+    };
+
+    return new Promise(executor);
   }
 
   /*
