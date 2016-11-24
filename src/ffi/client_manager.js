@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+import i18n from 'i18n';
 import FfiApi from './FfiApi';
 import CONST from './constants.json';
 
@@ -12,21 +13,6 @@ class ClientManager extends FfiApi {
     login: 'promise',
     createAccount: 'promise'
   };
-
-  static _isUserCredentialsValid(locator, secret) {
-    if (typeof locator !== 'string' || typeof secret !== 'string') {
-      return { isValid: false, msg: 'Locator or Secret must be of string' };
-    }
-
-    const userLocator = locator.trim();
-    const userSecret = secret.trim();
-
-    if (!(userLocator && userSecret)) {
-      return { isValid: false, msg: 'Locator or Secret should not be empty' };
-    }
-
-    return { isValid: true };
-  }
 
   constructor() {
     super();
@@ -49,7 +35,7 @@ class ClientManager extends FfiApi {
    */
   setNetworkListener(cb) {
     if (typeof cb !== 'function') {
-      throw new Error('Network listener callback should be a function');
+      throw new Error(i18n.__('messages.must_be_function', i18n.__('Network listener callback')));
     }
     this.networkStateChangeListener = cb;
     this.networkStateChangeListener(this.networkState);
@@ -81,7 +67,7 @@ class ClientManager extends FfiApi {
    * @returns {Promise}
    */
   login(locator, secret) {
-    const executor = (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const credentialsValid = this._isUserCredentialsValid(locator, secret);
       if (!credentialsValid.isValid) {
         return reject(credentialsValid.msg);
@@ -89,9 +75,7 @@ class ClientManager extends FfiApi {
 
       this.clientHandle = 1; // TODO set authorised client handle id
       return resolve();
-    };
-
-    return new Promise(executor);
+    });
   }
 
   /**
@@ -101,7 +85,7 @@ class ClientManager extends FfiApi {
    * @returns {Promise}
    */
   createAccount(locator, secret) {
-    const executor = (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const credentialsValid = this._isUserCredentialsValid(locator, secret);
       if (!credentialsValid.isValid) {
         return reject(credentialsValid.msg);
@@ -109,9 +93,7 @@ class ClientManager extends FfiApi {
 
       this.clientHandle = 1; // TODO set authorised client handle id
       return resolve();
-    };
-
-    return new Promise(executor);
+    });
   }
 
   /*
@@ -121,6 +103,23 @@ class ClientManager extends FfiApi {
     // TODO drop client handle
     this.handleId = null;
   }
+
+  /* eslint-disable class-methods-use-this */
+  _isUserCredentialsValid(locator, secret) {
+    if (typeof locator !== 'string' || typeof secret !== 'string') {
+      return { isValid: false, msg: i18n.__('messages.must_be_string', i18n.__('Locator or Secret')) };
+    }
+
+    const userLocator = locator.trim();
+    const userSecret = secret.trim();
+
+    if (!(userLocator && userSecret)) {
+      return { isValid: false, msg: i18n.__('messages.should_not_be_empty', i18n.__('Locator or Secret')) };
+    }
+
+    return { isValid: true };
+  }
+  /* eslint-enable class-methods-use-this */
 }
 
 const clientManager = new ClientManager();

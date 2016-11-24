@@ -55,6 +55,7 @@
     "webpack": "^1.13.3"
   },
   "dependencies": {
+    "i18n": "^0.8.3",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
     "react-redux": "^4.4.6",
