@@ -69,8 +69,8 @@ class ClientManager extends FfiApi {
   login(locator, secret) {
     return new Promise((resolve, reject) => {
       const credentialsValid = this._isUserCredentialsValid(locator, secret);
-      if (!credentialsValid.isValid) {
-        return reject(credentialsValid.msg);
+      if (credentialsValid instanceof Error) {
+        return reject(credentialsValid);
       }
 
       this.clientHandle = 1; // TODO set authorised client handle id
@@ -87,8 +87,8 @@ class ClientManager extends FfiApi {
   createAccount(locator, secret) {
     return new Promise((resolve, reject) => {
       const credentialsValid = this._isUserCredentialsValid(locator, secret);
-      if (!credentialsValid.isValid) {
-        return reject(credentialsValid.msg);
+      if (credentialsValid instanceof Error) {
+        return reject(credentialsValid);
       }
 
       this.clientHandle = 1; // TODO set authorised client handle id
@@ -107,17 +107,15 @@ class ClientManager extends FfiApi {
   /* eslint-disable class-methods-use-this */
   _isUserCredentialsValid(locator, secret) {
     if (typeof locator !== 'string' || typeof secret !== 'string') {
-      return { isValid: false, msg: i18n.__('messages.must_be_string', i18n.__('Locator or Secret')) };
+      return new Error(i18n.__('messages.must_be_string', i18n.__('Locator or Secret')));
     }
 
     const userLocator = locator.trim();
     const userSecret = secret.trim();
 
     if (!(userLocator && userSecret)) {
-      return { isValid: false, msg: i18n.__('messages.should_not_be_empty', i18n.__('Locator or Secret')) };
+      return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Locator or Secret')));
     }
-
-    return { isValid: true };
   }
   /* eslint-enable class-methods-use-this */
 }
