@@ -1,8 +1,10 @@
 {
-  "Network listener callback": "Network listener callback",
-  "messages": {
-    "must_be_function": "%s must be a function",
-    "must_be_string": "%s must be string",
-    "should_not_be_empty": "%s should not be empty"
-  }
+	"Network listener callback": "Network listener callback",
+	"Locator": "Locator",
+	"Secret": "Secret",
+	"messages": {
+		"must_be_function": "%s must be a function",
+		"must_be_string": "%s must be string",
+		"should_not_be_empty": "%s should not be empty"
+	}
 }
