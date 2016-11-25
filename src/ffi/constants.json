@@ -4,5 +4,9 @@
     "CONNECTING": 0,
     "CONNECTED": 1,
     "DISCONNECTED": 2
+  },
+  "DEFAULT_CLIENT_HANDLE_KEYS": {
+    "UNAUTHORISED": "unauthorised",
+    "AUTHENTICATOR": "authenticator"
   }
 }

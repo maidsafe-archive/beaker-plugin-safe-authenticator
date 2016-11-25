@@ -2,10 +2,12 @@
 import should from 'should';
 import i18n from 'i18n';
 import clientManager from '../src/ffi/client_manager';
+import FfiConst from '../src/ffi/constants.json';
+import { getRandomCredentials } from './utils';
 
 describe('Client', () => {
   describe('Unregistered client', () => {
-    after(() => clientManager.dropHandle('unauthorised'));
+    after(() => clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED));
 
     it('should be able to create unregistered client', () => (
       clientManager.createUnregisteredClient()
@@ -16,7 +18,10 @@ describe('Client', () => {
   describe('Create account', () => {
     before(() => clientManager.createUnregisteredClient());
 
-    after(() => clientManager.dropHandle('unauthorised'));
+    after(() => {
+      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED);
+      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR);
+    });
 
     it('should return error if locator is empty', () => (
       clientManager.createAccount()
@@ -75,7 +80,10 @@ describe('Client', () => {
   describe('User login', () => {
     before(() => clientManager.createUnregisteredClient());
 
-    after(() => clientManager.dropHandle('unauthorised'));
+    after(() => {
+      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED);
+      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR);
+    });
 
     it('should return error if locator is empty', () => (
       clientManager.login()
@@ -129,5 +137,38 @@ describe('Client', () => {
       clientManager.login('test', 'test')
         .should.be.fulfilled()
     ));
+  });
+
+  describe('Get authorised applications', () => {
+    it('should return error if unauthorised', () => (
+      clientManager.getAuthorisedApps()
+        .should.be.rejectedWith(Error)
+        .then((err) => {
+          should(err.message).be.equal(i18n.__('messages.unauthorised'));
+        })
+    ));
+
+    it('should be able to get authorised application list', () => {
+      const randomCredentials = getRandomCredentials();
+      const appPayload = {};
+      let appId = null;
+      clientManager.createAccount(randomCredentials.locator, randomCredentials.secret)
+        .should.be.fulfilled()
+        .then(() => clientManager.authoriseApp(appPayload))
+        .should.be.fulfilled()
+        .then((res) => {
+          appId = res;
+        })
+        .then(() => clientManager.getAuthorisedApps())
+        .should.be.fulfilled()
+        .then((res) => {
+          should(res).be.Array();
+          // should(res.length).not.be.equal(0);
+          // TODO check keys
+        })
+        .then(() => clientManager.revokeApp(appId))
+        .should.be.fulfilled()
+        .then(() => clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR));
+    });
   });
 });
