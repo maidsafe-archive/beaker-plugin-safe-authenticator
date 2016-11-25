@@ -18,15 +18,11 @@ class ClientManager extends FfiApi {
     super();
     this[_networkState] = CONST.NETWORK_STATES.DISCONNECTED;
     this[_networkStateChangeListener] = null;
-    this[_clientHandle] = null;
+    this[_clientHandle] = {};
   }
 
-  set clientHandle(handle) {
-    this[_clientHandle] = handle;
-  }
-
-  get clientHandle() {
-    return this[_clientHandle];
+  setClientHandle(key, handle) {
+    this[_clientHandle][key] = handle;
   }
 
   /**
@@ -37,27 +33,34 @@ class ClientManager extends FfiApi {
     if (typeof cb !== 'function') {
       throw new Error(i18n.__('messages.must_be_function', i18n.__('Network listener callback')));
     }
-    this.networkStateChangeListener = cb;
-    this.networkStateChangeListener(this.networkState);
+    this[_networkStateChangeListener] = cb;
+    this[_networkStateChangeListener](this[_networkState]);
   }
 
   /*
    * Create unregistered client
    * */
   createUnregisteredClient() {
-    this.networkState = CONST.NETWORK_STATES.CONNECTING;
+    return new Promise((resolve) => {
+      this.networkState = CONST.NETWORK_STATES.CONNECTING;
 
-    // const onStateChange = ffi.Callback(Void, [int32], (state) => {
-    //   this.networkState = state;
-    //   if (this.networkStateChangeListener) {
-    //     this.networkStateChangeListener(state);
-    //   }
-    // });
+      // const onStateChange = ffi.Callback(Void, [int32], (state) => {
+      //   this.networkState = state;
+      //   if (this.networkStateChangeListener) {
+      //     this.networkStateChangeListener(state);
+      //   }
+      // });
 
-    // TODO create unregistered client
+      // TODO create unregistered client
 
-    this.networkState = CONST.NETWORK_STATES.CONNECTED;
-    this.networkStateChangeListener(this.networkState);
+      this[_networkState] = CONST.NETWORK_STATES.CONNECTED;
+      this.setClientHandle('unauthorised', 1); // TODO set unauthorised client handle id
+
+      if (typeof this[_networkStateChangeListener] === 'function') {
+        this[_networkStateChangeListener](this[_networkState]);
+      }
+      resolve();
+    });
   }
 
   /**
@@ -73,7 +76,7 @@ class ClientManager extends FfiApi {
         return reject(validationErr);
       }
 
-      this.clientHandle = 1; // TODO set authorised client handle id
+      this.setClientHandle('authenticator', 1); // TODO set authorised client handle id
       return resolve();
     });
   }
@@ -91,7 +94,7 @@ class ClientManager extends FfiApi {
         return reject(validationErr);
       }
 
-      this.clientHandle = 1; // TODO set authorised client handle id
+      this.setClientHandle('authenticator', 1); // TODO set authorised client handle id
       return resolve();
     });
   }
@@ -99,9 +102,12 @@ class ClientManager extends FfiApi {
   /*
    * Drop client handle
    * */
-  dropHandle() {
+  dropHandle(key) {
+    if (!key || !{}.hasOwnProperty.call(this[_clientHandle], key)) {
+      return;
+    }
     // TODO drop client handle
-    this.handleId = null;
+    delete this[_clientHandle][key];
   }
 
   /* eslint-disable class-methods-use-this */

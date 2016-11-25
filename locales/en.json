@@ -1,8 +1,13 @@
 {
   "Network listener callback": "Network listener callback",
+  "Locator": "Locator",
+  "Secret": "Secret",
+  "Client handle key": "Client handle key",
+  "Client handle": "Client handle",
   "messages": {
     "must_be_function": "%s must be a function",
     "must_be_string": "%s must be string",
-    "should_not_be_empty": "%s should not be empty"
+    "should_not_be_empty": "%s should not be empty",
+    "key_not_found": "%s key not found"
   }
 }
