@@ -4,6 +4,7 @@
   "Secret": "Secret",
   "Client handle key": "Client handle key",
   "Client handle": "Client handle",
+  "AppToken": "AppToken",
   "messages": {
     "must_be_function": "%s must be a function",
     "must_be_string": "%s must be string",
