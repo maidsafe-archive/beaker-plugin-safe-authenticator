@@ -28,7 +28,6 @@ describe('Client', () => {
           should(clientManager.clientHandle).have.keys('unauthorised');
         })
         .then(() => clientManager.dropHandle('unauthorised'))
-        .should.be.fulfilled()
         .then(() => {
           should(clientManager.clientHandle).not.have.keys('unauthorised');
         })

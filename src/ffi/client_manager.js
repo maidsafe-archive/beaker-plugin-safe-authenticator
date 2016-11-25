@@ -18,7 +18,7 @@ class ClientManager extends FfiApi {
     super();
     this[_networkState] = CONST.NETWORK_STATES.DISCONNECTED;
     this[_networkStateChangeListener] = null;
-    this[_clientHandle] = null;
+    this[_clientHandle] = {};
   }
 
   get clientHandle() {
@@ -26,9 +26,6 @@ class ClientManager extends FfiApi {
   }
 
   setClientHandle(key, handle) {
-    if (!this[_clientHandle]) {
-      this[_clientHandle] = {};
-    }
     this[_clientHandle][key] = handle;
   }
 
@@ -110,17 +107,14 @@ class ClientManager extends FfiApi {
    * Drop client handle
    * */
   dropHandle(key) {
-    return new Promise((resolve, reject) => {
-      if (!key) {
-        return reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('Client handle key'))));
-      }
-      if (!this.clientHandle || !{}.hasOwnProperty.call(this.clientHandle, key)) {
-        return reject(new Error(i18n.__('messages.key_not_found', i18n.__('Client handle'))));
-      }
-      // TODO drop client handle
-      delete this.clientHandle[key];
-      resolve();
-    });
+    if (!key) {
+      return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('Client handle key'))));
+    }
+    if (!{}.hasOwnProperty.call(this.clientHandle, key)) {
+      return Promise.reject(new Error(i18n.__('messages.key_not_found', i18n.__('Client handle'))));
+    }
+    // TODO drop client handle
+    delete this.clientHandle[key];
   }
 
   /* eslint-disable class-methods-use-this */
