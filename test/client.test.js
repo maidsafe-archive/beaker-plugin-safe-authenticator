@@ -154,7 +154,7 @@ describe('Client', () => {
       clientManager.revokeApp()
         .should.be.rejectedWith(Error)
         .then((err) => {
-          should(err.message).be.equal(i18n.__('messages.should_not_be_empty', i18n.__('AppToken')));
+          should(err.message).be.equal(i18n.__('messages.should_not_be_empty', i18n.__('AppId')));
         })
     ));
 
@@ -162,7 +162,7 @@ describe('Client', () => {
       clientManager.revokeApp(111)
         .should.be.rejectedWith(Error)
         .then((err) => {
-          should(err.message).be.equal(i18n.__('messages.must_be_string', i18n.__('AppToken')));
+          should(err.message).be.equal(i18n.__('messages.must_be_string', i18n.__('AppId')));
         })
     ));
 
@@ -170,24 +170,24 @@ describe('Client', () => {
       clientManager.revokeApp(' ')
         .should.be.rejectedWith(Error)
         .then((err) => {
-          should(err.message).be.equal(i18n.__('messages.should_not_be_empty', i18n.__('AppToken')));
+          should(err.message).be.equal(i18n.__('messages.should_not_be_empty', i18n.__('AppId')));
         })
     ));
 
     it('should be able to revoke application', () => {
-      let appToken = null;
+      let appId = null;
       clientManager.authoriseApp(appPayload)
         .should.be.fulfilled()
         .then((res) => {
-          appToken = res || 'test'; // TODO remove `test`
+          appId = res || 'test'; // TODO remove `test`
         })
         // TODO should validate application exist after authorisation
-        .then(() => clientManager.revokeApp(appToken))
+        .then(() => clientManager.revokeApp(appId))
         .should.be.fulfilled()
         .then(() => clientManager.getAuthorisedApps())
         .should.be.fulfilled()
         .then((res) => {
-          should(res.indexOf(appToken)).equal(-1);
+          should(res.indexOf(appId)).equal(-1);
         });
     });
   });
