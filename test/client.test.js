@@ -3,7 +3,7 @@ import should from 'should';
 import i18n from 'i18n';
 import clientManager from '../src/ffi/client_manager';
 import FfiConst from '../src/ffi/constants.json';
-import utils from './utils';
+import { getRandomCredentials } from './utils';
 
 describe('Client', () => {
   describe('Unregistered client', () => {
@@ -149,7 +149,7 @@ describe('Client', () => {
     ));
 
     it('should be able to get authorised application list', () => {
-      const randomCredentials = utils.getRandomCredentials();
+      const randomCredentials = getRandomCredentials();
       const appPayload = {};
       let appId = null;
       clientManager.createAccount(randomCredentials.locator, randomCredentials.secret)
