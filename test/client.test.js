@@ -5,13 +5,14 @@ import clientManager from '../src/ffi/client_manager';
 
 describe('Client', () => {
   describe('Unregistered client', () => {
-    it('should be able to create and drop unregistered client', () => (
+    after(() => clientManager.dropHandle('unauthorised'));
+
+    it('should be able to create unregistered client', () => (
       clientManager.createUnregisteredClient()
         .should.be.fulfilled()
         .then(() => {
           should(clientManager.clientHandle).have.keys('unauthorised');
         })
-        .then(() => clientManager.dropHandle('unauthorised'))
     ));
   });
 
