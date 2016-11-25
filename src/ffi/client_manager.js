@@ -10,9 +10,11 @@ const _clientHandle = Symbol('clientHandle');
 class ClientManager extends FfiApi {
   static manifest = {
     setNetworkListener: 'sync',
+    logout: 'sync',
     login: 'promise',
     createAccount: 'promise',
-    getAuthorisedApps: 'promise'
+    getAuthorisedApps: 'promise',
+    revokeApp: 'promise'
   };
 
   constructor() {
@@ -140,6 +142,13 @@ class ClientManager extends FfiApi {
       this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, 1);
       return resolve();
     });
+  }
+
+  /**
+   * User logout
+   */
+  logout() {
+    this.dropHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR);
   }
 
   /**

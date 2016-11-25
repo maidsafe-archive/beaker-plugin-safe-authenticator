@@ -20,7 +20,7 @@ describe('Client', () => {
 
     after(() => {
       clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED);
-      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR);
+      clientManager.logout();
     });
 
     it('should return error if locator is empty', () => (
@@ -82,7 +82,7 @@ describe('Client', () => {
 
     after(() => {
       clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED);
-      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR);
+      clientManager.logout();
     });
 
     it('should return error if locator is empty', () => (
@@ -146,9 +146,7 @@ describe('Client', () => {
       clientManager.createAccount(randomCredentials.locator, randomCredentials.secret)
     ));
 
-    after(() => (
-      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR)
-    ));
+    after(() => clientManager.logout());
 
     it('should return error if appToken is null', () => (
       clientManager.revokeApp()
@@ -221,7 +219,7 @@ describe('Client', () => {
         })
         .then(() => clientManager.revokeApp(appId))
         .should.be.fulfilled()
-        .then(() => clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR));
+        .then(() => clientManager.logout());
     });
   });
 });
