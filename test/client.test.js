@@ -36,7 +36,6 @@ describe('Client', () => {
   });
 
   describe('Create account', () => {
-
     before(() => clientManager.createUnregisteredClient());
 
     after(() => clientManager.dropHandle('unauthorised'));

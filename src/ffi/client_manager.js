@@ -114,7 +114,7 @@ class ClientManager extends FfiApi {
       if (!key) {
         return reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('Client handle key'))));
       }
-      if (!this.clientHandle || !this.clientHandle.hasOwnProperty(key)) {
+      if (!this.clientHandle || !{}.hasOwnProperty.call(this.clientHandle, key)) {
         return reject(new Error(i18n.__('messages.key_not_found', i18n.__('Client handle'))));
       }
       // TODO drop client handle
