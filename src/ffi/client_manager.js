@@ -37,8 +37,8 @@ class ClientManager extends FfiApi {
     if (typeof cb !== 'function') {
       throw new Error(i18n.__('messages.must_be_function', i18n.__('Network listener callback')));
     }
-    this.networkStateChangeListener = cb;
-    this.networkStateChangeListener(this.networkState);
+    this[_networkStateChangeListener] = cb;
+    this[_networkStateChangeListener](this[_networkState]);
   }
 
   /*
@@ -56,8 +56,11 @@ class ClientManager extends FfiApi {
 
     // TODO create unregistered client
 
-    this.networkState = CONST.NETWORK_STATES.CONNECTED;
-    this.networkStateChangeListener(this.networkState);
+    this[_networkState] = CONST.NETWORK_STATES.CONNECTED;
+
+    if (typeof this[_networkStateChangeListener] === 'function') {
+      this[_networkStateChangeListener](this[_networkState]);
+    }
   }
 
   /**
