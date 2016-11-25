@@ -21,10 +21,6 @@ class ClientManager extends FfiApi {
     this[_clientHandle] = {};
   }
 
-  get clientHandle() {
-    return this[_clientHandle];
-  }
-
   setClientHandle(key, handle) {
     this[_clientHandle][key] = handle;
   }
@@ -107,11 +103,11 @@ class ClientManager extends FfiApi {
    * Drop client handle
    * */
   dropHandle(key) {
-    if (!key || !{}.hasOwnProperty.call(this.clientHandle, key)) {
+    if (!key || !{}.hasOwnProperty.call(this[_clientHandle], key)) {
       return;
     }
     // TODO drop client handle
-    delete this.clientHandle[key];
+    delete this[_clientHandle][key];
   }
 
   /* eslint-disable class-methods-use-this */

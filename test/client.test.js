@@ -10,9 +10,6 @@ describe('Client', () => {
     it('should be able to create unregistered client', () => (
       clientManager.createUnregisteredClient()
         .should.be.fulfilled()
-        .then(() => {
-          should(clientManager.clientHandle).have.keys('unauthorised');
-        })
     ));
   });
 
