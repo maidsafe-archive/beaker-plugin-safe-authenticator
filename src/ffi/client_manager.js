@@ -56,10 +56,23 @@ class ClientManager extends FfiApi {
    * @param appId
    * @returns {Promise}
    */
-  /* eslint-disable no-unused-vars, class-methods-use-this */
+  /* eslint-disable class-methods-use-this */
   revokeApp(appId) {
+    /* eslint-enable class-methods-use-this */
     return new Promise((resolve, reject) => {
-      /* eslint-enable no-unused-vars, class-methods-use-this */
+      if (!appId) {
+        return reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('AppId'))));
+      }
+
+      if (typeof appId !== 'string') {
+        return reject(new Error(i18n.__('messages.must_be_string', i18n.__('AppId'))));
+      }
+
+      if (!appId.trim()) {
+        return reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('AppId'))));
+      }
+
+      // TODO revoke application with appId
       resolve();
     });
   }

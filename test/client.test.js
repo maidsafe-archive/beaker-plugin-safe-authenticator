@@ -139,6 +139,59 @@ describe('Client', () => {
     ));
   });
 
+  describe('Revoke application', () => {
+    const randomCredentials = getRandomCredentials();
+    const appPayload = {};
+    before(() => (
+      clientManager.createAccount(randomCredentials.locator, randomCredentials.secret)
+    ));
+
+    after(() => (
+      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR)
+    ));
+
+    it('should return error if appToken is null', () => (
+      clientManager.revokeApp()
+        .should.be.rejectedWith(Error)
+        .then((err) => {
+          should(err.message).be.equal(i18n.__('messages.should_not_be_empty', i18n.__('AppId')));
+        })
+    ));
+
+    it('should return error if appToken is not string', () => (
+      clientManager.revokeApp(111)
+        .should.be.rejectedWith(Error)
+        .then((err) => {
+          should(err.message).be.equal(i18n.__('messages.must_be_string', i18n.__('AppId')));
+        })
+    ));
+
+    it('should return error if appToken is not empty', () => (
+      clientManager.revokeApp(' ')
+        .should.be.rejectedWith(Error)
+        .then((err) => {
+          should(err.message).be.equal(i18n.__('messages.should_not_be_empty', i18n.__('AppId')));
+        })
+    ));
+
+    it('should be able to revoke application', () => {
+      let appId = null;
+      clientManager.authoriseApp(appPayload)
+        .should.be.fulfilled()
+        .then((res) => {
+          appId = res || 'test'; // TODO remove `test`
+        })
+        // TODO should validate application exist after authorisation
+        .then(() => clientManager.revokeApp(appId))
+        .should.be.fulfilled()
+        .then(() => clientManager.getAuthorisedApps())
+        .should.be.fulfilled()
+        .then((res) => {
+          should(res.indexOf(appId)).equal(-1);
+        });
+    });
+  });
+
   describe('Get authorised applications', () => {
     it('should return error if unauthorised', () => (
       clientManager.getAuthorisedApps()
@@ -151,13 +204,13 @@ describe('Client', () => {
     it('should be able to get authorised application list', () => {
       const randomCredentials = getRandomCredentials();
       const appPayload = {};
-      let appId = null;
+      let appToken = null;
       clientManager.createAccount(randomCredentials.locator, randomCredentials.secret)
         .should.be.fulfilled()
         .then(() => clientManager.authoriseApp(appPayload))
         .should.be.fulfilled()
         .then((res) => {
-          appId = res;
+          appToken = res || 'test'; // TODO remove `test`
         })
         .then(() => clientManager.getAuthorisedApps())
         .should.be.fulfilled()
@@ -166,7 +219,7 @@ describe('Client', () => {
           // should(res.length).not.be.equal(0);
           // TODO check keys
         })
-        .then(() => clientManager.revokeApp(appId))
+        .then(() => clientManager.revokeApp(appToken))
         .should.be.fulfilled()
         .then(() => clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR));
     });
