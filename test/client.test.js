@@ -74,10 +74,6 @@ describe('Client', () => {
     it('should be able to create new account', () => (
       clientManager.createAccount('test', 'test')
         .should.be.fulfilled()
-        .then(() => {
-          should(clientManager.isClientAuthorised(
-            FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR)).be.ok();
-        })
     ));
   });
 
@@ -140,10 +136,6 @@ describe('Client', () => {
     it('should be able to login', () => (
       clientManager.login('test', 'test')
         .should.be.fulfilled()
-        .then(() => {
-          should(clientManager.isClientAuthorised(
-            FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR)).be.ok();
-        })
     ));
   });
 
@@ -161,10 +153,6 @@ describe('Client', () => {
       const appPayload = {};
       let appId = null;
       clientManager.createAccount(randomCredentials.locator, randomCredentials.secret)
-        .then(() => {
-          should(clientManager.isClientAuthorised(
-            FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR)).be.ok();
-        })
         .should.be.fulfilled()
         .then(() => clientManager.authoriseApp(appPayload))
         .should.be.fulfilled()

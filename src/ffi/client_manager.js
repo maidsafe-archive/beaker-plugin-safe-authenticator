@@ -26,10 +26,6 @@ class ClientManager extends FfiApi {
     this[_clientHandle][key] = handle;
   }
 
-  isClientAuthorised(clientHandleKey) {
-    return {}.hasOwnProperty.call(this[_clientHandle], clientHandleKey);
-  }
-
   /**
    * Set SAFE Network connectivity state listener
    * @param cb - callback to be invoked on network state change
@@ -141,7 +137,7 @@ class ClientManager extends FfiApi {
   getAuthorisedApps() {
     /* eslint-enable class-methods-use-this */
     return new Promise((resolve, reject) => {
-      if (!this.isClientAuthorised(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR)) {
+      if (!this._isClientHandleExist(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR)) {
         /* eslint-disable no-underscore-dangle */
         return reject(new Error(i18n.__('messages.unauthorised')));
         /* eslint-enable no-underscore-dangle */
@@ -157,11 +153,15 @@ class ClientManager extends FfiApi {
    * Drop client handle
    * */
   dropHandle(key) {
-    if (!key || !this.isClientAuthorised(key)) {
+    if (!key || !this._isClientHandleExist(key)) {
       return;
     }
     // TODO drop client handle
     delete this[_clientHandle][key];
+  }
+
+  _isClientHandleExist(clientHandleKey) {
+    return {}.hasOwnProperty.call(this[_clientHandle], clientHandleKey);
   }
 
   /* eslint-disable class-methods-use-this */
