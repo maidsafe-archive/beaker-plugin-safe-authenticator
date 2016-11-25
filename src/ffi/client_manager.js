@@ -107,11 +107,8 @@ class ClientManager extends FfiApi {
    * Drop client handle
    * */
   dropHandle(key) {
-    if (!key) {
-      return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('Client handle key'))));
-    }
-    if (!{}.hasOwnProperty.call(this.clientHandle, key)) {
-      return Promise.reject(new Error(i18n.__('messages.key_not_found', i18n.__('Client handle'))));
+    if (!key || !{}.hasOwnProperty.call(this.clientHandle, key)) {
+      return;
     }
     // TODO drop client handle
     delete this.clientHandle[key];

@@ -5,22 +5,6 @@ import clientManager from '../src/ffi/client_manager';
 
 describe('Client', () => {
   describe('Unregistered client', () => {
-    it('should return error if drop handle key is empty', () => (
-      clientManager.dropHandle()
-        .should.be.rejectedWith(Error)
-        .then((err) => {
-          should(err.message).be.equal(i18n.__('messages.should_not_be_empty', i18n.__('Client handle key')));
-        })
-    ));
-
-    it('should return error if drop handle key not found', () => (
-      clientManager.dropHandle('notFound')
-        .should.be.rejectedWith(Error)
-        .then((err) => {
-          should(err.message).be.equal(i18n.__('messages.key_not_found', i18n.__('Client handle')));
-        })
-    ));
-
     it('should be able to create and drop unregistered client', () => (
       clientManager.createUnregisteredClient()
         .should.be.fulfilled()
@@ -28,9 +12,6 @@ describe('Client', () => {
           should(clientManager.clientHandle).have.keys('unauthorised');
         })
         .then(() => clientManager.dropHandle('unauthorised'))
-        .then(() => {
-          should(clientManager.clientHandle).not.have.keys('unauthorised');
-        })
     ));
   });
 
