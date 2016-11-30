@@ -7,19 +7,22 @@ import clientManager from '../ffi/client_manager';
 
 class SafeAuthRpc {
   static manifest = {
-    allowApp: 'promise'
+    authDecision: 'promise'
   };
 
   static channelName = 'safeAuthRpc';
 
   /* eslint-disable class-methods-use-this */
-  allowApp(url) {
+  authDecision(url, isAllowed) {
     if (!url) {
       return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('URL'))));
     }
+    if (typeof isAllowed !== 'boolean') {
+      return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('IsAllowed'))));
+    }
     /* eslint-enable class-methods-use-this */
     const authData = url.split(':'); // url = scheme:action:appId:payload
-    return clientManager.authoriseApp(authData[3])
+    return clientManager.authDecision(authData[2], authData[3], isAllowed)
       .then((res) => {
         shell.openExternal(res);
         return res;

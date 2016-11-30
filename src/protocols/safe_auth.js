@@ -11,7 +11,7 @@ const DIST_PATH = path.resolve(__dirname, '..', '..', 'dist');
 
 // Register safeAuth RPC
 const rpcApi = rpc.exportAPI(safeAuthRpc.channelName, safeAuthRpc.manifest, {
-  allowApp: safeAuthRpc.allowApp
+  authDecision: safeAuthRpc.authDecision
 });
 
 // Handle safeAuth RPC error
