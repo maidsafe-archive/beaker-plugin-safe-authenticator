@@ -46,7 +46,7 @@ class ClientManager extends FfiApi {
    * @returns {Promise}
    */
   /* eslint-disable no-unused-vars, class-methods-use-this */
-  authoriseApp(payload) {
+  authDecision(appId, payload, isAllowed) {
     return new Promise((resolve, reject) => {
       /* eslint-enable no-unused-vars, class-methods-use-this */
       resolve();

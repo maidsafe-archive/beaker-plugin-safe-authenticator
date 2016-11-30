@@ -3,6 +3,7 @@ import i18n from 'i18n';
 import safeAuthApi from './src/api';
 import ffiLoader from './src/ffi/ffi_loader';
 import clientManager from './src/ffi/client_manager';
+import safeAuthProtocol from './src/protocols/safe_auth';
 
 i18n.configure({
   locales: ['en'],
@@ -26,6 +27,6 @@ module.exports = {
     label: 'SAFE Network',
     href: 'https://safenetforum.org/t/safe-network-alpha-release/10687/1'
   }],
-  protocols: [],
+  protocols: [safeAuthProtocol],
   webAPIs: safeAuthApi
 };

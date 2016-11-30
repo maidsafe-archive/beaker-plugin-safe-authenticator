@@ -173,11 +173,11 @@ describe('Client', () => {
     ));
 
     it('should be able to revoke application', () => {
-      let appId = null;
-      clientManager.authoriseApp(appPayload)
+      let appId = 'test';
+      clientManager.authDecision(appId, appPayload, true)
         .should.be.fulfilled()
         .then((res) => {
-          appId = res || 'test'; // TODO remove `test`
+          appId = res || appId; // TODO remove `appId`
         })
         // TODO should validate application exist after authorisation
         .then(() => clientManager.revokeApp(appId))
@@ -202,13 +202,13 @@ describe('Client', () => {
     it('should be able to get authorised application list', () => {
       const randomCredentials = getRandomCredentials();
       const appPayload = {};
-      let appId = null;
+      let appId = 'test';
       clientManager.createAccount(randomCredentials.locator, randomCredentials.secret)
         .should.be.fulfilled()
-        .then(() => clientManager.authoriseApp(appPayload))
+        .then(() => clientManager.authDecision(appId, appPayload, true))
         .should.be.fulfilled()
         .then((res) => {
-          appId = res || 'test'; // TODO remove `test`
+          appId = res || appId; // TODO remove `appId`
         })
         .then(() => clientManager.getAuthorisedApps())
         .should.be.fulfilled()
