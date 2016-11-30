@@ -5,6 +5,7 @@
   "Client handle key": "Client handle key",
   "Client handle": "Client handle",
   "AppId": "AppId",
+  "URL": "URL",
   "messages": {
     "must_be_function": "%s must be a function",
     "must_be_string": "%s must be string",

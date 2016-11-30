@@ -1,24 +1,21 @@
 import path from 'path';
 import fs from 'fs';
 /* eslint-disable import/extensions */
-import { protocol, ipcMain, shell } from 'electron';
+import { protocol } from 'electron';
 /* eslint-enable import/extensions */
-import clientManager from '../ffi/client_manager';
+import rpc from 'pauls-electron-rpc';
+import safeAuthRpc from './safe_auth_rpc';
 
 const safeAuthScheme = 'safeauth';
 const DIST_PATH = path.resolve(__dirname, '..', '..', 'dist');
 
-// Allow application
-ipcMain.on('allow-app', (event, url) => {
-  const authData = url.split(':'); // url = scheme:action:appId:payload
-  clientManager.authoriseApp(authData[3])
-    .then((res) => {
-      shell.openExternal(res);
-      event.sender.send('allow-app-res', true);
-    }, (err) => {
-      event.sender.send('allow-app-err', err);
-    });
+// Register safeAuth RPC
+const rpcApi = rpc.exportAPI(safeAuthRpc.channelName, safeAuthRpc.manifest, {
+  allowApp: safeAuthRpc.allowApp
 });
+
+// Handle safeAuth RPC error
+rpcApi.on('error', console.error);
 
 const registerSafeAuthProtocol = () => {
   protocol.registerBufferProtocol(safeAuthScheme, (req, cb) => {
