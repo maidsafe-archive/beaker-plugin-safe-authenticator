@@ -9,11 +9,18 @@ export default {
     filename: 'bundle.js'
   },
   module: {
-    loaders: [{
-      test: /\.jsx?$/,
-      loader: 'babel-loader',
-      exclude: /node_modules/
-    }]
+    loaders: [
+      {
+        test: /\.jsx?$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.scss$/,
+        loaders: ['style-loader', 'css-loader?sourceMap', 'resolve-url', 'sass-loader?sourceMap']
+      },
+      { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' }
+    ]
   },
   plugins: [
     new CopyWebpackPlugin([
