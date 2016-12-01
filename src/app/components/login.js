@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import i18n from 'i18n';
 
 export default class Login extends Component {
   static propTypes = {};
@@ -13,17 +14,17 @@ export default class Login extends Component {
               <form>
                 <div className="form-grp">
                   <input type="password" name="secret" required="required" />
-                  <label htmlFor="secret">Account Secret</label>
+                  <label htmlFor="secret">{i18n.__('Account Secret')}</label>
                   <span className="msg">test message</span>
                   <span className="eye-opt">{' '}</span>
                 </div>
                 <div className="form-grp">
                   <input type="password" name="password" required="required" />
-                  <label htmlFor="secret">Account Password</label>
+                  <label htmlFor="secret">{i18n.__('Account Password')}</label>
                   <span className="eye-opt">{' '}</span>
                 </div>
                 <div className="form-grp">
-                  <button type="submit" className="btn flat primary">Login</button>
+                  <button type="submit" className="btn flat primary">{i18n.__('Login')}</button>
                 </div>
               </form>
             </div>

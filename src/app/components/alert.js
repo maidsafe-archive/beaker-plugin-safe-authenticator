@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import i18n from 'i18n';
 
 export default class Alert extends Component {
   static propTypes = {
@@ -21,8 +22,8 @@ export default class Alert extends Component {
               <div className="head">{this.props.title}</div>
               <div className="content">{this.props.message}</div>
               <div className="foot">
-                <button className="btn" onClick={() => this.props.onClick(1)}>Ok</button>
-                <button className="btn" onClick={() => this.props.onClick(0)}>Cancel</button>
+                <button className="btn" onClick={() => this.props.onClick(1)}>{i18n.__('Ok')}</button>
+                <button className="btn" onClick={() => this.props.onClick(0)}>{i18n.__('Cancel')}</button>
               </div>
             </div>
           </div>
