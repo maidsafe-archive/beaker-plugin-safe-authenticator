@@ -6,8 +6,7 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.test.js",
     "lint": "eslint src test *.js",
-    "build": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.development.js --progress --profile --colors",
-    "package": "concurrently --kill-others \"npm run package-app\""
+    "build": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.development.js --progress --profile --colors"
   },
   "repository": {
     "type": "git",
@@ -49,13 +48,20 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.7.1",
+    "file-loader": "^0.9.0",
     "mocha": "^3.1.2",
+    "node-sass": "^3.13.0",
     "redux-devtools": "^3.3.1",
+    "resolve-url-loader": "^1.6.0",
+    "sass-loader": "^4.0.2",
     "should": "^11.1.1",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
     "webpack": "^1.13.3"
   },
   "dependencies": {
     "i18n": "^0.8.3",
+    "opensans-npm-webfont": "0.0.2",
     "pauls-electron-rpc": "^2.1.2",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
