@@ -1,0 +1,13 @@
+.btn {
+  border: 0;
+  outline: 0;
+  padding: 8px 16px;
+  background-color: transparent;
+  text-transform: uppercase;
+  font: {
+    weight: 600;
+    size: 15px;
+  }
+  color: $default-btn;
+  cursor: pointer;
+}

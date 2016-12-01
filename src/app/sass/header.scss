@@ -1,0 +1,22 @@
+header {
+  .header-cntr {
+    text-align: center;
+    padding: 16px;
+    background-color: $header-bg;
+    @at-root .safe-auth-logo {
+      width: $safe-auth-logo-size;
+      height: $safe-auth-logo-size;
+      background-image: url($safe-auth-logo-url);
+      background-position: center;
+      background-repeat: no-repeat;
+      display: inline-block;
+    }
+    @at-root .safe-auth-title {
+      font: {
+        size: 28px;
+        weight: 600;
+      }
+      opacity: 0.5;
+    }
+  }
+}
