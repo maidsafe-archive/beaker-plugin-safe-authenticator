@@ -10,4 +10,11 @@
   }
   color: $default-btn;
   cursor: pointer;
+  &.flat {
+    border-radius: 3px;
+    &.primary {
+      background-color: $primary-blue;
+      color: #FFFFFF;
+    }
+  }
 }

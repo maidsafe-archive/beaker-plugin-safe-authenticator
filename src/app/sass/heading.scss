@@ -1,0 +1,22 @@
+.heading {
+  margin: 0;
+  padding: 0;
+  &.sm {
+    font: {
+      size: 18px;
+      weight: 600;
+    }
+  }
+  &.md {
+    font: {
+      size: 24px;
+      weight: 600;
+    }
+  }
+  &.lg {
+    font: {
+      size: 28px;
+      weight: 600;
+    }
+  }
+}

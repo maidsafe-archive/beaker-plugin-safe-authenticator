@@ -6,6 +6,11 @@
   "Client handle": "Client handle",
   "AppId": "AppId",
   "URL": "URL",
+  "Account Secret": "Account Secret",
+  "Account Password": "Account Password",
+  "Login": "Login",
+  "Ok": "Ok",
+  "Cancel": "Cancel",
   "messages": {
     "must_be_function": "%s must be a function",
     "must_be_string": "%s must be string",

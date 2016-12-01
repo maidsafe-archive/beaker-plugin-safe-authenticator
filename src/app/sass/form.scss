@@ -1,0 +1,84 @@
+.form {
+  width: 100%;
+  padding-top: 40px;
+  &-grp {
+    position: relative;
+    margin-bottom: 60px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    input[type=password],input[type=text] {
+      width: 100%;
+      padding: 0;
+      line-height: 40px;
+      font: {
+        size: 16px;
+        weight: normal;
+      }
+      border: {
+        width: 0 0 1px;
+        style: solid;
+        color: #EEEEEE;
+      }
+      position: relative;
+      background-color: transparent;
+      z-index: 1;
+      outline: none;
+    }
+    label {
+      width: 100%;
+      line-height: 40px;
+      font: {
+        size: 15px;
+        weight: normal;
+      }
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: top 0.2s ease ;
+      z-index: 0;
+    }
+
+    input:focus ~ label, input:valid ~ label {
+      top: -20px;
+      font-size: 12px;
+    }
+
+    button {
+      width: 100%;
+      line-height: 40px;
+    }
+
+    .msg {
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      color: $primary-red;
+      font: {
+        size: 12px;
+        weight: normal;
+      };
+    }
+
+    .eye-opt {
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      top: 5px;
+      right: 0;
+      background: {
+        image: url("../img/show_password.svg");
+        position: center;
+        repeat: no-repeat;
+      }
+      z-index: 2;
+      cursor: pointer;
+      &:hover {
+        background-image: url("../img/show_password_hover.svg");
+      }
+      &.active {
+        background-image: url("../img/show_password_active.svg");
+      }
+    }
+  }
+}
