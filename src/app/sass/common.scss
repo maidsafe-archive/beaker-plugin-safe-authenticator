@@ -5,6 +5,19 @@
   &-b {
     display: inline-block;
   }
+  &-foot {
+    padding: 16px;
+    a {
+      text-transform: uppercase;
+      color: $primary-blue;
+      text-decoration: none;
+      font-weight: 600;
+      outline: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 }
 
 .card {
@@ -17,5 +30,79 @@
 }
 
 .login {
-  width: 450px;
+  width: 580px;
+  padding: 36px;
+}
+
+.create-acc {
+  width: 580px;
+  text-align: center;
+  padding: 36px;
+}
+
+.intro {
+  position: relative;
+  text-align: center;
+  &-media {
+    height: 250px;
+    img {
+      display: block;
+      height: 100%;
+      margin: 0 auto;
+    }
+  }
+  &-cnt {
+    margin-top: 24px;
+    text-align: left;
+    font: {
+      size: 16px;
+      weight: normal;
+    }
+  }
+  &-form {
+    padding: 24px 0;
+  }
+  &-foot {
+    width: 100%;
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    z-index: 0;
+    &-lt {
+      float: left;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    &-rt {
+      float: right;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    @include clearfix()
+  }
+  &-nav {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 8px 0;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    span {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      margin: 0 5px;
+      border-radius: 50%;
+      border: 2px solid $primary-gray;
+      cursor: pointer;
+      &:hover {
+        background-color: $primary-blue-hover;
+        border-color: $primary-blue-hover;
+      }
+      &.active {
+        background-color: $primary-blue;
+        border-color: $primary-blue;
+      }
+    }
+  }
 }

@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
 export const checkAuthorised = (nextState, replace, callback) => {
-  if (nextState.auth.isAuthorised) {
+  if (nextState.auth && nextState.auth.isAuthorised) {
     replace('/home');
   }
   callback();
