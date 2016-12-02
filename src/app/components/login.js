@@ -1,6 +1,6 @@
-/* eslint-disable no-underscore-dangle */
 import React, { Component } from 'react';
-import i18n from 'i18n';
+import { Link } from 'react-router';
+import { Translate } from 'react-redux-i18n';
 
 export default class Login extends Component {
   static propTypes = {};
@@ -15,20 +15,23 @@ export default class Login extends Component {
               <form>
                 <div className="form-grp">
                   <input type="password" name="secret" required="required" />
-                  <label htmlFor="secret">{i18n.__('Account Secret')}</label>
+                  <label htmlFor="secret"><Translate value="Account Secret" /></label>
                   <span className="msg">test message</span>
                   <span className="eye-opt">{' '}</span>
                 </div>
                 <div className="form-grp">
                   <input type="password" name="password" required="required" />
-                  <label htmlFor="secret">{i18n.__('Account Password')}</label>
+                  <label htmlFor="password"><Translate value="Account Password" /></label>
                   <span className="eye-opt">{' '}</span>
                 </div>
                 <div className="form-grp">
-                  <button type="submit" className="btn flat primary">{i18n.__('Login')}</button>
+                  <button type="submit" className="btn flat primary"><Translate value="Login" /></button>
                 </div>
               </form>
             </div>
+          </div>
+          <div className="auth-foot">
+            Don&lsquo;t have a account? <Link to="create-account">Create account</Link>
           </div>
         </div>
       </div>
