@@ -11,6 +11,14 @@
   "Login": "Login",
   "Ok": "Ok",
   "Cancel": "Cancel",
+  "AppTitle": "SAFE Authenticator",
+  "AuthIntro": {
+    "desc": {
+      "welcome": "Authenticator will act as your gateway to the SAFE Network, you can use it to access data on the network and to authorise apps to connect on your behalf.",
+      "secret": "Your 'account secret' is private and should not be shared with anyone.",
+      "password": "Your 'account password' is never stored or transmitted, it will not leave your computer."
+    }
+  },
   "messages": {
     "must_be_function": "%s must be a function",
     "must_be_string": "%s must be string",

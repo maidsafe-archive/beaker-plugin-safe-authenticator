@@ -5,6 +5,19 @@
   &-b {
     display: inline-block;
   }
+  &-foot {
+    padding: 24px 16px;
+    a {
+      text-transform: uppercase;
+      color: $primary-blue;
+      text-decoration: none;
+      font-weight: 600;
+      outline: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 }
 
 .card {
@@ -13,9 +26,133 @@
   background-color: #FFFFFF;
   text-align: left;
   padding: 24px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.26);
 }
 
 .login {
-  width: 450px;
+  width: 580px;
+  padding: 50px;
+}
+
+.create-acc {
+  width: 580px;
+  text-align: center;
+  padding: 50px;
+}
+
+.intro {
+  position: relative;
+  text-align: center;
+  &-media {
+    height: 150px;
+    img {
+      display: block;
+      height: 100%;
+      margin: 0 auto;
+    }
+  }
+  &-cnt {
+    margin-top: 40px;
+    text-align: left;
+    font: {
+      size: 16px;
+      weight: normal;
+    }
+  }
+  &-form {
+    padding: 24px 0;
+  }
+  &-foot {
+    width: 100%;
+    position: absolute;
+    bottom: -55px;
+    left: 0;
+    z-index: 0;
+    &-lt {
+      float: left;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    &-rt {
+      float: right;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    @include clearfix()
+  }
+  &-nav {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 0;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    span {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      margin: 0 5px;
+      border-radius: 50%;
+      border: 2px solid $primary-gray;
+      cursor: pointer;
+      &:hover {
+        background-color: $primary-blue-hover;
+        border-color: $primary-blue-hover;
+      }
+      &.active {
+        background-color: $primary-blue;
+        border-color: $primary-blue;
+      }
+    }
+  }
+}
+
+.nw-status {
+  display: inline-block;
+  width: inherit;
+  height: inherit;
+  max-width: 40px;
+  max-height: 40px;
+  position: relative;
+  &-i {
+    width: 30px;
+    height: inherit;
+    display: block;
+    background: {
+      position: center;
+      repeat: no-repeat;
+    }
+    cursor: pointer;
+    &.connecting {
+      background-image: url($nw-connecting-url);
+      animation: spin 0.4s linear infinite;
+    }
+    &.connected {
+      background-image: url($nw-connected-url);
+    }
+    &.error {
+      background-image: url($nw-error-url);
+    }
+  }
+  &-tooltip {
+    display: none;
+    position: absolute;
+    font-size: 12px;
+    color: #ffffff;
+    line-height: 30px;
+    background-color: $tooltip-bg;
+    padding: 0 8px;
+    bottom: 4px;
+    right: 100%;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.26);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-right: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  &:hover {
+    .nw-status-tooltip {
+      display: inline-block;
+    }
+  }
 }

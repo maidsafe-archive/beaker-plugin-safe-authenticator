@@ -3,6 +3,21 @@ header {
     text-align: center;
     padding: 16px;
     background-color: $header-bg;
+    .lt {
+      display: inline-block;
+      float: left;
+    }
+    .rt {
+      display: inline-block;
+      padding: 10px 0;
+      float: right;
+      &-i {
+        width: 40px;
+        height: 40px;
+        display: inline-block;
+        margin-left: 8px;
+      }
+    }
     @at-root .safe-auth-logo {
       width: $safe-auth-logo-size;
       height: $safe-auth-logo-size;
@@ -10,13 +25,16 @@ header {
       background-position: center;
       background-repeat: no-repeat;
       display: inline-block;
+      float: left;
     }
     @at-root .safe-auth-title {
       font: {
         size: 28px;
         weight: 600;
       }
-      opacity: 0.5;
+      line-height: $safe-auth-logo-size;
+      float: left;
     }
+    @include clearfix();
   }
 }
