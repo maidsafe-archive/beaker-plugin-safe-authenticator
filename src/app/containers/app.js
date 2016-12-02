@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
+import { Translate } from 'react-redux-i18n';
 import Spinner from '../components/spinner';
 import Alert from '../components/alert';
+import NetworkStatus from '../components/network_status';
 
 export default class App extends Component {
   static propTypes = {
@@ -18,8 +20,13 @@ export default class App extends Component {
       <div className="root">
         <header>
           <div className="header-cntr">
-            <div className="safe-auth-logo">{' '}</div>
-            <div className="safe-auth-title">SAFE Authenticator</div>
+            <section className="lt">
+              <div className="safe-auth-logo">{' '}</div>
+              <div className="safe-auth-title"><Translate value="AppTitle" /></div>
+            </section>
+            <section className="rt">
+              <div className="rt-i"><NetworkStatus status={1} message={'Connected'} /></div>
+            </section>
           </div>
         </header>
         <main className="root-cntr">

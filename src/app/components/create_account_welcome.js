@@ -9,10 +9,10 @@ export default class CreateAccountWelcome extends Component {
   render() {
     return (
       <div>
-        <h3 className="heading md"><Translate value="AuthIntro.title.welcome" /></h3>
+        <h3 className="heading md"><Translate value="AppTitle" /></h3>
         <div className="intro">
           <div className="intro-media">
-            <img src={introWelcome} alt="Welcome to the SAFE Authenticator" />
+            <img src={introWelcome} alt="SAFE Authenticator" />
           </div>
           <div className="intro-cnt">
             <Translate value="AuthIntro.desc.welcome" />

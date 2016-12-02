@@ -11,6 +11,7 @@ body {
     weight: normal;
   }
   background-color: $body-bg;
+  color: $primary-text;
 }
 
 .root {
@@ -41,7 +42,7 @@ body {
       width: $spinner-size;
       height: $spinner-size;
       display: inline-block;
-      background-image: url("../img/generic_spinner.svg");
+      background-image: url($generic-spinner-url);
       background-repeat: no-repeat;
       background-position: center;
       animation: spin .4s linear infinite;

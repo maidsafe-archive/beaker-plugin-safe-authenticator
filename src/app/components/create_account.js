@@ -11,26 +11,26 @@ export default class CreateAccount extends Component {
   constructor() {
     super();
     this.currentNavState = 1;
+    this.getContainer = this.getContainer.bind(this);
+  }
+
+  getContainer() {
+    switch (this.currentNavState) {
+      case 1:
+        return <CreateAccountWelcome />;
+      case 2:
+        return <CreateAccountSecret />;
+      case 3:
+        return <CreateAccountPassword />;
+      default:
+        return (
+          <div>Oops!!</div>
+        );
+    }
   }
 
   render() {
-    let container = null;
-    switch (this.currentNavState) {
-      case 1:
-        container = <CreateAccountWelcome />;
-        break;
-      case 2:
-        container = <CreateAccountSecret />;
-        break;
-      case 3:
-        container = <CreateAccountPassword />;
-        break;
-      default:
-        container = (
-          <div>Oops!!</div>
-        );
-        break;
-    }
+    const container = this.getContainer();
 
     return (
       <div className="auth">

@@ -6,7 +6,7 @@
     display: inline-block;
   }
   &-foot {
-    padding: 16px;
+    padding: 24px 16px;
     a {
       text-transform: uppercase;
       color: $primary-blue;
@@ -26,25 +26,24 @@
   background-color: #FFFFFF;
   text-align: left;
   padding: 24px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.26);
 }
 
 .login {
   width: 580px;
-  padding: 36px;
+  padding: 50px;
 }
 
 .create-acc {
   width: 580px;
   text-align: center;
-  padding: 36px;
+  padding: 50px;
 }
 
 .intro {
   position: relative;
   text-align: center;
   &-media {
-    height: 250px;
+    height: 150px;
     img {
       display: block;
       height: 100%;
@@ -52,7 +51,7 @@
     }
   }
   &-cnt {
-    margin-top: 24px;
+    margin-top: 40px;
     text-align: left;
     font: {
       size: 16px;
@@ -65,7 +64,7 @@
   &-foot {
     width: 100%;
     position: absolute;
-    bottom: -50px;
+    bottom: -55px;
     left: 0;
     z-index: 0;
     &-lt {
@@ -82,7 +81,7 @@
   }
   &-nav {
     display: inline-block;
-    margin-top: 16px;
+    margin-top: 20px;
     padding: 8px 0;
     text-align: center;
     position: relative;
@@ -103,6 +102,57 @@
         background-color: $primary-blue;
         border-color: $primary-blue;
       }
+    }
+  }
+}
+
+.nw-status {
+  display: inline-block;
+  width: inherit;
+  height: inherit;
+  max-width: 40px;
+  max-height: 40px;
+  position: relative;
+  &-i {
+    width: 30px;
+    height: inherit;
+    display: block;
+    background: {
+      position: center;
+      repeat: no-repeat;
+    }
+    cursor: pointer;
+    &.connecting {
+      background-image: url($nw-connecting-url);
+      animation: spin 0.4s linear infinite;
+    }
+    &.connected {
+      background-image: url($nw-connected-url);
+    }
+    &.error {
+      background-image: url($nw-error-url);
+    }
+  }
+  &-tooltip {
+    display: none;
+    position: absolute;
+    font-size: 12px;
+    color: #ffffff;
+    line-height: 30px;
+    background-color: $tooltip-bg;
+    padding: 0 8px;
+    bottom: 4px;
+    right: 100%;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.26);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-right: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  &:hover {
+    .nw-status-tooltip {
+      display: inline-block;
     }
   }
 }
