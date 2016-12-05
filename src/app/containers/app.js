@@ -9,6 +9,24 @@ export default class App extends Component {
     children: PropTypes.element.isRequired
   };
 
+  constructor() {
+    super();
+    this.setFixedHeader = this.setFixedHeader.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.setFixedHeader);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.setFixedHeader);
+  }
+
+  setFixedHeader() {
+    return (window.scrollY > 10) ?
+      this.header.classList.add('fixed') : this.header.classList.remove('fixed');
+  }
+
   /* eslint-disable class-methods-use-this */
   alertOnClick(res) {
     /* eslint-enable class-methods-use-this */
@@ -18,7 +36,11 @@ export default class App extends Component {
   render() {
     return (
       <div className="root">
-        <header>
+        <header
+          ref={(c) => {
+            this.header = c;
+          }}
+        >
           <div className="header-cntr">
             <section className="lt">
               <div className="safe-auth-logo">{' '}</div>

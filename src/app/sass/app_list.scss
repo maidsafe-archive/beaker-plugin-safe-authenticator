@@ -1,0 +1,161 @@
+.app-list {
+  width: 1170px;
+  margin: 0 auto 40px;
+  padding: 0;
+  position: relative;
+  .head {
+    padding: 40px 0 20px 76px;
+    background-color: $primary-blue;
+    color: #FFFFFF;
+    &.fixed {
+      position: fixed;
+      width: 1170px;
+      top: 96px;
+      z-index: 999;
+    }
+  }
+  .title-bar {
+    display: block;
+    padding-left: 76px;
+    padding-right: 16px;
+    margin-bottom: 16px;
+    &-b {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+      span {
+        line-height: 50px;
+        text-align: left;
+        display: inline-block;
+        width: 50%;
+        font: {
+          size: 14px;
+          weight: 600;
+        }
+        opacity: 0.5;
+      }
+    }
+  }
+  &-cntr {
+    padding: 24px;
+  }
+  &-i {
+    position: relative;
+    padding-left: 60px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    .icn {
+      width: 40px;
+      height: 40px;
+      background-color: $primary-gray;
+      position: absolute;
+      top: 0;
+      left: 0;
+      text-align: center;
+      line-height: 40px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .ctn {
+      display: block;
+      padding: 0 16px;
+      .title {
+        width: 50%;
+        display: inline-block;
+        float: left;
+        line-height: 40px;
+        font: {
+          size: 16px;
+          weight: 600;
+        }
+        overflow: hidden;
+        height: 40px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .vendor {
+        width: 50%;
+        display: inline-block;
+        float: left;
+        line-height: 40px;
+        font: {
+          size: 16px;
+          weight: normal;
+        }
+        overflow: hidden;
+        height: 40px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      @include clearfix();
+    }
+    .opts {
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      .opt {
+        padding: 3px 0;
+      }
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+    &:hover {
+      .opts {
+        display: inline-block;
+      }
+      .vendor {
+        width: 40%;
+      }
+    }
+    &.expand {
+      .app-list-detail {
+        display: block;
+      }
+    }
+  }
+  &-detail {
+    display: none;
+    width: 100%;
+    float: left;
+    background-color: $body-bg;
+    padding: 24px;
+    margin-top: 16px;
+    .permission {
+      &-h {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      ul {
+        list-style-type: none;
+        margin-top: 8px;
+        li {
+          margin-bottom: 8px;
+        }
+      }
+      &-icn {
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+        text-align: center;
+        line-height: 30px;
+        margin-right: 16px;
+        background: {
+          size: 24px;
+          repeat: no-repeat;
+          position: center;
+        };
+        float: left;
+        &.safe-drive {
+          background-image: url("../img/safedrive_icon.svg");
+        }
+        &.low-level-api {
+          background-image: url("../img/safedrive_icon.svg");
+        }
+      }
+      &-title {
+        line-height: 30px;
+        display: inline-block;
+      }
+    }
+  }
+}
