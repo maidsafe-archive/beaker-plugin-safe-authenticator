@@ -2,9 +2,9 @@ import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import { checkAuthorised } from './utils';
 import App from './containers/app';
-import Login from './containers/login_container';
-import CreateAccount from './containers/create_account_container';
-import Home from './containers/app_list_container';
+import Login from './containers/login';
+import CreateAccount from './containers/create_account';
+import Home from './containers/app_list';
 
 export default (
   <Route path="/" component={App}>
