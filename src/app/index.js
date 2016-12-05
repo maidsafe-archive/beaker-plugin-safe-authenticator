@@ -32,7 +32,7 @@ if (window.safeAuthenticator && window.safeAuthenticator.setNetworkListener) {
         return store.dispatch(setNetworkDisconnected());
       }
       default: {
-        throw Error(I18n.t('UnknownNetworkState'));
+        throw Error(I18n.t('invalid_network_state'));
       }
     }
   });

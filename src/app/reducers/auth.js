@@ -1,9 +1,88 @@
+import {
+  SET_CREATE_ACC_NAV_POS,
+  SET_SECRET_STRENGTH,
+  SET_PASSWORD_STRENGTH,
+  SET_AUTH_ERROR,
+  CLEAR_AUTH_ERROR,
+  SET_ACC_SECRET,
+  CLEAR_ACC_SECRET,
+  SET_ACC_PASSWORD,
+  CLEAR_ACC_PASSWORD,
+  SET_AUTH_LOADER,
+  CLEAR_AUTH_LOADER
+} from '../actions/auth';
+import CONSTANTS from '../constants.json';
+import { isUserAuthorised } from '../utils';
+
 const initialState = {
-  isAuthorised: false
+  isAuthorised: isUserAuthorised(),
+  createAccNavPos: 1,
+  userSecret: null,
+  userPassword: null,
+  secretStrength: 0,
+  passwordStrength: 0,
+  error: null,
+  loading: false
 };
 
 const auth = (state = initialState, action) => {
   switch (action.type) {
+    case SET_CREATE_ACC_NAV_POS: {
+      if (!state.userSecret) {
+        state.secretStrength = 0;
+      }
+      if (!state.userPassword) {
+        state.passwordStrength = 0;
+      }
+      if (!state.userSecret && action.position == CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM) {
+        if (state.createAccNavPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
+          return { ...state, createAccNavPos: CONSTANTS.CREATE_ACC_NAV.SECRET_FORM };
+        }
+        return state;
+      }
+      return { ...state, createAccNavPos: action.position };
+    }
+
+    case SET_SECRET_STRENGTH: {
+      return { ...state, secretStrength: action.strength };
+    }
+
+    case SET_PASSWORD_STRENGTH: {
+      return { ...state, passwordStrength: action.strength };
+    }
+
+    case SET_AUTH_ERROR: {
+      return { ...state, error: action.error };
+    }
+
+    case CLEAR_AUTH_ERROR: {
+      return { ...state, error: null };
+    }
+
+    case SET_ACC_SECRET: {
+      return { ...state, userSecret: action.secret };
+    }
+
+    case CLEAR_ACC_SECRET: {
+      return { ...state, userSecret: null };
+    }
+
+    case SET_ACC_PASSWORD: {
+      return { ...state, userPassword: action.password };
+    }
+
+    case CLEAR_ACC_PASSWORD: {
+      return { ...state, userPassword: null };
+    }
+
+    case SET_AUTH_LOADER: {
+      return { ...state, loading: true };
+    }
+
+    case CLEAR_AUTH_LOADER: {
+      return { ...state, loading: false };
+    }
+
     default: {
       return state;
     }
