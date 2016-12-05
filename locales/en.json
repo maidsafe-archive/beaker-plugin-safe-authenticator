@@ -19,6 +19,7 @@
       "password": "Your 'account password' is never stored or transmitted, it will not leave your computer."
     }
   },
+  "UnknownNetworkState": "Invalid network state",
   "messages": {
     "must_be_function": "%s must be a function",
     "must_be_string": "%s must be string",
