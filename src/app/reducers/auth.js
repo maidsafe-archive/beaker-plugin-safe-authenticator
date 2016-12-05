@@ -28,19 +28,22 @@ const initialState = {
 const auth = (state = initialState, action) => {
   switch (action.type) {
     case SET_CREATE_ACC_NAV_POS: {
+      const nextState = { ...state };
       if (!state.userSecret) {
-        state.secretStrength = 0;
+        nextState.secretStrength = 0;
       }
+
       if (!state.userPassword) {
-        state.passwordStrength = 0;
+        nextState.passwordStrength = 0;
       }
-      if (!state.userSecret && action.position == CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM) {
+
+      if (!state.userSecret && action.position === CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM) {
         if (state.createAccNavPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
-          return { ...state, createAccNavPos: CONSTANTS.CREATE_ACC_NAV.SECRET_FORM };
+          return { ...nextState, createAccNavPos: CONSTANTS.CREATE_ACC_NAV.SECRET_FORM };
         }
-        return state;
+        return nextState;
       }
-      return { ...state, createAccNavPos: action.position };
+      return { ...nextState, createAccNavPos: action.position };
     }
 
     case SET_SECRET_STRENGTH: {

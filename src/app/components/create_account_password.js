@@ -10,7 +10,18 @@ import { getStrengthMsg } from '../utils';
 export default class CreateAccountPassword extends Component {
   static propTypes = {
     navPos: PropTypes.number,
-    setNavPos: PropTypes.func
+    error: PropTypes.string,
+    networkStatus: PropTypes.number,
+    passwordStrength: PropTypes.number,
+    userSecret: PropTypes.string,
+    userPassword: PropTypes.string,
+    setNavPos: PropTypes.func,
+    clearError: PropTypes.func,
+    setPassword: PropTypes.func,
+    setAuthLoader: PropTypes.func,
+    createAccount: PropTypes.func,
+    setPasswordStrength: PropTypes.func,
+    setError: PropTypes.func,
   };
 
   constructor() {
@@ -29,7 +40,7 @@ export default class CreateAccountPassword extends Component {
   }
 
   clearFieldMsg() {
-    this.confirmPasswordMsgEle.textContent = "";
+    this.confirmPasswordMsgEle.textContent = '';
     this.props.clearError();
   }
 
@@ -109,7 +120,7 @@ export default class CreateAccountPassword extends Component {
                     type="password"
                     name="password"
                     required="required"
-                    ref={(c) => {this.passwordEle = c;}}
+                    ref={(c) => { this.passwordEle = c; }}
                     onKeyUp={this.handleInputChange}
                   />
                   <label htmlFor="password"><Translate value="Account Password" /></label>
@@ -133,7 +144,7 @@ export default class CreateAccountPassword extends Component {
                     type="password"
                     name="cPassword"
                     required="required"
-                    ref={(c) => {this.confirmPasswordEle = c;}}
+                    ref={(c) => { this.confirmPasswordEle = c; }}
                   />
                   <label htmlFor="cPassword"><Translate value="Confirm Account Password" /></label>
                   <span
@@ -148,7 +159,7 @@ export default class CreateAccountPassword extends Component {
             </div>
           </div>
           <div className="intro-foot">
-            <button className="btn intro-foot-lt" onClick={() => {this.props.setNavPos(this.props.navPos - 1)}}>Back</button>
+            <button className="btn intro-foot-lt" onClick={() => { this.props.setNavPos(this.props.navPos - 1); }}>Back</button>
             <button type="submit" form="AccPasswordForm" className="btn intro-foot-rt">Create Account</button>
           </div>
         </div>

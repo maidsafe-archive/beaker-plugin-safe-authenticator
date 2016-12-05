@@ -10,7 +10,10 @@ import CONSTANTS from '../constants.json';
 export default class CreateAccount extends Component {
   static propTypes = {
     navPos: PropTypes.number,
-    setNavPos: PropTypes.func
+    isAuthorised: PropTypes.bool,
+    loading: PropTypes.bool,
+    setNavPos: PropTypes.func,
+    clearAuthLoader: PropTypes.func,
   };
 
   static contextTypes = {
@@ -46,7 +49,7 @@ export default class CreateAccount extends Component {
   render() {
     const { navPos, loading, setNavPos, clearAuthLoader } = this.props;
     if (loading) {
-      return <AuthLoader cancelAuthReq={clearAuthLoader} />
+      return <AuthLoader cancelAuthReq={clearAuthLoader} />;
     }
     const container = this.getContainer();
 
@@ -56,9 +59,9 @@ export default class CreateAccount extends Component {
           <div className="card create-acc">
             {container}
             <div className="intro-nav">
-              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME })} onClick={(e) => {setNavPos(1)}}>{''}</span>
-              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.SECRET_FORM })} onClick={(e) => {setNavPos(2)}}>{''}</span>
-              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM })} onClick={(e) => {setNavPos(3)}}>{''}</span>
+              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME })} onClick={() => { setNavPos(1); }}>{''}</span>
+              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.SECRET_FORM })} onClick={() => { setNavPos(2); }}>{''}</span>
+              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM })} onClick={() => { setNavPos(3); }}>{''}</span>
             </div>
           </div>
           <div className="auth-foot">

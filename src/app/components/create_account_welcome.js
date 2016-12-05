@@ -20,7 +20,7 @@ export default class CreateAccountWelcome extends Component {
             <Translate value="AuthIntro.desc.welcome" />
           </div>
           <div className="intro-foot">
-            <button className="btn intro-foot-rt" onClick={() => {this.props.setNavPos(this.props.navPos + 1)}}>Continue</button>
+            <button className="btn intro-foot-rt" onClick={() => { this.props.setNavPos(this.props.navPos + 1); }}>Continue</button>
           </div>
         </div>
       </div>

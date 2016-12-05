@@ -18,7 +18,7 @@ ffiLoader.loadLibrary()
 // create unregistered client
   .then(() => clientManager.createUnregisteredClient())
   // TODO notify on browser
-  .catch(err => console.error(err));
+  .catch((err) => console.error(err));
 
 module.exports = {
   configure() {

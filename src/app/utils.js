@@ -4,7 +4,8 @@ const LOCAL_DATA_KEYS = {
   AUTHENTICATOR_USER: 'AUTHENTICATOR_USER'
 };
 
-export const setUserAuthorised = (isAuthorised) => {
+export const setUserAuthorised = (state) => {
+  let isAuthorised = state;
   if (typeof isAuthorised !== 'boolean') {
     isAuthorised = false;
   }
@@ -29,7 +30,7 @@ export const checkAuthorised = (nextState, replace, callback) => {
 export const getStrengthMsg = (strength) => {
   switch (true) {
     case (strength === 0): {
-      return "";
+      return '';
     }
     case (strength < CONSTANTS.PASSPHRASE_STRENGTH.VERY_WEAK):
       return CONSTANTS.PASSPHRASE_STRENGTH_MSG.VERY_WEAK;

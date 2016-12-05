@@ -80,13 +80,13 @@ export const clearAuthLoader = () => ({
   type: CLEAR_AUTH_LOADER
 });
 
-export const createAccount = (secret, password) => {
-  return (dispatch) => {
+export const createAccount = (secret, password) => (
+  (dispatch) => {
     if (!window.safeAuthenticator) {
       return dispatch(clearAuthLoader());
     }
     window.safeAuthenticator.createAccount(secret, password)
-      .then(res => {
+      .then((res) => {
         setUserAuthorised(true);
         dispatch(clearAuthLoader());
         return dispatch(createAccSuccess(res));
@@ -97,4 +97,4 @@ export const createAccount = (secret, password) => {
         return dispatch(createAccError(err));
       });
   }
-};
+);

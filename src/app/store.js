@@ -27,7 +27,7 @@ const enhancer = compose(
   applyMiddleware(thunk, router, logger),
   window.devToolsExtension ?
     window.devToolsExtension({ actionCreators }) :
-    noop => noop
+    (noop) => noop
 );
 
 export default function configureStore(initialState) {

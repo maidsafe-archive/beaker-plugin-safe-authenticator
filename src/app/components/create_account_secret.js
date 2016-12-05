@@ -9,7 +9,14 @@ import { getStrengthMsg } from '../utils';
 export default class CreateAccountSecret extends Component {
   static propTypes = {
     navPos: PropTypes.number,
-    setNavPos: PropTypes.func
+    secretStrength: PropTypes.number,
+    userSecret: PropTypes.string,
+    error: PropTypes.string,
+    setSecretStrength: PropTypes.func,
+    setSecret: PropTypes.func,
+    setError: PropTypes.func,
+    setNavPos: PropTypes.func,
+    clearError: PropTypes.func
   };
 
   constructor() {
@@ -28,7 +35,7 @@ export default class CreateAccountSecret extends Component {
   }
 
   clearFieldMsg() {
-    this.confirmSecretMsgEle.textContent = "";
+    this.confirmSecretMsgEle.textContent = '';
     this.props.clearError();
   }
 
@@ -88,10 +95,10 @@ export default class CreateAccountSecret extends Component {
     const { secretStrength } = this.props;
     return (
       <div>
-        <h3 className="heading md"><Translate value="Account Secret"/></h3>
+        <h3 className="heading md"><Translate value="Account Secret" /></h3>
         <div className="intro">
           <div className="intro-cnt">
-            <Translate value="AuthIntro.desc.secret"/>
+            <Translate value="AuthIntro.desc.secret" />
           </div>
           <div className="intro-cnt">
             <div className="form intro-form">
@@ -127,9 +134,9 @@ export default class CreateAccountSecret extends Component {
                     type="password"
                     name="cSecret"
                     required="required"
-                    ref={(c) => {this.confirmSecretEle = c;}}
+                    ref={(c) => { this.confirmSecretEle = c; }}
                   />
-                  <label htmlFor="cSecret"><Translate value="Confirm Account Secret"/></label>
+                  <label htmlFor="cSecret"><Translate value="Confirm Account Secret" /></label>
                   <span
                     className="msg error"
                     ref={(c) => {
@@ -142,9 +149,12 @@ export default class CreateAccountSecret extends Component {
             </div>
           </div>
           <div className="intro-foot">
-            <button className="btn intro-foot-lt" onClick={() => {
-              this.props.setNavPos(this.props.navPos - 1)
-            }}>Back
+            <button
+              className="btn intro-foot-lt"
+              onClick={() => {
+                this.props.setNavPos(this.props.navPos - 1);
+              }}
+            >Back
             </button>
             <button type="submit" form="AccSecretForm" className="btn intro-foot-rt">Continue</button>
           </div>

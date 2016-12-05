@@ -13,7 +13,7 @@ import {
   createAccount
 } from '../actions/auth';
 
-const mapStateToProps = state => (
+const mapStateToProps = (state) => (
   {
     isAuthorised: state.auth.isAuthorised,
     networkStatus: state.networkState.state,
@@ -26,7 +26,7 @@ const mapStateToProps = state => (
     loading: state.auth.loading
   }
 );
-const mapDispatchToProps = dispatch => (
+const mapDispatchToProps = (dispatch) => (
   {
     setNavPos: (pos) => (dispatch(setCreateAccNavPos(pos))),
     setSecretStrength: (val) => (dispatch(setSecretStrength(val))),
