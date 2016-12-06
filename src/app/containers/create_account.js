@@ -1,17 +1,7 @@
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import CreateAccount from '../components/create_account';
-import {
-  setCreateAccNavPos,
-  setSecretStrength,
-  setPasswordStrength,
-  setError,
-  clearError,
-  setAccSecret,
-  setAccPassword,
-  setAuthLoader,
-  clearAuthLoader,
-  createAccount
-} from '../actions/auth';
+import * as authActions from '../actions/auth';
 
 const mapStateToProps = (state) => (
   {
@@ -27,18 +17,7 @@ const mapStateToProps = (state) => (
   }
 );
 const mapDispatchToProps = (dispatch) => (
-  {
-    setNavPos: (pos) => (dispatch(setCreateAccNavPos(pos))),
-    setSecretStrength: (val) => (dispatch(setSecretStrength(val))),
-    setPasswordStrength: (val) => (dispatch(setPasswordStrength(val))),
-    setError: (err) => (dispatch(setError(err))),
-    clearError: () => (dispatch(clearError())),
-    setSecret: (secret) => (dispatch(setAccSecret(secret))),
-    setPassword: (password) => (dispatch(setAccPassword(password))),
-    setAuthLoader: () => (dispatch(setAuthLoader())),
-    clearAuthLoader: () => (dispatch(clearAuthLoader())),
-    createAccount: (secret, password) => (dispatch(createAccount(secret, password)))
-  }
+  bindActionCreators(authActions, dispatch)
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateAccount);

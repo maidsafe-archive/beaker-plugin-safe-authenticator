@@ -15,9 +15,9 @@ export default class CreateAccountPassword extends Component {
     passwordStrength: PropTypes.number,
     userSecret: PropTypes.string,
     userPassword: PropTypes.string,
-    setNavPos: PropTypes.func,
+    setCreateAccNavPos: PropTypes.func,
     clearError: PropTypes.func,
-    setPassword: PropTypes.func,
+    setAccPassword: PropTypes.func,
     setAuthLoader: PropTypes.func,
     createAccount: PropTypes.func,
     setPasswordStrength: PropTypes.func,
@@ -74,9 +74,10 @@ export default class CreateAccountPassword extends Component {
       this.confirmPasswordMsgEle.textContent = I18n.t('entries_mismatch');
       return;
     }
-    this.props.setPassword(password);
+    this.props.setAccPassword(password);
 
     if (this.props.networkStatus !== CONSTANTS.NETWORK_STATUS.CONNECTED) {
+      // TODO popup network not connected error
       return;
     }
 
@@ -159,7 +160,7 @@ export default class CreateAccountPassword extends Component {
             </div>
           </div>
           <div className="intro-foot">
-            <button className="btn intro-foot-lt" onClick={() => { this.props.setNavPos(this.props.navPos - 1); }}>Back</button>
+            <button className="btn intro-foot-lt" onClick={() => { this.props.setCreateAccNavPos(this.props.navPos - 1); }}>Back</button>
             <button type="submit" form="AccPasswordForm" className="btn intro-foot-rt">Create Account</button>
           </div>
         </div>

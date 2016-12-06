@@ -13,9 +13,9 @@ export default class CreateAccountSecret extends Component {
     userSecret: PropTypes.string,
     error: PropTypes.string,
     setSecretStrength: PropTypes.func,
-    setSecret: PropTypes.func,
+    setAccSecret: PropTypes.func,
+    setCreateAccNavPos: PropTypes.func,
     setError: PropTypes.func,
-    setNavPos: PropTypes.func,
     clearError: PropTypes.func
   };
 
@@ -75,8 +75,8 @@ export default class CreateAccountSecret extends Component {
       this.confirmSecretMsgEle.textContent = I18n.t('entries_mismatch');
       return;
     }
-    this.props.setSecret(secret);
-    this.props.setNavPos(this.props.navPos + 1);
+    this.props.setAccSecret(secret);
+    this.props.setCreateAccNavPos(this.props.navPos + 1);
   }
 
   handleInputChange(e) {
@@ -152,7 +152,7 @@ export default class CreateAccountSecret extends Component {
             <button
               className="btn intro-foot-lt"
               onClick={() => {
-                this.props.setNavPos(this.props.navPos - 1);
+                this.props.setCreateAccNavPos(this.props.navPos - 1);
               }}
             >Back
             </button>
