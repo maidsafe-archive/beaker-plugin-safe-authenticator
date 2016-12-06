@@ -4,7 +4,7 @@ const LOCAL_DATA_KEYS = {
   AUTHENTICATOR_USER: 'AUTHENTICATOR_USER'
 };
 
-export const setUserAuthorised = (state) => {
+export const setUserAuthorised = (state = false) => {
   let isAuthorised = state;
   if (typeof isAuthorised !== 'boolean') {
     isAuthorised = false;

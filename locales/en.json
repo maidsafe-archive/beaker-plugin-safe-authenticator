@@ -27,6 +27,7 @@
     "should_not_be_empty": "%s should not be empty",
     "key_not_found": "%s key not found",
     "unauthorised": "Unauthorised",
-    "need_to_be_stronger": "%{name} needs to be stronger"
+    "need_to_be_stronger": "%{name} needs to be stronger",
+    "plugin_not_found": "%{name} plugin not found"
   }
 }

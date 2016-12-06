@@ -18,7 +18,6 @@ export default class CreateAccountPassword extends Component {
     setCreateAccNavPos: PropTypes.func,
     clearError: PropTypes.func,
     setAccPassword: PropTypes.func,
-    setAuthLoader: PropTypes.func,
     createAccount: PropTypes.func,
     setPasswordStrength: PropTypes.func,
     setError: PropTypes.func,
@@ -81,7 +80,6 @@ export default class CreateAccountPassword extends Component {
       return;
     }
 
-    this.props.setAuthLoader();
     this.props.createAccount(this.props.userSecret, this.props.userPassword);
   }
 
