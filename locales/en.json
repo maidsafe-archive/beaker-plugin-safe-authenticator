@@ -9,8 +9,13 @@
   "Account Secret": "Account Secret",
   "Account Password": "Account Password",
   "Login": "Login",
+  "Create Account": "Create Account",
+  "Back": "Back",
+  "Continue": "Continue",
   "Ok": "Ok",
   "Cancel": "Cancel",
+  "Don't have a account?": "Don't have a account?",
+  "Already have a account?": "Already have a account?",
   "AppTitle": "SAFE Authenticator",
   "AuthIntro": {
     "desc": {

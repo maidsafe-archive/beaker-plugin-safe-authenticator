@@ -1,14 +1,21 @@
 import { connect } from 'react-redux';
 import Login from '../components/login';
-/* eslint-disable no-unused-vars */
+import { login, clearAuthLoader, clearError } from '../actions/auth';
+
 const mapStateToProps = (state) => (
-  /* eslint-enable no-unused-vars */
-  {}
+  {
+    networkState: state.networkState.state,
+    error: state.auth.error,
+    loading: state.auth.loading
+  }
 );
-/* eslint-disable no-unused-vars */
+
 const mapDispatchToProps = (dispatch) => (
-  /* eslint-enable no-unused-vars */
-  {}
+  {
+    login: (secret, password) => (dispatch(login(secret, password))),
+    clearAuthLoader: () => (dispatch(clearAuthLoader())),
+    clearError: () => (dispatch(clearError()))
+  }
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

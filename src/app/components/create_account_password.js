@@ -96,8 +96,10 @@ export default class CreateAccountPassword extends Component {
       return;
     }
     if (this[src].getAttribute('type') === 'password') {
+      e.target.classList.add('active');
       return this[src].setAttribute('type', 'text');
     }
+    e.target.classList.remove('active');
     return this[src].setAttribute('type', 'password');
   }
 
@@ -158,8 +160,8 @@ export default class CreateAccountPassword extends Component {
             </div>
           </div>
           <div className="intro-foot">
-            <button className="btn intro-foot-lt" onClick={() => { this.props.setCreateAccNavPos(this.props.navPos - 1); }}>Back</button>
-            <button type="submit" form="AccPasswordForm" className="btn intro-foot-rt">Create Account</button>
+            <button className="btn intro-foot-lt" onClick={() => { this.props.setCreateAccNavPos(this.props.navPos - 1); }}><Translate value="Back" /></button>
+            <button type="submit" form="AccPasswordForm" className="btn intro-foot-rt"><Translate value="Create Account" /></button>
           </div>
         </div>
       </div>

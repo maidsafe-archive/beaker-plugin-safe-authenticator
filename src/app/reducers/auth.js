@@ -10,7 +10,8 @@ import {
   CLEAR_ACC_PASSWORD,
   SET_AUTH_LOADER,
   CLEAR_AUTH_LOADER,
-  CREATE_ACC
+  CREATE_ACC,
+  LOGIN
 } from '../actions/auth';
 import CONSTANTS from '../constants.json';
 import { isUserAuthorised, setUserAuthorised } from '../utils';
@@ -92,13 +93,42 @@ const auth = (state = initialState, action) => {
     }
 
     case `${CREATE_ACC}_FULFILLED`: {
+      if (!state.loading) {
+        return state;
+      }
       setUserAuthorised(true);
       // TODO handle response
       return { ...state, loading: false };
     }
 
     case `${CREATE_ACC}_REJECTED`: {
+      if (!state.loading) {
+        return state;
+      }
       setUserAuthorised(); // No param => set to false
+      // TODO handle response
+      return { ...state, loading: false };
+    }
+
+    case `${LOGIN}_PENDING`: {
+      return { ...state, loading: true };
+    }
+
+    case `${LOGIN}_FULFILLED`: {
+      if (!state.loading) {
+        return state;
+      }
+      setUserAuthorised(true);
+      // TODO handle response
+      return { ...state, loading: false };
+    }
+
+    case `${LOGIN}_REJECTED`: {
+      if (!state.loading) {
+        return state;
+      }
+      setUserAuthorised(); // No param => set to false
+      // TODO handle response
       return { ...state, loading: false };
     }
 
