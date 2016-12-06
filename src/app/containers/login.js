@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Login from '../components/login';
 import { login, clearAuthLoader, clearError } from '../actions/auth';
 
@@ -11,11 +12,7 @@ const mapStateToProps = (state) => (
 );
 
 const mapDispatchToProps = (dispatch) => (
-  {
-    login: (secret, password) => (dispatch(login(secret, password))),
-    clearAuthLoader: () => (dispatch(clearAuthLoader())),
-    clearError: () => (dispatch(clearError()))
-  }
+  bindActionCreators({ login, clearAuthLoader, clearError }, dispatch)
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
