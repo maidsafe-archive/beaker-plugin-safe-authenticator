@@ -1,14 +1,23 @@
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import CreateAccount from '../components/create_account';
-/* eslint-disable no-unused-vars */
-const mapStateToProps = state => (
-  /* eslint-enable no-unused-vars */
-  {}
+import * as authActions from '../actions/auth';
+
+const mapStateToProps = (state) => (
+  {
+    isAuthorised: state.auth.isAuthorised,
+    networkStatus: state.networkState.state,
+    navPos: state.auth.createAccNavPos,
+    secretStrength: state.auth.secretStrength,
+    passwordStrength: state.auth.passwordStrength,
+    error: state.auth.error,
+    userSecret: state.auth.userSecret,
+    userPassword: state.auth.userPassword,
+    loading: state.auth.loading
+  }
 );
-/* eslint-disable no-unused-vars */
-const mapDispatchToProps = dispatch => (
-  /* eslint-enable no-unused-vars */
-  {}
+const mapDispatchToProps = (dispatch) => (
+  bindActionCreators(authActions, dispatch)
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateAccount);

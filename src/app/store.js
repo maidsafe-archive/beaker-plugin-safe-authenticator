@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware, push } from 'react-router-redux';
+import promise from 'redux-promise-middleware';
 import thunk from 'redux-thunk';
 import { hashHistory } from 'react-router';
 import createLogger from 'redux-logger';
@@ -24,10 +25,10 @@ const logger = createLogger({
 const router = routerMiddleware(hashHistory);
 
 const enhancer = compose(
-  applyMiddleware(thunk, router, logger),
+  applyMiddleware(thunk, router, logger, promise()),
   window.devToolsExtension ?
     window.devToolsExtension({ actionCreators }) :
-    noop => noop
+    (noop) => noop
 );
 
 export default function configureStore(initialState) {

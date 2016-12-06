@@ -19,12 +19,15 @@
       "password": "Your 'account password' is never stored or transmitted, it will not leave your computer."
     }
   },
-  "UnknownNetworkState": "Invalid network state",
+  "invalid_network_state": "Invalid network state",
+  "entries_mismatch" : "Entries don't match.",
   "messages": {
     "must_be_function": "%s must be a function",
     "must_be_string": "%s must be string",
     "should_not_be_empty": "%s should not be empty",
     "key_not_found": "%s key not found",
-    "unauthorised": "Unauthorised"
+    "unauthorised": "Unauthorised",
+    "need_to_be_stronger": "%{name} needs to be stronger",
+    "plugin_not_found": "%{name} plugin not found"
   }
 }

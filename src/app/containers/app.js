@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import App from '../components/app';
 
-const mapStateToProps = state => (
+const mapStateToProps = (state) => (
   {
     networkState: state.networkState.state
   }
 );
 /* eslint-disable no-unused-vars */
-const mapDispatchToProps = dispatch => (
+const mapDispatchToProps = (dispatch) => (
   /* eslint-enable no-unused-vars */
   {}
 );
