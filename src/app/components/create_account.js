@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
+import { Translate } from 'react-redux-i18n';
 import classNames from 'classnames';
 import CreateAccountWelcome from './create_account_welcome';
 import CreateAccountSecret from './create_account_secret';
@@ -65,7 +66,7 @@ export default class CreateAccount extends Component {
             </div>
           </div>
           <div className="auth-foot">
-            Already have a account? <Link to="/">Login</Link>
+            <Translate value="Already have a account?" /> <Link to="/"><Translate value="Login" /></Link>
           </div>
         </div>
       </div>

@@ -52,8 +52,10 @@ export default class CreateAccountSecret extends Component {
       return;
     }
     if (this[src].getAttribute('type') === 'password') {
+      e.target.classList.add('active');
       return this[src].setAttribute('type', 'text');
     }
+    e.target.classList.remove('active');
     return this[src].setAttribute('type', 'password');
   }
 
@@ -154,9 +156,9 @@ export default class CreateAccountSecret extends Component {
               onClick={() => {
                 this.props.setCreateAccNavPos(this.props.navPos - 1);
               }}
-            >Back
+            ><Translate value="Back" />
             </button>
-            <button type="submit" form="AccSecretForm" className="btn intro-foot-rt">Continue</button>
+            <button type="submit" form="AccSecretForm" className="btn intro-foot-rt"><Translate value="Continue" /></button>
           </div>
         </div>
       </div>
