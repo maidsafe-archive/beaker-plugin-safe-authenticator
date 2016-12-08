@@ -11,7 +11,6 @@ import CONSTANTS from '../constants.json';
 export default class CreateAccount extends Component {
   static propTypes = {
     navPos: PropTypes.number,
-    isAuthorised: PropTypes.bool,
     loading: PropTypes.bool,
     setCreateAccNavPos: PropTypes.func,
     clearAuthLoader: PropTypes.func,
@@ -26,8 +25,8 @@ export default class CreateAccount extends Component {
     this.getContainer = this.getContainer.bind(this);
   }
 
-  componentWillMount() {
-    if (this.props.isAuthorised) {
+  componentWillUpdate(nextProps) {
+    if (nextProps.isAuthorised) {
       return this.context.router.push('/');
     }
   }

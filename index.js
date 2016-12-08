@@ -1,9 +1,7 @@
-import path from 'path';
-import i18n from 'i18n';
-import safeAuthApi from './src/api';
-import ffiLoader from './src/ffi/ffi_loader';
-import clientManager from './src/ffi/client_manager';
-import safeAuthProtocol from './src/protocols/safe_auth';
+const path = require('path');
+const i18n = require('i18n');
+const api = require('./dist/api').default;
+const safeAuthProtocol = require('./dist/protocol').default;
 
 i18n.configure({
   locales: ['en'],
@@ -14,9 +12,9 @@ i18n.configure({
 i18n.setLocale('en');
 
 // load ffi library
-ffiLoader.loadLibrary()
+api.ffi.ffiLoader.loadLibrary()
 // create unregistered client
-  .then(() => clientManager.createUnregisteredClient())
+  .then(() => api.ffi.client.createUnregisteredClient())
   // TODO notify on browser
   .catch((err) => console.error(err));
 
@@ -28,5 +26,5 @@ module.exports = {
     href: 'https://safenetforum.org/t/safe-network-alpha-release/10687/1'
   }],
   protocols: [safeAuthProtocol],
-  webAPIs: safeAuthApi
+  webAPIs: api.safeAuthApi
 };

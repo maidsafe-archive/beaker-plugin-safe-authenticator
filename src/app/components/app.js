@@ -7,7 +7,9 @@ import NetworkStatus from './network_status';
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
-    networkState: PropTypes.number
+    networkState: PropTypes.number,
+    isAuthorised: PropTypes.bool,
+    logout: PropTypes.func
   };
 
   constructor() {
@@ -35,7 +37,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { networkState } = this.props;
+    const { networkState, isAuthorised, logout } = this.props;
 
     return (
       <div className="root">
@@ -51,6 +53,13 @@ export default class App extends Component {
             </section>
             <section className="rt">
               <div className="rt-i"><NetworkStatus status={networkState} message={'Connected'} /></div>
+              {
+                isAuthorised ? (
+                  <div className="rt-i btn-i">
+                    <button type="button" className="btn" onClick={() => { logout(); }}>Logout</button>
+                  </div>
+                ) : null
+              }
             </section>
           </div>
         </header>

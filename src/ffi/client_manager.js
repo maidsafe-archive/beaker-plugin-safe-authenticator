@@ -8,15 +8,6 @@ const _networkStateChangeListener = Symbol('networkStateChangeListener');
 const _clientHandle = Symbol('clientHandle');
 
 class ClientManager extends FfiApi {
-  static manifest = {
-    setNetworkListener: 'sync',
-    logout: 'sync',
-    login: 'promise',
-    createAccount: 'promise',
-    getAuthorisedApps: 'promise',
-    revokeApp: 'promise'
-  };
-
   constructor() {
     super();
     this[_networkState] = CONST.NETWORK_STATES.DISCONNECTED;
@@ -37,7 +28,7 @@ class ClientManager extends FfiApi {
       throw new Error(i18n.__('messages.must_be_function', i18n.__('Network listener callback')));
     }
     this[_networkStateChangeListener] = cb;
-    this[_networkStateChangeListener](this[_networkState]);
+    this[_networkStateChangeListener](null, this[_networkState]);
   }
 
   /**
@@ -100,7 +91,7 @@ class ClientManager extends FfiApi {
       this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED, 1);
 
       if (typeof this[_networkStateChangeListener] === 'function') {
-        this[_networkStateChangeListener](this[_networkState]);
+        this[_networkStateChangeListener](null, this[_networkState]);
       }
       resolve();
     });

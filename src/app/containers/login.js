@@ -7,7 +7,8 @@ const mapStateToProps = (state) => (
   {
     networkState: state.networkState.state,
     error: state.auth.error,
-    loading: state.auth.loading
+    loading: state.auth.loading,
+    isAuthorised: state.auth.isAuthorised
   }
 );
 

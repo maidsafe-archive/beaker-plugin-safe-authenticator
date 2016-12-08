@@ -11,13 +11,14 @@ import {
   SET_AUTH_LOADER,
   CLEAR_AUTH_LOADER,
   CREATE_ACC,
-  LOGIN
+  LOGIN,
+  LOGOUT
 } from '../actions/auth';
 import CONSTANTS from '../constants.json';
-import { isUserAuthorised, setUserAuthorised } from '../utils';
+import { isUserAuthorised, setUserAuthorised, clearLocalStorage } from '../utils';
 
 const initialState = {
-  isAuthorised: isUserAuthorised(),
+  isAuthorised: !!isUserAuthorised(),
   createAccNavPos: 1,
   userSecret: null,
   userPassword: null,
@@ -120,7 +121,7 @@ const auth = (state = initialState, action) => {
       }
       setUserAuthorised(true);
       // TODO handle response
-      return { ...state, loading: false };
+      return { ...state, loading: false, isAuthorised: true };
     }
 
     case `${LOGIN}_REJECTED`: {
@@ -130,6 +131,11 @@ const auth = (state = initialState, action) => {
       setUserAuthorised(); // No param => set to false
       // TODO handle response
       return { ...state, loading: false };
+    }
+
+    case `${LOGOUT}_FULFILLED`: {
+      clearLocalStorage();
+      return { ...state, loading: false, isAuthorised: false };
     }
 
     default: {

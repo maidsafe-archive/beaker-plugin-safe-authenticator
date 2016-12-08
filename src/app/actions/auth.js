@@ -11,6 +11,7 @@ export const SET_AUTH_LOADER = 'SET_AUTH_LOADER';
 export const CLEAR_AUTH_LOADER = 'CLEAR_AUTH_LOADER';
 export const CREATE_ACC = 'CREATE_ACC';
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 
 export const setCreateAccNavPos = (pos) => (
   {
@@ -76,4 +77,9 @@ export const createAccount = (secret, password) => ({
 export const login = (secret, password) => ({
   type: LOGIN,
   payload: window.safeAuthenticator.login(secret, password)
+});
+
+export const logout = () => ({
+  type: LOGOUT,
+  payload: Promise.resolve(window.safeAuthenticator.logout())
 });

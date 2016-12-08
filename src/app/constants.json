@@ -20,5 +20,9 @@
     "WEAK": "Weak",
     "SOMEWHAT_SECURE": "Somewhat secure",
     "SECURE": "Secure"
+  },
+  "APP_DEFAULT_PERMISSIONS": {
+    "SAFE_DRIVE_ACCESS": "SAFE_DRIVE_ACCESS",
+    "LOW_LEVEL_API": "LOW_LEVEL_API"
   }
 }

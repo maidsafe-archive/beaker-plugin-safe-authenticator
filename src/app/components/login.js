@@ -14,6 +14,10 @@ export default class Login extends Component {
     clearAuthLoader: PropTypes.func
   };
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
   constructor() {
     super();
     this.togglePassword = this.togglePassword.bind(this);
@@ -22,6 +26,12 @@ export default class Login extends Component {
 
   componentDidMount() {
     this.secretEle.focus();
+  }
+
+  componentWillUpdate(nextProps) {
+    if (nextProps.isAuthorised) {
+      return this.context.router.push('/');
+    }
   }
 
   togglePassword(e) {

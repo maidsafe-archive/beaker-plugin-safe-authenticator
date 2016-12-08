@@ -20,15 +20,15 @@ const history = syncHistoryWithStore(hashHistory, store);
 
 // set network listener
 if (window.safeAuthenticator && window.safeAuthenticator.setNetworkListener) {
-  window.safeAuthenticator.setNetworkListener((state) => {
+  window.safeAuthenticator.setNetworkListener((err, state) => {
     switch (state) {
-      case CONSTANTS.NETWORK_STATUS.NETWORK_CONNECTING: {
+      case CONSTANTS.NETWORK_STATUS.CONNECTING: {
         return store.dispatch(setNetworkConnecting());
       }
-      case CONSTANTS.NETWORK_STATUS.NETWORK_CONNECTED: {
+      case CONSTANTS.NETWORK_STATUS.CONNECTED: {
         return store.dispatch(setNetworkConnected());
       }
-      case CONSTANTS.NETWORK_STATUS.NETWORK_DISCONNECTED: {
+      case CONSTANTS.NETWORK_STATUS.DISCONNECTED: {
         return store.dispatch(setNetworkDisconnected());
       }
       default: {

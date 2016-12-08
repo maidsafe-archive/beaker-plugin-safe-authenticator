@@ -6,19 +6,19 @@ import {
 import CONSTANTS from '../constants.json';
 
 const initialState = {
-  state: 0
+  state: CONSTANTS.NETWORK_STATUS.CONNECTING
 };
 
 const networkState = (state = initialState, action) => {
   switch (action.type) {
     case NETWORK_CONNECTING: {
-      return { state: CONSTANTS.NETWORK_STATUS.NETWORK_CONNECTING };
+      return { state: CONSTANTS.NETWORK_STATUS.CONNECTING };
     }
     case NETWORK_CONNECTED: {
-      return { state: CONSTANTS.NETWORK_STATUS.NETWORK_CONNECTED };
+      return { state: CONSTANTS.NETWORK_STATUS.CONNECTED };
     }
     case NETWORK_DISCONNECTED: {
-      return { state: CONSTANTS.NETWORK_STATUS.NETWORK_DISCONNECTED };
+      return { state: CONSTANTS.NETWORK_STATUS.DISCONNECTED };
     }
     default: {
       return state;

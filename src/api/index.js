@@ -1,6 +1,7 @@
-import client from '../ffi/client_manager';
+import * as ffiLoader from './ffiLoader';
+import * as client from './client';
 
-const safeAuthApi = [
+export const safeAuthApi = [
   {
     name: 'safeAuthenticator',
     isInternal: true,
@@ -9,4 +10,7 @@ const safeAuthApi = [
   }
 ];
 
-export default safeAuthApi;
+export const ffi = {
+  client,
+  ffiLoader
+};
