@@ -24,9 +24,6 @@ export default {
       }
     ]
   },
-  resolve: {
-    extensions: ['', '.js']
-  },
   node: {
     fs: 'empty'
   }

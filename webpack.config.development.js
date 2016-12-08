@@ -26,9 +26,6 @@ export default {
       }
     ]
   },
-  resolve: {
-    extensions: ['', '.js']
-  },
   plugins: [
     new CopyWebpackPlugin([
       { from: 'src/app/app.html', to: './' }
