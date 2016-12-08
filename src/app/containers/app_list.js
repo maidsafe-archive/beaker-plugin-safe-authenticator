@@ -1,14 +1,18 @@
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import AppList from '../components/app_list';
-/* eslint-disable no-unused-vars */
+import { getAuthorisedApps, revokeApp } from '../actions/app';
+
 const mapStateToProps = (state) => (
-  /* eslint-enable no-unused-vars */
-  {}
+  {
+    isAuthorised: state.auth.isAuthorised,
+    fetchingApps: state.app.fetchingApps,
+    authorisedApps: state.app.authorisedApps
+  }
 );
-/* eslint-disable no-unused-vars */
+
 const mapDispatchToProps = (dispatch) => (
-  /* eslint-enable no-unused-vars */
-  {}
+  bindActionCreators({ getAuthorisedApps, revokeApp }, dispatch)
 );
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppList);

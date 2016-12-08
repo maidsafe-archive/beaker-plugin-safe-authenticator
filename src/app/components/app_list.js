@@ -1,26 +1,33 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ListItem from './app_list_item';
 
 export default class AppList extends Component {
-  static propTypes = {};
+  static propTypes = {
+    fetchingApps: PropTypes.bool.isRequired,
+    authorisedApps: PropTypes.shape,
+    getAuthorisedApps: PropTypes.func,
+    revokeApp: PropTypes.func
+  };
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
 
   constructor() {
     super();
-    this.appList = [{
-      id: 1,
-      name: 'Cookley',
-      vendor: 'kpeters0'
-    }, {
-      id: 2,
-      name: 'Overhold',
-      vendor: 'jwallace1'
-    }];
-
     this.setFixedHeader = this.setFixedHeader.bind(this);
+    this.getContainer = this.getContainer.bind(this);
   }
 
   componentDidMount() {
+    this.props.getAuthorisedApps();
     window.addEventListener('scroll', this.setFixedHeader);
+  }
+
+  componentWillUpdate(nextProps) {
+    if (!nextProps.isAuthorised) {
+      return this.context.router.push('/login');
+    }
   }
 
   componentWillUnmount() {
@@ -30,6 +37,17 @@ export default class AppList extends Component {
   setFixedHeader() {
     return (window.scrollY > 10) ?
       this.titlebar.classList.add('fixed') : this.titlebar.classList.remove('fixed');
+  }
+
+  getContainer() {
+    const { fetchingApps, authorisedApps, revokeApp } = this.props;
+    if (fetchingApps) {
+      return <ListItem loading />;
+    } else if (authorisedApps.length === 0) {
+      return <ListItem isDefault />;
+    }
+    return authorisedApps.map((item, i) =>
+      <ListItem key={i} data={item} revokeApp={revokeApp} />);
   }
 
   render() {
@@ -53,7 +71,7 @@ export default class AppList extends Component {
             </div>
             <div className="app-list-i-b">
               {
-                this.appList.map((item, i) => <ListItem key={i} data={item} />)
+                this.getContainer()
               }
             </div>
           </div>

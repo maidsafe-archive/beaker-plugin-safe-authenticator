@@ -17,6 +17,13 @@
   "Don't have a account?": "Don't have a account?",
   "Already have a account?": "Already have a account?",
   "AppTitle": "SAFE Authenticator",
+  "Revoke Access": "Revoke Access",
+  "Permissions": "Permissions",
+  "SAFE DRIVE Permission": "SAFE DRIVE Permission",
+  "LOW LEVEL API Permission": "LOW LEVEL API Permission",
+  "No permissions": "No permissions",
+  "Fetching apps": "Fetching apps",
+  "No Apps Found": "No Apps Found",
   "AuthIntro": {
     "desc": {
       "welcome": "Authenticator will act as your gateway to the SAFE Network, you can use it to access data on the network and to authorise apps to connect on your behalf.",

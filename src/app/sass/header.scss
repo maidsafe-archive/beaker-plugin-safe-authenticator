@@ -23,6 +23,11 @@ header {
         height: 40px;
         display: inline-block;
         margin-left: 8px;
+        float: right;
+        &.btn-i {
+          width: inherit;
+          line-height: 40px;
+        }
       }
     }
     @at-root .safe-auth-logo {

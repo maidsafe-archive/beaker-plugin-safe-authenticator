@@ -15,6 +15,10 @@ export const setUserAuthorised = (state = false) => {
   }));
 };
 
+export const clearLocalStorage = () => {
+  window.localStorage.clear();
+};
+
 export const isUserAuthorised = () => {
   const userAuthData = JSON.parse(window.localStorage.getItem(LOCAL_DATA_KEYS.AUTHENTICATOR_USER));
   return (userAuthData && userAuthData.isAuthorised);
