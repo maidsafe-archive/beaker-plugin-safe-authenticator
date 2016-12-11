@@ -9,6 +9,13 @@ export const manifest = {
   revokeApp: 'promise'
 };
 
+export const isAutheticatorAuthorised = () => client.isAutheticatorAuthorised();
+
+export const authDecision = (appId, payload, isAllowed) =>
+  client.authDecision(appId, payload, isAllowed);
+
+export const setNetworkIpcListener = (cb) => client.setNetworkIpcListener(cb);
+
 export const setNetworkListener = (cb) => client.setNetworkListener(cb);
 
 export const logout = () => client.logout();

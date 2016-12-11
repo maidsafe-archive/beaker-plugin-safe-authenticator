@@ -5,6 +5,7 @@ import CONST from './constants.json';
 
 const _networkState = Symbol('networkState');
 const _networkStateChangeListener = Symbol('networkStateChangeListener');
+const _networkStateChangeIpcListener = Symbol('networkStateChangeIpcListener');
 const _clientHandle = Symbol('clientHandle');
 
 class ClientManager extends FfiApi {
@@ -12,11 +13,16 @@ class ClientManager extends FfiApi {
     super();
     this[_networkState] = CONST.NETWORK_STATES.DISCONNECTED;
     this[_networkStateChangeListener] = null;
+    this[_networkStateChangeIpcListener] = null;
     this[_clientHandle] = {};
   }
 
   setClientHandle(key, handle) {
     this[_clientHandle][key] = handle;
+  }
+
+  isAutheticatorAuthorised() {
+    return this[_clientHandle][CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR];
   }
 
   /**
@@ -29,6 +35,10 @@ class ClientManager extends FfiApi {
     }
     this[_networkStateChangeListener] = cb;
     this[_networkStateChangeListener](null, this[_networkState]);
+  }
+
+  setNetworkIpcListener(cb) {
+    this[_networkStateChangeIpcListener] = cb;
   }
 
   /**
@@ -112,6 +122,7 @@ class ClientManager extends FfiApi {
 
       // TODO set authorised client handle id
       this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, 1);
+      this._pushNetworkIpcStatus();
       return resolve();
     });
   }
@@ -131,6 +142,7 @@ class ClientManager extends FfiApi {
 
       // TODO set authorised client handle id
       this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, 1);
+      this._pushNetworkIpcStatus();
       return resolve();
     });
   }
@@ -139,6 +151,9 @@ class ClientManager extends FfiApi {
    * User logout
    */
   logout() {
+    if (typeof this[_networkStateChangeIpcListener] === 'function') {
+      this[_networkStateChangeIpcListener](null, -1);
+    }
     this.dropHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR);
   }
 
@@ -171,6 +186,13 @@ class ClientManager extends FfiApi {
     }
     // TODO drop client handle
     delete this[_clientHandle][key];
+  }
+
+  _pushNetworkIpcStatus() {
+    if (typeof this[_networkStateChangeIpcListener] !== 'function') {
+      return;
+    }
+    this[_networkStateChangeIpcListener](null, this[_networkState]);
   }
 
   _isClientHandleExist(clientHandleKey) {
