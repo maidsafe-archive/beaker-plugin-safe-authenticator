@@ -4,7 +4,7 @@ export default {
   devtool: 'cheap-module-source-map',
   entry: {
     protocol: path.resolve(__dirname, 'src/protocols/safe_auth.js'),
-    'safeauth_rpc': path.resolve(__dirname, 'src/protocols/safe_auth_rpc.js')
+    safeauth_rpc: path.resolve(__dirname, 'src/protocols/safe_auth_rpc.js')
   },
   output: {
     path: path.join(__dirname, 'dist'),

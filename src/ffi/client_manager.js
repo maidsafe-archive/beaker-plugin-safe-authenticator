@@ -151,7 +151,9 @@ class ClientManager extends FfiApi {
    * User logout
    */
   logout() {
-    this[_networkStateChangeIpcListener](null, -1);
+    if (typeof this[_networkStateChangeIpcListener] === 'function') {
+      this[_networkStateChangeIpcListener](null, -1);
+    }
     this.dropHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR);
   }
 
@@ -187,6 +189,9 @@ class ClientManager extends FfiApi {
   }
 
   _pushNetworkIpcStatus() {
+    if (typeof this[_networkStateChangeIpcListener] !== 'function') {
+      return;
+    }
     this[_networkStateChangeIpcListener](null, this[_networkState]);
   }
 

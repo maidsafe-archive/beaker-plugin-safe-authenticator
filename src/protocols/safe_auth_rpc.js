@@ -12,28 +12,23 @@ let authReqEvent = null;
 
 const processAuthQueue = () => {
   if (isAuthProcessing || authQueue.length === 0) {
-    console.log(':: auth processing ::', isAuthProcessing, authQueue.length);
-    return
+    return;
   }
 
   if (!clientManager.isAutheticatorAuthorised()) {
-    console.log(':: not authorised ::');
-    return
+    return;
   }
 
   if (!authReqEvent) {
-    console.log(':: event not registered ::');
-    return
+    return;
   }
 
   isAuthProcessing = true;
   const result = authQueue.shift();
-  console.log(':: auth data ::', result);
   authReqEvent.sender.send('onAuthReq', result);
 };
 
 const registerAuthDecision = (event, authData, isAllowed) => {
-  console.log(':: auth desicion ::', authData, isAllowed);
   if (!authData) {
     return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('URL'))));
   }
@@ -45,20 +40,18 @@ const registerAuthDecision = (event, authData, isAllowed) => {
   /* eslint-enable class-methods-use-this */
   clientManager.authDecision(authData[2], authData[3], isAllowed)
     .then((res) => {
-      // shell.openExternal(res);
-      setTimeout(function () {
+      shell.openExternal(res);
+      setTimeout(() => {
         isAuthProcessing = false;
         processAuthQueue();
-        console.log(':: Auth decison result :: ', res || authData);
         event.sender.send('onAuthDecisionRes', res || authData);
-      }, 5000)
+      }, 5000);
     });
 };
 
 const decryptRequest = (event, req) => {
   const parsedUrl = req.split('/');
   authQueue.push(parsedUrl);
-  console.log('Decrypted request :: ', parsedUrl, authQueue);
   processAuthQueue();
 };
 
@@ -77,8 +70,7 @@ const registerNetworkListener = (event) => {
     if (status === 1) {
       processAuthQueue();
     }
-    console.log('RPC Network status ::', status);
-    event.sender.send('onNetworkStatus', status)
+    event.sender.send('onNetworkStatus', status);
   });
 };
 

@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import url from 'url';
 /* eslint-disable import/extensions */
-import { protocol, ipcMain } from 'electron';
+import { protocol } from 'electron';
 /* eslint-enable import/extensions */
 const safeAuthScheme = 'safe-auth';
 
