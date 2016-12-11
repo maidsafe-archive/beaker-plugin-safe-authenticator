@@ -40,12 +40,15 @@ const registerAuthDecision = (event, authData, isAllowed) => {
   /* eslint-enable class-methods-use-this */
   clientManager.authDecision(authData[2], authData[3], isAllowed)
     .then((res) => {
-      shell.openExternal(res);
       setTimeout(() => {
         isAuthProcessing = false;
         processAuthQueue();
         event.sender.send('onAuthDecisionRes', res || authData);
       }, 5000);
+      shell.openExternal(res);
+    })
+    .catch((err) => {
+      console.error(err);
     });
 };
 
