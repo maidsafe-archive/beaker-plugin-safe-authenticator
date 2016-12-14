@@ -2,9 +2,9 @@ import path from 'path';
 
 export default {
   devtool: 'cheap-module-source-map',
-  entry: path.resolve(__dirname, 'src/protocols/safe_auth.js'),
+  entry: path.resolve(__dirname, '../src/beaker/protocols/safe_auth.js'),
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, '../dist'),
     filename: 'protocol.js',
     libraryTarget: 'commonjs2'
   },

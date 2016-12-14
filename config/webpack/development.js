@@ -3,10 +3,10 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 export default {
   devtool: 'cheap-module-source-map',
-  entry: path.resolve(__dirname, 'src/app/index.js'),
+  entry: path.resolve(__dirname, '../src/app/index.js'),
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js'
+    path: path.join(__dirname, '../dist'),
+    filename: 'app-bundle.js'
   },
   module: {
     loaders: [
