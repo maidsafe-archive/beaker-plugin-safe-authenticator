@@ -1,0 +1,16 @@
+[package]
+name = "safe-auth"
+version = "0.0.1"
+authors = ["Benjamin Kampmann <ben@gnunicorn.org>"]
+publish = false
+
+[dependencies]
+# could also be: `rev =` or `tag = ` 
+safe_core = { git = "https://github.com/maidsafe/safe_core", branch = "dev"}
+
+
+
+# Metadata used when generating an Android APK, for example.
+[package.metadata.android]
+package-name = "my-awesome-android-app"
+assets = "path/to/static"
