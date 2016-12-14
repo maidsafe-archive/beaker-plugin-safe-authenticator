@@ -8,7 +8,6 @@
         MaidSafe Developper Team
     </author>
     <content src="index.html" />
-    <hook type="before_prepare" src="hooks/build.sh" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="net.maidsafe.auth" spec="./src/cordova" />
     <access origin="*" />
