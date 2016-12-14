@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import should from 'should';
 import i18n from 'i18n';
-import clientManager from '../src/ffi/client_manager';
-import FfiConst from '../src/ffi/constants.json';
+import clientManager from '../src/beaker/ffi/client_manager';
+import FfiConst from '../src/beaker/ffi/constants.json';
 import { getRandomCredentials } from './utils';
 
 describe('Client', () => {

@@ -45,3 +45,4 @@ target/*
 # cross platform
 platforms/*
 
+*.bk
