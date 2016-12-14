@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+        id="net.maidsafe.authenticator-lib"
+        version="0.0.1">
+
+  <name>SAFE Authenticator Lib</name>
+
+  <engines>
+    <engine name="cordova" version=">=3.4.0"/>
+  </engines>
+
+  <!-- THIS IS ALL DEFUN EXAMPLE CODE!!! -->
+  <asset src="www/hello.js" target="js/hello.js"/>
+
+  <js-module src="www/hello.js" name="hello">
+    <clobbers target="hello" />
+  </js-module>
+
+  <platform name="android">
+
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="Hello">
+        <param name="android-package" value="com.example.plugin.Hello"/>
+      </feature>
+    </config-file>
+
+    <source-file src="src/android/Hello.java" target-dir="src/com/example/plugin/"/>
+
+    <source-file src="native/android/hello-jni/src/com/example/hellojni/HelloJni.java" target-dir="src/com/example/hellojni/"/>
+
+    <source-file src="native/android/hello-jni/libs/armeabi/libhello-jni.so" target-dir="libs/armeabi" />
+
+    <source-file src="native/android/hello-jni/libs/armeabi-v7a/libhello-jni.so" target-dir="libs/armeabi-v7a" />
+  </platform>
+
+  <platform name="ios">
+    
+    <config-file target="config.xml" parent="/widget">
+      <feature name="Hello">
+        <param name="ios-package" value="HWPHello" />
+      </feature>
+    </config-file>
+
+    <header-file src="src/ios/HWPHello.h" target-dir="HelloPlugin"/>
+    <source-file src="src/ios/HWPHello.m" target-dir="HelloPlugin"/>
+    <header-file src="native/rust/src/hello_rust.h" target-dir="HelloPlugin"/>
+    <source-file src="native/ios/libhello_rust.a" framework="true" target-dir="HelloPlugin" compiler-flags="-fno-objc-arc"/>
+
+    <framework src="Foundation.framework" />
+    <framework src="Security.framework" />
+
+  </platform>
+
+</plugin>
