@@ -6,9 +6,10 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.test.js",
     "lint": "eslint src test *.js",
-    "build-app": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.development.js --progress --profile --colors",
-    "build-api": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.api.js --progress --profile --colors",
-    "build-protocol": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.protocol.js --progress --profile --colors",
+    "postinstall": "cargo build",
+    "build-app": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack/development.js --progress --profile --colors",
+    "build-api": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack/api.js --progress --profile --colors",
+    "build-protocol": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack/protocol.js --progress --profile --colors",
     "build": "concurrently \"npm run build-app\" \"npm run build-api\" \"npm run build-protocol\""
   },
   "repository": {
@@ -46,6 +47,7 @@
     "babel-register": "^6.18.0",
     "concurrently": "^3.1.0",
     "copy-webpack-plugin": "^4.0.1",
+    "cordova": "^6.4.0",
     "cross-env": "^3.1.3",
     "css-loader": "^0.26.0",
     "eslint": "^3.10.2",

@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import path from 'path';
 import i18n from 'i18n';
-import ffiLoader from '../src/ffi/ffi_loader';
+import ffiLoader from '../src/beaker/ffi/ffi_loader';
 
 i18n.configure({
   locales: ['en'],

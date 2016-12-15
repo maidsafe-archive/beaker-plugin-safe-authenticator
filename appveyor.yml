@@ -1,5 +1,9 @@
 environment:
   nodejs_version: "6.9.1"
+  global:
+    RUST_BACKTRACE: 1
+  matrix:
+    - RUST_VERSION: stable
 
 platform:
   - x86
@@ -13,16 +17,24 @@ matrix:
 
 clone_depth: 50
 
+configuration:
+  - Release
+
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - node --version
   - npm --version
+  - ps: |
+        $url = "https://github.com/maidsafe/QA/raw/master/Powershell%20Scripts/AppVeyor"
+        cmd /c curl -fsSL -o "Install Rustup.ps1" "$url/Install%20Rustup.ps1"
+        . ".\Install Rustup.ps1"
   - npm i
 
-build: off
+build_script:
+  - cargo rustc --verbose --release -- --test -Zno-trans
 
 test_script:
-  - node --version
-  - npm --version
   - npm run lint
   - npm test
+  - cargo test --verbose --release
+

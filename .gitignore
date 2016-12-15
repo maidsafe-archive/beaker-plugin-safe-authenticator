@@ -38,3 +38,11 @@ jspm_packages
 
 .idea
 dist
+
+# rust 
+target/*
+
+# cross platform
+platforms/*
+
+*.bk
