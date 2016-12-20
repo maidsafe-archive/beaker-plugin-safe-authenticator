@@ -71,7 +71,6 @@
     "enum": "^2.3.0",
     "i18n": "^0.8.3",
     "opensans-npm-webfont": "0.0.2",
-    "pauls-electron-rpc": "^2.1.2",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
     "react-redux": "^4.4.6",

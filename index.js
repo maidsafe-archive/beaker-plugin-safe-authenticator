@@ -1,7 +1,10 @@
 const path = require('path');
 const i18n = require('i18n');
-const api = require('./dist/api').default;
-const safeAuthProtocol = require('./dist/protocol').default;
+const api = require('./dist/api');
+const safeAuthProtocol = require('./dist/protocol');
+const safeAuthRpc = require('./dist/safeauth_rpc');
+
+safeAuthRpc(api.ffi.client);
 
 i18n.configure({
   locales: ['en'],
