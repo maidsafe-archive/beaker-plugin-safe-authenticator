@@ -1,4 +1,6 @@
+/* eslint-disable import/no-unresolved, import/extensions */
 import ffi from 'ffi';
+/* eslint-enable import/no-unresolved, import/extensions */
 import path from 'path';
 import CONST from './constants.json';
 

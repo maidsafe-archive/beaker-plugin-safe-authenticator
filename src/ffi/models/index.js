@@ -19,7 +19,7 @@ export const AppKeys = StructType({
 });
 
 export const AppExchangeInfo = StructType({
-  id: string,
+  id: refString,
   scope: u8Pointer,
   scope_len: usize,
   scope_cap: usize,
