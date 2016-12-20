@@ -1,5 +1,5 @@
 {
-  "DEFAULT_LIB_PATH": "./",
+  "DEFAULT_LIB_PATH": "./libsafe_authenticator.dylib",
   "NETWORK_STATES": {
     "CONNECTING": 0,
     "CONNECTED": 1,

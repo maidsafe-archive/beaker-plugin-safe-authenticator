@@ -38,3 +38,6 @@ jspm_packages
 
 .idea
 dist
+src/ffi/*.dylib
+src/ffi/*.so
+src/ffi/*.dll

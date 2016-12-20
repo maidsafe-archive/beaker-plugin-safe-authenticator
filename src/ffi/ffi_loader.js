@@ -1,3 +1,5 @@
+import ffi from 'ffi';
+import path from 'path';
 import CONST from './constants.json';
 
 class FfiLoader {
@@ -7,12 +9,12 @@ class FfiLoader {
   /* eslint-disable no-unused-vars */
   loadLibrary(libPath = CONST.DEFAULT_LIB_PATH) {
     return new Promise((resolve) => {
-      // const ffiFunctions = {};
+      const ffiFunctions = {};
       //
       // // Load all modules
       // this.mods.forEach(() => {});
       //
-      // const safeCore = ffi.Library(libPath, ffiFunctions);
+      const safeCore = ffi.Library(path.resolve(__dirname, libPath), ffiFunctions);
 
       /* eslint-disable arrow-parens */
       this.mods.forEach(mod => {
