@@ -1,5 +1,9 @@
 {
-  "DEFAULT_LIB_PATH": "./libsafe_authenticator.dylib",
+  "DEFAULT_LIB_PATH": {
+    "win32": "./safe_authenticator.dll",
+    "darwin": "./libsafe_authenticator.dylib",
+    "linux": "./libsafe_authenticator.so"
+  },
   "NETWORK_STATES": {
     "CONNECTING": 0,
     "CONNECTED": 1,
