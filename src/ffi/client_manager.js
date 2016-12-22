@@ -1,5 +1,17 @@
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable import/no-unresolved, import/extensions */
+import ffi from 'ffi';
+import ref from 'ref';
+/* eslint-enable import/no-unresolved, import/extensions */
 import i18n from 'i18n';
+import {
+  Void,
+  int32,
+  voidPointer,
+  AppHandlePointer,
+  Null,
+  FfiString
+} from './models/types';
 import FfiApi from './FfiApi';
 import CONST from './constants.json';
 
@@ -15,6 +27,15 @@ class ClientManager extends FfiApi {
     this[_networkStateChangeListener] = null;
     this[_networkStateChangeIpcListener] = null;
     this[_clientHandle] = {};
+  }
+
+  /* eslint-disable no-unused-vars, class-methods-use-this */
+  getFunctionsToRegister() {
+    /* eslint-enable no-unused-vars, class-methods-use-this */
+    return {
+      create_acc: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
+      login: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']]
+    };
   }
 
   setClientHandle(key, handle) {
@@ -120,10 +141,28 @@ class ClientManager extends FfiApi {
         return reject(validationErr);
       }
 
-      // TODO set authorised client handle id
-      this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, 1);
-      this._pushNetworkIpcStatus();
-      return resolve();
+      const appHandle = ref.alloc(AppHandlePointer);
+
+      const onStateChange = this._getFfiNetworkStateCb();
+
+      try {
+        const onResult = (err, res) => {
+          if (err || res !== 0) {
+            return reject(err || res);
+          }
+          this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, appHandle.deref());
+          resolve();
+        };
+        this.safeCore.login.async(
+          this._getFfiStringStruct(locator),
+          this._getFfiStringStruct(secret),
+          appHandle,
+          Null,
+          onStateChange,
+          onResult);
+      } catch (e) {
+        console.error('Login error :: ', e);
+      }
     });
   }
 
@@ -139,11 +178,28 @@ class ClientManager extends FfiApi {
       if (validationErr) {
         return reject(validationErr);
       }
+      const appHandle = ref.alloc(AppHandlePointer);
 
-      // TODO set authorised client handle id
-      this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, 1);
-      this._pushNetworkIpcStatus();
-      return resolve();
+      const onStateChange = this._getFfiNetworkStateCb();
+
+      try {
+        const onResult = (err, res) => {
+          if (err || res !== 0) {
+            return reject(err || res);
+          }
+          this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, appHandle.deref());
+          resolve();
+        };
+        this.safeCore.create_acc.async(
+          this._getFfiStringStruct(locator),
+          this._getFfiStringStruct(secret),
+          appHandle,
+          Null,
+          onStateChange,
+          onResult);
+      } catch (e) {
+        console.error('Create account error :: ', e);
+      }
     });
   }
 
@@ -161,9 +217,7 @@ class ClientManager extends FfiApi {
    * Get list of authorised applications
    * @returns {Promise}
    */
-  /* eslint-disable class-methods-use-this */
   getAuthorisedApps() {
-    /* eslint-enable class-methods-use-this */
     return new Promise((resolve, reject) => {
       if (!this._isClientHandleExist(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR)) {
         /* eslint-disable no-underscore-dangle */
@@ -186,6 +240,25 @@ class ClientManager extends FfiApi {
     }
     // TODO drop client handle
     delete this[_clientHandle][key];
+  }
+
+  /* eslint-disable class-methods-use-this */
+  _getFfiStringStruct(str) {
+    /* eslint-enable class-methods-use-this */
+    const strBuf = new Buffer(str);
+    return new FfiString({
+      ptr: strBuf,
+      len: strBuf.length,
+      cap: strBuf.length
+    });
+  }
+
+  _getFfiNetworkStateCb() {
+    return ffi.Callback(Void, [voidPointer, int32, int32], (userData, res, state) => {
+      if (this.stateChangeListener) {
+        this.stateChangeListener(state);
+      }
+    });
   }
 
   _pushNetworkIpcStatus() {

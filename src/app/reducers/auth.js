@@ -1,5 +1,7 @@
+import { I18n } from 'react-redux-i18n';
 import {
   SET_CREATE_ACC_NAV_POS,
+  RESET_CREATE_ACC_NAV_POS,
   SET_SECRET_STRENGTH,
   SET_PASSWORD_STRENGTH,
   SET_AUTH_ERROR,
@@ -47,6 +49,10 @@ const auth = (state = initialState, action) => {
         return nextState;
       }
       return { ...nextState, createAccNavPos: action.position };
+    }
+
+    case RESET_CREATE_ACC_NAV_POS: {
+      return { ...state, createAccNavPos: 1 };
     }
 
     case SET_SECRET_STRENGTH: {
@@ -98,8 +104,7 @@ const auth = (state = initialState, action) => {
         return state;
       }
       setUserAuthorised(true);
-      // TODO handle response
-      return { ...state, loading: false };
+      return { ...state, loading: false, isAuthorised: true };
     }
 
     case `${CREATE_ACC}_REJECTED`: {
@@ -107,8 +112,8 @@ const auth = (state = initialState, action) => {
         return state;
       }
       setUserAuthorised(); // No param => set to false
-      // TODO handle response
-      return { ...state, loading: false };
+      // TODO handle response (action.payload.message => errorCode)
+      return { ...state, loading: false, error: I18n.t('createAccFailed') };
     }
 
     case `${LOGIN}_PENDING`: {
@@ -120,7 +125,6 @@ const auth = (state = initialState, action) => {
         return state;
       }
       setUserAuthorised(true);
-      // TODO handle response
       return { ...state, loading: false, isAuthorised: true };
     }
 
@@ -129,8 +133,8 @@ const auth = (state = initialState, action) => {
         return state;
       }
       setUserAuthorised(); // No param => set to false
-      // TODO handle response
-      return { ...state, loading: false };
+      // TODO handle response (action.payload.message => errorCode)
+      return { ...state, loading: false, error: I18n.t('loginFailed') };
     }
 
     case `${LOGOUT}_FULFILLED`: {

@@ -39,7 +39,8 @@ export default {
     __filename: false,
   },
   externals: {
-    ffi: 'ffi'
+    ffi: 'ffi',
+    ref: 'ref'
   },
   plugins: [
     new CopyWebpackPlugin([

@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import { Translate } from 'react-redux-i18n';
-import CONSTANTS from '../constants.json';
 import AuthLoader from './auth_loader';
 
 export default class Login extends Component {
   static propTypes = {
+    isAuthorised: PropTypes.bool,
     loading: PropTypes.bool.isRequired,
-    networkState: PropTypes.number.isRequired,
     error: PropTypes.string,
     login: PropTypes.func,
     clearError: PropTypes.func,
@@ -22,6 +21,13 @@ export default class Login extends Component {
     super();
     this.togglePassword = this.togglePassword.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentWillMount() {
+    if (this.props.isAuthorised) {
+      return this.context.router.push('/');
+    }
+    this.props.clearError();
   }
 
   componentDidMount() {
@@ -57,7 +63,7 @@ export default class Login extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    const { networkState, login, clearError } = this.props;
+    const { login, clearError } = this.props;
 
     clearError();
 
@@ -65,11 +71,6 @@ export default class Login extends Component {
     const password = this.passwordEle.value.trim();
 
     if (!secret || !password) {
-      return;
-    }
-
-    if (networkState !== CONSTANTS.NETWORK_STATUS.CONNECTED) {
-      // TODO popup network not connected error
       return;
     }
 
