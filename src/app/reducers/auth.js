@@ -17,7 +17,7 @@ import {
   LOGOUT
 } from '../actions/auth';
 import CONSTANTS from '../constants.json';
-import { isUserAuthorised, setUserAuthorised, clearLocalStorage } from '../utils';
+import { isUserAuthorised } from '../utils';
 
 const initialState = {
   isAuthorised: !!isUserAuthorised(),
@@ -103,7 +103,6 @@ const auth = (state = initialState, action) => {
       if (!state.loading) {
         return state;
       }
-      setUserAuthorised(true);
       return { ...state, loading: false, isAuthorised: true };
     }
 
@@ -111,7 +110,6 @@ const auth = (state = initialState, action) => {
       if (!state.loading) {
         return state;
       }
-      setUserAuthorised(); // No param => set to false
       // TODO handle response (action.payload.message => errorCode)
       return { ...state, loading: false, error: I18n.t('createAccFailed') };
     }
@@ -124,7 +122,6 @@ const auth = (state = initialState, action) => {
       if (!state.loading) {
         return state;
       }
-      setUserAuthorised(true);
       return { ...state, loading: false, isAuthorised: true };
     }
 
@@ -132,13 +129,11 @@ const auth = (state = initialState, action) => {
       if (!state.loading) {
         return state;
       }
-      setUserAuthorised(); // No param => set to false
       // TODO handle response (action.payload.message => errorCode)
       return { ...state, loading: false, error: I18n.t('loginFailed') };
     }
 
     case `${LOGOUT}_FULFILLED`: {
-      clearLocalStorage();
       return { ...state, loading: false, isAuthorised: false };
     }
 

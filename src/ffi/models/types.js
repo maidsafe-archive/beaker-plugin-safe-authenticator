@@ -4,38 +4,42 @@ import StructType from 'ref-struct';
 import Enum from 'enum';
 
 export const u8 = ref.types.uint8;
-export const CString = ref.types.CString;
 export const usize = ref.types.size_t;
 export const bool = ref.types.bool;
 export const int32 = ref.types.int32;
 export const Void = ref.types.void;
 export const Null = ref.NULL;
 
-// Array types
-export const u8Arr = ArrayType(u8);
-
 // Pointer Types
 export const u8Pointer = ref.refType(u8);
 export const voidPointer = ref.refType(Void);
 export const AppHandlePointer = ref.refType(voidPointer);
 
-// Struct types
+// Struct types and Array types
+export const u8ArrayType = ArrayType(u8);
+
+export const FfiString = StructType({
+  ptr: u8Pointer,
+  len: usize,
+  cap: usize
+});
+
 export const AppKeys = StructType({
-  owner_key: u8Arr,
-  enc_key: u8Arr,
-  sign_pk: u8Arr,
-  sign_sk: u8Arr,
-  enc_pk: u8Arr,
-  enc_sk: u8Arr
+  owner_key: u8ArrayType,
+  enc_key: u8ArrayType,
+  sign_pk: u8ArrayType,
+  sign_sk: u8ArrayType,
+  enc_pk: u8ArrayType,
+  enc_sk: u8ArrayType
 });
 
 export const AppExchangeInfo = StructType({
-  id: CString,
+  id: FfiString,
   scope: u8Pointer,
   scope_len: usize,
   scope_cap: usize,
-  name: CString,
-  vendor: CString
+  name: FfiString,
+  vendor: FfiString
 });
 
 export const Permission = new Enum({
@@ -46,24 +50,28 @@ export const Permission = new Enum({
   ManagePermissions: 4
 });
 
+export const PermissionArrayType = ArrayType(Permission);
+
 export const AppInfo = StructType({
   info: AppExchangeInfo,
   keys: AppKeys
 });
 
 export const PermissionArray = StructType({
-  ptr: ref.refType(Permission),
+  ptr: PermissionArrayType,
   len: usize,
   cap: usize
 });
 
 export const ContainerPermissions = StructType({
-  cont_name: CString,
+  cont_name: FfiString,
   access: PermissionArray
 });
 
+export const ContainersPermissionArrayType = ArrayType(ContainerPermissions);
+
 export const ContainerPermissionsArray = StructType({
-  ptr: ref.refType(ContainerPermissions),
+  ptr: ContainersPermissionArrayType,
   len: usize,
   cap: usize
 });
@@ -77,10 +85,4 @@ export const AuthReq = StructType({
 export const ContainersReq = StructType({
   app: AppExchangeInfo,
   containers: ContainerPermissionsArray
-});
-
-export const FfiString = StructType({
-  ptr: u8Pointer,
-  len: usize,
-  cap: usize
 });

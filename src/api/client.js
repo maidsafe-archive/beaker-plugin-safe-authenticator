@@ -2,6 +2,7 @@ import client from '../ffi/client_manager';
 
 export const manifest = {
   setNetworkListener: 'async',
+  isAutheticatorAuthorised: 'sync',
   logout: 'sync',
   login: 'promise',
   createAccount: 'promise',

@@ -106,7 +106,7 @@ class ClientManager extends FfiApi {
    * */
   createUnregisteredClient() {
     return new Promise((resolve) => {
-      this.networkState = CONST.NETWORK_STATES.CONNECTING;
+      // this.networkState = CONST.NETWORK_STATES.CONNECTING;
 
       // const onStateChange = ffi.Callback(Void, [int32], (state) => {
       //   this.networkState = state;
@@ -117,13 +117,13 @@ class ClientManager extends FfiApi {
 
       // TODO create unregistered client
 
-      this[_networkState] = CONST.NETWORK_STATES.CONNECTED;
+      // this[_networkState] = CONST.NETWORK_STATES.CONNECTED;
       // TODO set unauthorised client handle id
       this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED, 1);
 
-      if (typeof this[_networkStateChangeListener] === 'function') {
-        this[_networkStateChangeListener](null, this[_networkState]);
-      }
+      // if (typeof this[_networkStateChangeListener] === 'function') {
+      //   this[_networkStateChangeListener](null, this[_networkState]);
+      // }
       resolve();
     });
   }
@@ -255,17 +255,15 @@ class ClientManager extends FfiApi {
 
   _getFfiNetworkStateCb() {
     return ffi.Callback(Void, [voidPointer, int32, int32], (userData, res, state) => {
-      if (this.stateChangeListener) {
-        this.stateChangeListener(state);
+      this[_networkState] = state;
+      console.log('Network State :: ', state);
+      if (this[_networkStateChangeListener] === 'function') {
+        this[_networkStateChangeListener](null, this[_networkState]);
+      }
+      if (typeof this[_networkStateChangeIpcListener] === 'function') {
+        this[_networkStateChangeIpcListener](null, this[_networkState]);
       }
     });
-  }
-
-  _pushNetworkIpcStatus() {
-    if (typeof this[_networkStateChangeIpcListener] !== 'function') {
-      return;
-    }
-    this[_networkStateChangeIpcListener](null, this[_networkState]);
   }
 
   _isClientHandleExist(clientHandleKey) {

@@ -4,24 +4,8 @@ const LOCAL_DATA_KEYS = {
   AUTHENTICATOR_USER: 'AUTHENTICATOR_USER'
 };
 
-export const setUserAuthorised = (state = false) => {
-  let isAuthorised = state;
-  if (typeof isAuthorised !== 'boolean') {
-    isAuthorised = false;
-  }
-
-  return window.localStorage.setItem(LOCAL_DATA_KEYS.AUTHENTICATOR_USER, JSON.stringify({
-    isAuthorised
-  }));
-};
-
-export const clearLocalStorage = () => {
-  window.localStorage.clear();
-};
-
 export const isUserAuthorised = () => {
-  const userAuthData = JSON.parse(window.localStorage.getItem(LOCAL_DATA_KEYS.AUTHENTICATOR_USER));
-  return (userAuthData && userAuthData.isAuthorised);
+  return window.safeAuthenticator.isAutheticatorAuthorised();
 };
 
 export const checkAuthorised = (nextState, replace, callback) => {
