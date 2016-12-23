@@ -51,16 +51,16 @@ export default class App extends Component {
               <div className="safe-auth-logo">{' '}</div>
               <div className="safe-auth-title"><Translate value="AppTitle" /></div>
             </section>
-            <section className="rt">
-              <div className="rt-i"><NetworkStatus status={networkState} message={'Connected'} /></div>
-              {
-                isAuthorised ? (
+            {
+              isAuthorised ? (
+                <section className="rt">
+                  <div className="rt-i"><NetworkStatus status={networkState} message={'Connected'} /></div>
                   <div className="rt-i btn-i">
                     <button type="button" className="btn" onClick={() => { logout(); }}>Logout</button>
                   </div>
-                ) : null
-              }
-            </section>
+                </section>
+              ) : null
+            }
           </div>
         </header>
         <main className="root-cntr">

@@ -1,4 +1,12 @@
 import path from 'path';
+import os from 'os';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+
+const SAFE_CORE = {
+  win32: '*.dll',
+  darwin: '*.dylib',
+  linux: '*.so'
+};
 
 export default {
   devtool: 'cheap-module-source-map',
@@ -24,7 +32,19 @@ export default {
       }
     ]
   },
+  target: 'node',
   node: {
-    fs: 'empty'
-  }
+    fs: 'empty',
+    __dirname: false,
+    __filename: false,
+  },
+  externals: {
+    ffi: 'ffi',
+    ref: 'ref'
+  },
+  plugins: [
+    new CopyWebpackPlugin([
+      { context: 'src/ffi', from: SAFE_CORE[os.platform()], flatten: true }
+    ])
+  ]
 };
