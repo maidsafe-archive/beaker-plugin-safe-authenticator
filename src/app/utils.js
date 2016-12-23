@@ -1,12 +1,6 @@
 import CONSTANTS from './constants.json';
 
-const LOCAL_DATA_KEYS = {
-  AUTHENTICATOR_USER: 'AUTHENTICATOR_USER'
-};
-
-export const isUserAuthorised = () => {
-  return window.safeAuthenticator.isAutheticatorAuthorised();
-};
+export const isUserAuthorised = () => window.safeAuthenticator.isAutheticatorAuthorised();
 
 export const checkAuthorised = (nextState, replace, callback) => {
   if (!isUserAuthorised()) {

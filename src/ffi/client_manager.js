@@ -256,7 +256,6 @@ class ClientManager extends FfiApi {
   _getFfiNetworkStateCb() {
     return ffi.Callback(Void, [voidPointer, int32, int32], (userData, res, state) => {
       this[_networkState] = state;
-      console.log('Network State :: ', state);
       if (this[_networkStateChangeListener] === 'function') {
         this[_networkStateChangeListener](null, this[_networkState]);
       }
