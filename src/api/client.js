@@ -2,12 +2,20 @@ import client from '../ffi/client_manager';
 
 export const manifest = {
   setNetworkListener: 'async',
+  isAutheticatorAuthorised: 'sync',
   logout: 'sync',
   login: 'promise',
   createAccount: 'promise',
   getAuthorisedApps: 'promise',
   revokeApp: 'promise'
 };
+
+export const isAutheticatorAuthorised = () => client.isAutheticatorAuthorised();
+
+export const authDecision = (appId, payload, isAllowed) =>
+  client.authDecision(appId, payload, isAllowed);
+
+export const setNetworkIpcListener = (cb) => client.setNetworkIpcListener(cb);
 
 export const setNetworkListener = (cb) => client.setNetworkListener(cb);
 
