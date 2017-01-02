@@ -7,6 +7,7 @@ import i18n from 'i18n';
 import {
   u32,
   Void,
+  usize,
   int32,
   bool,
   voidPointer,
@@ -14,7 +15,8 @@ import {
   Null,
   FfiString,
   AuthReq,
-  ContainersReq
+  ContainersReq,
+  RegisteredAppArrayType
 } from './models/types';
 import FfiApi from './FfiApi';
 import CONST from './constants.json';
@@ -49,7 +51,10 @@ class ClientManager extends FfiApi {
       login: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
       decode_ipc_msg: [Void, [voidPointer, FfiString, voidPointer, 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [Void, [voidPointer, AuthReq, u32, bool, voidPointer, 'pointer']],
-      encode_containers_resp: [Void, [voidPointer, ContainersReq, u32, bool, voidPointer, 'pointer']]
+      encode_containers_resp: [Void, [voidPointer, ContainersReq, u32, bool, voidPointer, 'pointer']],
+      authenticator_registered_apps: [int32, [voidPointer, voidPointer, 'pointer']],
+      authenticator_registered_app_free: [Void, [RegisteredAppArrayType]],
+      authenticator_registered_apps_free: [Void, [RegisteredAppArrayType, usize, usize]]
     };
   }
 
@@ -112,7 +117,7 @@ class ClientManager extends FfiApi {
       const authenticatorHandle = this.getAuthenticatorHandle();
 
       if (!authenticatorHandle) {
-        return reject(new Error(i18n.__('unauthorised')));
+        return reject(new Error(i18n.__('messages.unauthorised')));
       }
 
       const reqId = appReq['req_id'];
@@ -160,7 +165,7 @@ class ClientManager extends FfiApi {
       const authenticatorHandle = this.getAuthenticatorHandle();
 
       if (!authenticatorHandle) {
-        return reject(new Error(i18n.__('unauthorised')));
+        return reject(new Error(i18n.__('messages.unauthorised')));
       }
 
       const reqId = appReq['req_id'];
@@ -340,15 +345,37 @@ class ClientManager extends FfiApi {
    */
   getAuthorisedApps() {
     return new Promise((resolve, reject) => {
-      if (!this._isClientHandleExist(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR)) {
-        /* eslint-disable no-underscore-dangle */
+      const authenticatorHandle = this.getAuthenticatorHandle();
+
+      if (!authenticatorHandle) {
         return reject(new Error(i18n.__('messages.unauthorised')));
-        /* eslint-enable no-underscore-dangle */
       }
 
-      const appList = [];
-      // TODO get list of authorised application
-      resolve(appList);
+      try {
+        const appListCb = ffi.Callback(Void, [voidPointer, int32, RegisteredAppArrayType, usize, usize],
+          (userData, code, appList, len, cap) => {
+            console.log('appListCb:: ', code, appList, len, cap);
+            // TODO parse appList
+            this.safeCore.authenticator_registered_app_free(appList);
+            this.safeCore.authenticator_registered_apps_free(appList, len, cap);
+            resolve(appList);
+          });
+
+        const onResult = (err, res) => {
+          if (err || res !== 0) {
+            return reject(err || res);
+          }
+        };
+
+        this.safeCore.authenticator_registered_apps.async(
+          authenticatorHandle,
+          Null,
+          appListCb,
+          onResult
+        );
+      } catch (e) {
+        reject(e.message);
+      }
     });
   }
 

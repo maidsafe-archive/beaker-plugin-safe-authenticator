@@ -77,6 +77,13 @@ export const ContainerPermissionsArray = StructType({
   cap: usize
 });
 
+export const RegisteredApp = StructType({
+  app_id: FfiString,
+  containers: ContainerPermissionsArray
+});
+
+export const RegisteredAppArrayType = ArrayType(RegisteredApp);
+
 export const AuthReq = StructType({
   app: AppExchangeInfo,
   app_container: bool,
