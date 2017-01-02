@@ -4,6 +4,7 @@ import StructType from 'ref-struct';
 import Enum from 'enum';
 
 export const u8 = ref.types.uint8;
+export const u32 = ref.types.uint32;
 export const usize = ref.types.size_t;
 export const bool = ref.types.bool;
 export const int32 = ref.types.int32;

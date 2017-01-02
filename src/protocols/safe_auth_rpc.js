@@ -8,24 +8,19 @@ let clientManager = null;
 
 const authQueue = [];
 let isAuthProcessing = false;
-let authReqEvent = null;
 
 const processAuthQueue = () => {
   if (isAuthProcessing || authQueue.length === 0) {
     return;
   }
 
-  if (!clientManager.isAutheticatorAuthorised()) {
-    return;
-  }
-
-  if (!authReqEvent) {
+  if (!clientManager.getAuthenticatorHandle()) {
     return;
   }
 
   isAuthProcessing = true;
   const result = authQueue.shift();
-  authReqEvent.sender.send('onAuthReq', result);
+  clientManager.decryptRequest(result);
 };
 
 const registerAuthDecision = (event, authData, isAllowed) => {
@@ -53,27 +48,34 @@ const registerAuthDecision = (event, authData, isAllowed) => {
 };
 
 const decryptRequest = (event, req) => {
-  const parsedUrl = req.split('/');
-  authQueue.push(parsedUrl);
+  authQueue.push(req);
   processAuthQueue();
 };
 
 const registerOnAuthReq = (event) => {
-  authReqEvent = event;
+  clientManager.setAuthReqListener((req) => {
+    event.sender.send('onAuthReq', req);
+  });
 };
 
 const registerOnContainerReq = (event) => {
-  setTimeout(() => {
-    event.sender.send('onContainerReq', {});
-  }, 3000);
+  clientManager.setContainerReqListener((req) => {
+    event.sender.send('onContainerReq', req);
+  });
+};
+
+const registerOnReqError = (event) => {
+  clientManager.setReqErrorListener((error) => {
+    event.sender.send('onReqError', error);
+  });
 };
 
 const registerNetworkListener = (event) => {
-  clientManager.setNetworkIpcListener((err, status) => {
-    if (status === 1) {
+  clientManager.setNetworkIpcListener((err, state) => {
+    if (state === 1) {
       processAuthQueue();
     }
-    event.sender.send('onNetworkStatus', status);
+    event.sender.send('onNetworkStatus', state);
   });
 };
 
@@ -81,6 +83,7 @@ ipcMain.on('registerSafeNetworkListener', registerNetworkListener);
 ipcMain.on('decryptRequest', decryptRequest);
 ipcMain.on('registerOnAuthReq', registerOnAuthReq);
 ipcMain.on('registerOnContainerReq', registerOnContainerReq);
+ipcMain.on('registerOnReqError', registerOnReqError);
 ipcMain.on('registerAuthDecision', registerAuthDecision);
 
 const register = (client) => {

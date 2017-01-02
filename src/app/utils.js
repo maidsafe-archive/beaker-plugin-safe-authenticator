@@ -1,6 +1,6 @@
 import CONSTANTS from './constants.json';
 
-export const isUserAuthorised = () => window.safeAuthenticator.isAutheticatorAuthorised();
+export const isUserAuthorised = () => window.safeAuthenticator.getAuthenticatorHandle();
 
 export const checkAuthorised = (nextState, replace, callback) => {
   if (!isUserAuthorised()) {
