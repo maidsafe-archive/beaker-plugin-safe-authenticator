@@ -15,6 +15,9 @@ export const getAuthenticatorHandle = () => client.getAuthenticatorHandle();
 export const authDecision = (authData, isAllowed) =>
   client.authDecision(authData, isAllowed);
 
+export const containerDecision = (contData, isAllowed) =>
+  client.containerDecision(contData, isAllowed);
+
 export const setNetworkIpcListener = (cb) => client.setNetworkIpcListener(cb);
 
 export const setNetworkListener = (cb) => client.setNetworkListener(cb);

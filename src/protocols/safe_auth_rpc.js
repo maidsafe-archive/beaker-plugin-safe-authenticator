@@ -6,11 +6,11 @@ import i18n from 'i18n';
 
 let clientManager = null;
 
-const authQueue = [];
-let isAuthProcessing = false;
+const reqQueue = [];
+let isReqProcessing = false;
 
-const processAuthQueue = () => {
-  if (isAuthProcessing || authQueue.length === 0) {
+const processReqQueue = () => {
+  if (isReqProcessing || reqQueue.length === 0) {
     return;
   }
 
@@ -18,8 +18,8 @@ const processAuthQueue = () => {
     return;
   }
 
-  isAuthProcessing = true;
-  const result = authQueue.shift();
+  isReqProcessing = true;
+  const result = reqQueue.shift();
   clientManager.decryptRequest(result);
 };
 
@@ -35,8 +35,8 @@ const registerAuthDecision = (event, authData, isAllowed) => {
   clientManager.authDecision(authData, isAllowed)
     .then((res) => {
       setTimeout(() => {
-        isAuthProcessing = false;
-        processAuthQueue();
+        isReqProcessing = false;
+        processReqQueue();
         event.sender.send('onAuthDecisionRes', res);
       }, 5000);
       shell.openExternal(res);
@@ -46,9 +46,32 @@ const registerAuthDecision = (event, authData, isAllowed) => {
     });
 };
 
+const registerContainerDecision = (event, contData, isAllowed) => {
+  if (!contData) {
+    return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('URL'))));
+  }
+
+  if (typeof isAllowed !== 'boolean') {
+    return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('IsAllowed'))));
+  }
+
+  clientManager.containerDecision(contData, isAllowed)
+    .then((res) => {
+      setTimeout(() => {
+        isReqProcessing = false;
+        processReqQueue();
+        event.sender.send('onContDecisionRes', res);
+      }, 5000);
+      shell.openExternal(res);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
 const decryptRequest = (event, req) => {
-  authQueue.push(req);
-  processAuthQueue();
+  reqQueue.push(req);
+  processReqQueue();
 };
 
 const registerOnAuthReq = (event) => {
@@ -72,7 +95,7 @@ const registerOnReqError = (event) => {
 const registerNetworkListener = (event) => {
   clientManager.setNetworkIpcListener((err, state) => {
     if (state === 1) {
-      processAuthQueue();
+      processReqQueue();
     }
     event.sender.send('onNetworkStatus', state);
   });
@@ -84,6 +107,7 @@ ipcMain.on('registerOnAuthReq', registerOnAuthReq);
 ipcMain.on('registerOnContainerReq', registerOnContainerReq);
 ipcMain.on('registerOnReqError', registerOnReqError);
 ipcMain.on('registerAuthDecision', registerAuthDecision);
+ipcMain.on('registerContainerDecision', registerContainerDecision);
 
 const register = (client) => {
   clientManager = client;

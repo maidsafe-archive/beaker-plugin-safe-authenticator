@@ -48,7 +48,8 @@ class ClientManager extends FfiApi {
       create_acc: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
       login: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
       decode_ipc_msg: [Void, [voidPointer, FfiString, voidPointer, 'pointer', 'pointer', 'pointer']],
-      encode_auth_resp: [Void, [voidPointer, AuthReq, u32, bool, voidPointer, 'pointer']]
+      encode_auth_resp: [Void, [voidPointer, AuthReq, u32, bool, voidPointer, 'pointer']],
+      encode_containers_resp: [Void, [voidPointer, ContainersReq, u32, bool, voidPointer, 'pointer']]
     };
   }
 
@@ -98,8 +99,9 @@ class ClientManager extends FfiApi {
   }
 
   /**
-   * Authorise application
-   * @param payload
+   * Authorise application request
+   * @param appReq
+   * @param isAllowed
    * @returns {Promise}
    */
   authDecision(appReq, isAllowed) {
@@ -121,6 +123,8 @@ class ClientManager extends FfiApi {
 
       const authReq = this[_reqDecryptList][reqId];
 
+      delete this[_reqDecryptList][reqId];
+
       try {
         const authReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
           console.log('authReqCb :: ', res);
@@ -130,6 +134,54 @@ class ClientManager extends FfiApi {
         this.safeCore.encode_auth_resp(
           authenticatorHandle,
           authReq,
+          reqId,
+          isAllowed,
+          Null,
+          authReqCb
+        );
+      } catch (e) {
+        reject(e.message);
+      }
+      resolve();
+    });
+  }
+
+  /**
+   * Authorise container request
+   * @param contReq
+   * @param isAllowed
+   * @returns {Promise}
+   */
+  containerDecision(contReq, isAllowed) {
+    return new Promise((resolve, reject) => {
+      if (!contReq || typeof isAllowed !== 'boolean') {
+        return reject(new Error(i18n.__('invalid_params')));
+      }
+      const authenticatorHandle = this.getAuthenticatorHandle();
+
+      if (!authenticatorHandle) {
+        return reject(new Error(i18n.__('unauthorised')));
+      }
+
+      const reqId = appReq['req_id'];
+
+      if (!reqId) {
+        return reject(new Error(i18n.__('invalid_req')));
+      }
+
+      const contReq = this[_reqDecryptList][reqId];
+
+      delete this[_reqDecryptList][reqId];
+
+      try {
+        const contReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
+          console.log('contReqCb:: ', res);
+          resolve(res);
+        });
+
+        this.safeCore.encode_containers_resp(
+          authenticatorHandle,
+          contReq,
           reqId,
           isAllowed,
           Null,
