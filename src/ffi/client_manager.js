@@ -47,7 +47,8 @@ class ClientManager extends FfiApi {
     return {
       create_acc: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
       login: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
-      decode_ipc_msg: [Void, [voidPointer, FfiString, voidPointer, 'pointer', 'pointer', 'pointer']]
+      decode_ipc_msg: [Void, [voidPointer, FfiString, voidPointer, 'pointer', 'pointer', 'pointer']],
+      encode_auth_resp: [Void, [voidPointer, AuthReq, u32, bool, voidPointer, 'pointer']]
     };
   }
 
@@ -101,10 +102,42 @@ class ClientManager extends FfiApi {
    * @param payload
    * @returns {Promise}
    */
-  /* eslint-disable no-unused-vars, class-methods-use-this */
-  authDecision(appId, payload, isAllowed) {
+  authDecision(appReq, isAllowed) {
     return new Promise((resolve, reject) => {
-      /* eslint-enable no-unused-vars, class-methods-use-this */
+      if (!authReq || typeof isAllowed !== 'boolean') {
+        return reject(new Error(i18n.__('invalid_params')));
+      }
+      const authenticatorHandle = this.getAuthenticatorHandle();
+
+      if (!authenticatorHandle) {
+        return reject(new Error(i18n.__('unauthorised')));
+      }
+
+      const reqId = appReq['req_id'];
+
+      if (!reqId) {
+        return reject(new Error(i18n.__('invalid_req')));
+      }
+
+      const authReq = this[_reqDecryptList][reqId];
+
+      try {
+        const authReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
+          console.log('authReqCb :: ', res);
+          resolve(res);
+        });
+
+        this.safeCore.encode_auth_resp(
+          authenticatorHandle,
+          authReq,
+          reqId,
+          isAllowed,
+          Null,
+          authReqCb
+        );
+      } catch (e) {
+        reject(e.message);
+      }
       resolve();
     });
   }
@@ -281,7 +314,7 @@ class ClientManager extends FfiApi {
       const authenticatorHandle = this.getAuthenticatorHandle();
 
       if (!authenticatorHandle) {
-        return reject(new Error('Authenticator not authorised'));
+        return reject(new Error(i18n.__('unauthorised')));
       }
 
       // todo parse request

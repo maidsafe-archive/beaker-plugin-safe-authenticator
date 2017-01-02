@@ -12,8 +12,8 @@ export const manifest = {
 
 export const getAuthenticatorHandle = () => client.getAuthenticatorHandle();
 
-export const authDecision = (appId, payload, isAllowed) =>
-  client.authDecision(appId, payload, isAllowed);
+export const authDecision = (authData, isAllowed) =>
+  client.authDecision(authData, isAllowed);
 
 export const setNetworkIpcListener = (cb) => client.setNetworkIpcListener(cb);
 

@@ -32,13 +32,12 @@ const registerAuthDecision = (event, authData, isAllowed) => {
     return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('IsAllowed'))));
   }
 
-  /* eslint-enable class-methods-use-this */
-  clientManager.authDecision(authData[2], authData[3], isAllowed)
+  clientManager.authDecision(authData, isAllowed)
     .then((res) => {
       setTimeout(() => {
         isAuthProcessing = false;
         processAuthQueue();
-        event.sender.send('onAuthDecisionRes', res || authData);
+        event.sender.send('onAuthDecisionRes', res);
       }, 5000);
       shell.openExternal(res);
     })
