@@ -1,28 +1,6 @@
 import CONSTANTS from './constants.json';
 
-const LOCAL_DATA_KEYS = {
-  AUTHENTICATOR_USER: 'AUTHENTICATOR_USER'
-};
-
-export const setUserAuthorised = (state = false) => {
-  let isAuthorised = state;
-  if (typeof isAuthorised !== 'boolean') {
-    isAuthorised = false;
-  }
-
-  return window.localStorage.setItem(LOCAL_DATA_KEYS.AUTHENTICATOR_USER, JSON.stringify({
-    isAuthorised
-  }));
-};
-
-export const clearLocalStorage = () => {
-  window.localStorage.clear();
-};
-
-export const isUserAuthorised = () => {
-  const userAuthData = JSON.parse(window.localStorage.getItem(LOCAL_DATA_KEYS.AUTHENTICATOR_USER));
-  return (userAuthData && userAuthData.isAuthorised);
-};
+export const isUserAuthorised = () => window.safeAuthenticator.getAuthenticatorHandle();
 
 export const checkAuthorised = (nextState, replace, callback) => {
   if (!isUserAuthorised()) {

@@ -68,9 +68,9 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "enum": "^2.3.0",
     "i18n": "^0.8.3",
     "opensans-npm-webfont": "0.0.2",
-    "pauls-electron-rpc": "^2.1.2",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
     "react-redux": "^4.4.6",
@@ -80,6 +80,8 @@
     "redux": "^3.6.0",
     "redux-promise-middleware": "^4.2.0",
     "redux-thunk": "^2.1.0",
+    "ref-array": "^1.2.0",
+    "ref-struct": "^1.1.0",
     "url": "^0.11.0",
     "zxcvbn": "^4.4.1"
   }

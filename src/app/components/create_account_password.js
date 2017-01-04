@@ -11,7 +11,6 @@ export default class CreateAccountPassword extends Component {
   static propTypes = {
     navPos: PropTypes.number,
     error: PropTypes.string,
-    networkStatus: PropTypes.number,
     passwordStrength: PropTypes.number,
     userSecret: PropTypes.string,
     userPassword: PropTypes.string,
@@ -74,11 +73,6 @@ export default class CreateAccountPassword extends Component {
       return;
     }
     this.props.setAccPassword(password);
-
-    if (this.props.networkStatus !== CONSTANTS.NETWORK_STATUS.CONNECTED) {
-      // TODO popup network not connected error
-      return;
-    }
 
     this.props.createAccount(this.props.userSecret, this.props.userPassword);
   }
