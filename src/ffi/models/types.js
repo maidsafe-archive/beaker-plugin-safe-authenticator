@@ -13,6 +13,7 @@ export const Null = ref.NULL;
 
 // Pointer Types
 export const u8Pointer = ref.refType(u8);
+export const u32Pointer = ref.refType(u32);
 export const voidPointer = ref.refType(Void);
 export const AppHandlePointer = ref.refType(voidPointer);
 
@@ -24,6 +25,8 @@ export const FfiString = StructType({
   len: usize,
   cap: usize
 });
+
+export const ffiStringPointer = ref.refType(FfiString);
 
 export const AppKeys = StructType({
   owner_key: u8ArrayType,

@@ -9,7 +9,10 @@ safeAuthRpc(api.ffi.client);
 i18n.configure({
   locales: ['en'],
   directory: path.resolve(__dirname, 'locales'),
-  objectNotation: true
+  objectNotation: true,
+  logWarnFn: function (msg) {
+    console.log('warn', msg);
+  }
 });
 
 i18n.setLocale('en');
