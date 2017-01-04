@@ -2,7 +2,6 @@
 /* eslint-disable import/extensions */
 import { shell, ipcMain } from 'electron';
 /* eslint-enable import/extensions */
-import i18n from 'i18n';
 
 let clientManager = null;
 
@@ -37,9 +36,14 @@ const registerAuthDecision = (event, authData, isAllowed) => {
       setTimeout(() => {
         isReqProcessing = false;
         processReqQueue();
+        console.log('Auth request res :: ', res)
         event.sender.send('onAuthDecisionRes', res);
       }, 5000);
-      shell.openExternal(res);
+      try {
+        shell.openExternal(res);
+      } catch (e) {
+        console.error(e.message);
+      }
     })
     .catch((err) => {
       console.error(err);

@@ -112,7 +112,7 @@ class ClientManager extends FfiApi {
    */
   authDecision(appReq, isAllowed) {
     return new Promise((resolve, reject) => {
-      if (!authReq || typeof isAllowed !== 'boolean') {
+      if (!appReq || typeof isAllowed !== 'boolean') {
         return reject(new Error(i18n.__('invalid_params')));
       }
       const authenticatorHandle = this.getAuthenticatorHandle();
@@ -121,26 +121,23 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('unauthorised')));
       }
 
-      const reqId = appReq['req_id'];
-
-      if (!reqId) {
+      if (!appReq.reqId) {
         return reject(new Error(i18n.__('invalid_req')));
       }
 
-      const authReq = this[_reqDecryptList][reqId];
+      const authReq = this[_reqDecryptList][appReq.reqId];
 
-      delete this[_reqDecryptList][reqId];
+      delete this[_reqDecryptList][appReq.reqId];
 
       try {
         const authReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
-          console.log('authReqCb :: ', res);
-          resolve(res);
+          resolve(this._reinterpret(res.ptr, res.len));
         });
 
         this.safeCore.encode_auth_resp(
           authenticatorHandle,
           authReq,
-          reqId,
+          appReq.reqId,
           isAllowed,
           Null,
           authReqCb
@@ -148,7 +145,6 @@ class ClientManager extends FfiApi {
       } catch (e) {
         reject(e.message);
       }
-      resolve();
     });
   }
 
@@ -181,8 +177,7 @@ class ClientManager extends FfiApi {
 
       try {
         const contReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
-          console.log('contReqCb:: ', res);
-          resolve(res);
+          resolve(this._reinterpret(res.ptr, res.len));
         });
 
         this.safeCore.encode_containers_resp(
@@ -191,12 +186,11 @@ class ClientManager extends FfiApi {
           reqId,
           isAllowed,
           Null,
-          authReqCb
+          contReqCb
         );
       } catch (e) {
         reject(e.message);
       }
-      resolve();
     });
   }
 
@@ -376,7 +370,7 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('unauthorised')));
       }
 
-      const authReqCb = ffi.Callback(Void, [voidPointer, u32, AuthReq], (userData, res, req) => {
+      const authReqCb = ffi.Callback(Void, [voidPointer, u32, AuthReq], (userData, reqId, req) => {
         const parsedReq = {
           app: {},
           app_container: null,
@@ -388,8 +382,6 @@ class ClientManager extends FfiApi {
         parsedReq.app['vendor'] = this._reinterpret(req.app.vendor.ptr, req.app.vendor.len);
 
         parsedReq.app_container = req.app_container;
-
-        console.log('req.containers.ptr[i] :: ', req.containers.ptr.length);
 
         // let contPer = {};
         // let  i = 0;
@@ -405,7 +397,6 @@ class ClientManager extends FfiApi {
         //   }
         //   parsedReq.containers.push(contPer);
         // }
-        const reqId = crypto.randomBytes(10).toString('hex');
         this[_reqDecryptList][reqId] = req;
         if (typeof this[_authReqListener] !== 'function') {
           return;
