@@ -106,13 +106,13 @@ class ClientManager extends FfiApi {
 
   /**
    * Authorise application request
-   * @param appReq
+   * @param req
    * @param isAllowed
    * @returns {Promise}
    */
-  authDecision(appReq, isAllowed) {
+  authDecision(req, isAllowed) {
     return new Promise((resolve, reject) => {
-      if (!appReq || typeof isAllowed !== 'boolean') {
+      if (!req || typeof isAllowed !== 'boolean') {
         return reject(new Error(i18n.__('invalid_params')));
       }
       const authenticatorHandle = this.getAuthenticatorHandle();
@@ -121,13 +121,13 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('unauthorised')));
       }
 
-      if (!appReq.reqId) {
+      if (!req.reqId) {
         return reject(new Error(i18n.__('invalid_req')));
       }
 
-      const authReq = this[_reqDecryptList][appReq.reqId];
+      const authReq = this[_reqDecryptList][req.reqId];
 
-      delete this[_reqDecryptList][appReq.reqId];
+      delete this[_reqDecryptList][req.reqId];
 
       try {
         const authReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
@@ -137,7 +137,7 @@ class ClientManager extends FfiApi {
         this.safeCore.encode_auth_resp(
           authenticatorHandle,
           authReq,
-          appReq.reqId,
+          req.reqId,
           isAllowed,
           Null,
           authReqCb
@@ -150,13 +150,13 @@ class ClientManager extends FfiApi {
 
   /**
    * Authorise container request
-   * @param contReq
+   * @param req
    * @param isAllowed
    * @returns {Promise}
    */
-  containerDecision(contReq, isAllowed) {
+  containerDecision(req, isAllowed) {
     return new Promise((resolve, reject) => {
-      if (!contReq || typeof isAllowed !== 'boolean') {
+      if (!req || typeof isAllowed !== 'boolean') {
         return reject(new Error(i18n.__('invalid_params')));
       }
       const authenticatorHandle = this.getAuthenticatorHandle();
@@ -165,15 +165,13 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('unauthorised')));
       }
 
-      const reqId = appReq['req_id'];
-
-      if (!reqId) {
+      if (!req.reqId) {
         return reject(new Error(i18n.__('invalid_req')));
       }
 
-      const contReq = this[_reqDecryptList][reqId];
+      const contReq = this[_reqDecryptList][req.reqId];
 
-      delete this[_reqDecryptList][reqId];
+      delete this[_reqDecryptList][req.reqId];
 
       try {
         const contReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
@@ -183,7 +181,7 @@ class ClientManager extends FfiApi {
         this.safeCore.encode_containers_resp(
           authenticatorHandle,
           contReq,
-          reqId,
+          req.reqId,
           isAllowed,
           Null,
           contReqCb
