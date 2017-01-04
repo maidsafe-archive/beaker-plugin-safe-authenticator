@@ -11,7 +11,6 @@ import {
   usize,
   int32,
   bool,
-  usize,
   u8Pointer,
   u32Pointer,
   voidPointer,
@@ -57,7 +56,7 @@ class ClientManager extends FfiApi {
       decode_ipc_msg: [Void, [voidPointer, FfiString, voidPointer, 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [Void, [voidPointer, AuthReq, u32, bool, voidPointer, 'pointer']],
       encode_containers_resp: [Void, [voidPointer, ContainersReq, u32, bool, voidPointer, 'pointer']],
-      authenticator_registered_apps: [int32, [voidPointer, voidPointer, 'pointer']],
+      authenticator_registered_apps: [Void, [voidPointer, voidPointer, 'pointer']],
       authenticator_registered_app_free: [Void, [RegisteredAppArrayType]],
       authenticator_registered_apps_free: [Void, [RegisteredAppArrayType, usize, usize]],
       ffi_string_create: [int32, [u32Pointer, usize, ffiStringPointer]]
@@ -349,14 +348,16 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('messages.unauthorised')));
       }
 
+      return resolve();
+
       try {
         const appListCb = ffi.Callback(Void, [voidPointer, int32, RegisteredAppArrayType, usize, usize],
           (userData, code, appList, len, cap) => {
-            console.log('appListCb:: ', code, appList, len, cap);
+            console.log('appListCb:: ', code, appList[0], len, cap);
             // TODO parse appList
             this.safeCore.authenticator_registered_app_free(appList);
             this.safeCore.authenticator_registered_apps_free(appList, len, cap);
-            resolve(appList);
+            resolve();
           });
 
         const onResult = (err, res) => {
@@ -408,6 +409,7 @@ class ClientManager extends FfiApi {
 
         parsedReq.app_container = req.app_container;
 
+        console.log('req.containers', req.containers.ptr.length, req.containers.ptr[0], req.containers.len, req.containers.cap);
         // let contPer = {};
         // let  i = 0;
         // for (i = 0; i < req.containers.len; i++) {
@@ -420,7 +422,8 @@ class ClientManager extends FfiApi {
         //   for (j = 0; j < req.containers.ptr[i].access.len; j++) {
         //     contPer.access.push(req.containers.ptr[i].access.ptr[j].key);
         //   }
-        //   parsedReq.containers.push(contPer);
+        //   console.log('contPer', contPer);
+        //   // parsedReq.containers.push(contPer);
         // }
         this[_reqDecryptList][reqId] = req;
         if (typeof this[_authReqListener] !== 'function') {
