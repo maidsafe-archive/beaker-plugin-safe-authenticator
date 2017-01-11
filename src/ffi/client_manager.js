@@ -41,7 +41,7 @@ class ClientManager extends FfiApi {
   constructor() {
     super();
     config.i18n();
-    this[_networkState] = CONST.NETWORK_STATES.DISCONNECTED;
+    this[_networkState] = CONST.NETWORK_STATUS.DISCONNECTED;
     this[_networkStateChangeListener] = null;
     this[_networkStateChangeIpcListener] = null;
     this[_authReqListener] = null;
@@ -253,7 +253,7 @@ class ClientManager extends FfiApi {
   createUnregisteredClient() {
     return new Promise((resolve) => {
       // TODO integrate ffi function - create unregistered client
-      // this.networkState = CONST.NETWORK_STATES.CONNECTING;
+      // this.networkState = CONST.NETWORK_STATUS.CONNECTING;
 
       // const onStateChange = ffi.Callback(Void, [int32], (state) => {
       //   this.networkState = state;
@@ -262,7 +262,7 @@ class ClientManager extends FfiApi {
       //   }
       // });
 
-      // this[_networkState] = CONST.NETWORK_STATES.CONNECTED;
+      // this[_networkState] = CONST.NETWORK_STATUS.CONNECTED;
       this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED, 1);
 
       // if (typeof this[_networkStateChangeListener] === 'function') {
@@ -295,7 +295,7 @@ class ClientManager extends FfiApi {
             return reject(err || res);
           }
           this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, appHandle.deref());
-          this._pushNetworkState(CONST.NETWORK_STATES.CONNECTED);
+          this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
           resolve();
         };
         this.safeCore.login.async(
@@ -333,7 +333,7 @@ class ClientManager extends FfiApi {
             return reject(err || res);
           }
           this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, appHandle.deref());
-          this._pushNetworkState(CONST.NETWORK_STATES.CONNECTED);
+          this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
           resolve();
         };
         this.safeCore.create_acc.async(
