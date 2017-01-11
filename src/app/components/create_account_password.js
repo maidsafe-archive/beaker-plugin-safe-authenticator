@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { Translate, I18n } from 'react-redux-i18n';
 import zxcvbn from 'zxcvbn';
-import CONSTANTS from '../constants.json';
+import CONSTANTS from '../../constants.json';
 import FieldStrength from './field_strength';
 import { getStrengthMsg } from '../utils';
 
@@ -11,7 +11,6 @@ export default class CreateAccountPassword extends Component {
   static propTypes = {
     navPos: PropTypes.number,
     error: PropTypes.string,
-    networkStatus: PropTypes.number,
     passwordStrength: PropTypes.number,
     userSecret: PropTypes.string,
     userPassword: PropTypes.string,
@@ -75,12 +74,7 @@ export default class CreateAccountPassword extends Component {
     }
     this.props.setAccPassword(password);
 
-    if (this.props.networkStatus !== CONSTANTS.NETWORK_STATUS.CONNECTED) {
-      // TODO popup network not connected error
-      return;
-    }
-
-    this.props.createAccount(this.props.userSecret, this.props.userPassword);
+    this.props.createAccount(this.props.userSecret, password);
   }
 
   togglePassword(e) {

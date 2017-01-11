@@ -6,7 +6,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import { I18n } from 'react-redux-i18n';
 import configureStore from './store';
 import routes from './router';
-import CONSTANTS from './constants.json';
+import CONSTANTS from '../constants.json';
 import './sass/main.scss';
 
 import {
