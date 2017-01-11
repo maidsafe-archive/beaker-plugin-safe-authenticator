@@ -6,7 +6,7 @@ import CreateAccountWelcome from './create_account_welcome';
 import CreateAccountSecret from './create_account_secret';
 import CreateAccountPassword from './create_account_password';
 import AuthLoader from './auth_loader';
-import CONSTANTS from '../constants.json';
+import CONSTANTS from '../../constants.json';
 
 export default class CreateAccount extends Component {
   static propTypes = {

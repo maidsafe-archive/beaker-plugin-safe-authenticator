@@ -4,7 +4,7 @@ import ffi from 'ffi';
 import os from 'os';
 import path from 'path';
 import clientManager from './client_manager';
-import CONST from './constants.json';
+import CONST from './../constants.json';
 import FfiApi from './FfiApi';
 
 class FfiLoader {

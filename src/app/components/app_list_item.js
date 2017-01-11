@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Translate } from 'react-redux-i18n';
-import CONSTANTS from '../constants.json';
+import CONSTANTS from '../../constants.json';
 
 export default class ListItem extends Component {
   static propTypes = {

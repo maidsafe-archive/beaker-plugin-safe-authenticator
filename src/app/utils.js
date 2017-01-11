@@ -1,4 +1,4 @@
-import CONSTANTS from './constants.json';
+import CONSTANTS from '../constants.json';
 
 export const isUserAuthorised = () => window.safeAuthenticator.getAuthenticatorHandle();
 

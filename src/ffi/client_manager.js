@@ -22,10 +22,10 @@ import {
   AuthReq,
   ContainersReq,
   RegisteredAppArrayType
-} from './models/types';
-import * as typeParsers from './models/typesParsers';
+} from './model/types';
+import * as typeParsers from './model/typesParsers';
 import FfiApi from './FfiApi';
-import CONST from './constants.json';
+import CONST from './../constants.json';
 
 const _networkState = Symbol('networkState');
 const _networkStateChangeListener = Symbol('networkStateChangeListener');

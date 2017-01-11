@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { Translate, I18n } from 'react-redux-i18n';
 import zxcvbn from 'zxcvbn';
-import CONSTANTS from '../constants.json';
+import CONSTANTS from '../../constants.json';
 import FieldStrength from './field_strength';
 import { getStrengthMsg } from '../utils';
 
