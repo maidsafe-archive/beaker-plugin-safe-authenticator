@@ -1,6 +1,7 @@
 export const SET_AUTH_ERROR = 'SET_AUTH_ERROR';
 export const CLEAR_AUTH_ERROR = 'CLEAR_AUTH_ERROR';
 export const SET_CREATE_ACC_NAV_POS = 'SET_CREATE_ACC_NAV_POS';
+export const RESET_CREATE_ACC_NAV_POS = 'RESET_CREATE_ACC_NAV_POS';
 export const SET_SECRET_STRENGTH = 'SET_SECRET_STRENGTH';
 export const SET_PASSWORD_STRENGTH = 'SET_PASSWORD_STRENGTH';
 export const SET_ACC_SECRET = 'SET_ACC_SECRET';
@@ -17,6 +18,12 @@ export const setCreateAccNavPos = (pos) => (
   {
     type: SET_CREATE_ACC_NAV_POS,
     position: pos
+  }
+);
+
+export const resetCreateAccNavPos = () => (
+  {
+    type: RESET_CREATE_ACC_NAV_POS
   }
 );
 
@@ -69,10 +76,13 @@ export const clearAuthLoader = () => ({
   type: CLEAR_AUTH_LOADER
 });
 
-export const createAccount = (secret, password) => ({
-  type: CREATE_ACC,
-  payload: window.safeAuthenticator.createAccount(secret, password)
-});
+export const createAccount = (secret, password) => {
+  console.log('ui secret, password :: ', secret, password);
+  return ({
+    type: CREATE_ACC,
+    payload: window.safeAuthenticator.createAccount(secret, password)
+  })
+};
 
 export const login = (secret, password) => ({
   type: LOGIN,
