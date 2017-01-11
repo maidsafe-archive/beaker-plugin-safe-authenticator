@@ -6,6 +6,7 @@ import { shell, ipcMain } from 'electron';
 let clientManager = null;
 
 const reqQueue = [];
+
 let isReqProcessing = false;
 
 const processReqQueue = () => {
@@ -18,8 +19,7 @@ const processReqQueue = () => {
   }
 
   isReqProcessing = true;
-  const result = reqQueue.shift();
-  clientManager.decryptRequest(result);
+  clientManager.decryptRequest(reqQueue[0]);
 };
 
 const registerAuthDecision = (event, authData, isAllowed) => {
@@ -35,6 +35,7 @@ const registerAuthDecision = (event, authData, isAllowed) => {
     .then((res) => {
       setTimeout(() => {
         isReqProcessing = false;
+        reqQueue.shift();
         processReqQueue();
         console.log('Auth request res :: ', res)
         event.sender.send('onAuthDecisionRes', res);
@@ -63,6 +64,7 @@ const registerContainerDecision = (event, contData, isAllowed) => {
     .then((res) => {
       setTimeout(() => {
         isReqProcessing = false;
+        reqQueue.shift();
         processReqQueue();
         event.sender.send('onContDecisionRes', res);
       }, 5000);

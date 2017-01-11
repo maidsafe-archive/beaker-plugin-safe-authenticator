@@ -74,7 +74,7 @@ export default class CreateAccountPassword extends Component {
     }
     this.props.setAccPassword(password);
 
-    this.props.createAccount(this.props.userSecret, this.props.userPassword);
+    this.props.createAccount(this.props.userSecret, password);
   }
 
   togglePassword(e) {

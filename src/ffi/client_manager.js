@@ -5,6 +5,7 @@ import ref from 'ref';
 import crypto from 'crypto';
 /* eslint-enable import/no-unresolved, import/extensions */
 import i18n from 'i18n';
+import config from '../config';
 import {
   u32,
   Void,
@@ -22,6 +23,7 @@ import {
   ContainersReq,
   RegisteredAppArrayType
 } from './models/types';
+import * as typeParsers from './models/typesParsers';
 import FfiApi from './FfiApi';
 import CONST from './constants.json';
 
@@ -33,10 +35,12 @@ const _containerReqListener = Symbol('containerReqListener');
 const _reqErrorListener = Symbol('reqErrorListener');
 const _clientHandle = Symbol('clientHandle');
 const _reqDecryptList = Symbol('reqDecryptList');
+const _callbackRegistry = Symbol('callbackRegistry');
 
 class ClientManager extends FfiApi {
   constructor() {
     super();
+    config.i18n();
     this[_networkState] = CONST.NETWORK_STATES.DISCONNECTED;
     this[_networkStateChangeListener] = null;
     this[_networkStateChangeIpcListener] = null;
@@ -45,6 +49,7 @@ class ClientManager extends FfiApi {
     this[_reqErrorListener] = null;
     this[_clientHandle] = {};
     this[_reqDecryptList] = {};
+    this[_callbackRegistry] = {};
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -135,7 +140,7 @@ class ClientManager extends FfiApi {
 
       try {
         const authReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
-          resolve(this._reinterpret(res.ptr, res.len));
+          resolve(typeParsers.parseFfiString(res));
         });
 
         this.safeCore.encode_auth_resp(
@@ -179,7 +184,7 @@ class ClientManager extends FfiApi {
 
       try {
         const contReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
-          resolve(this._reinterpret(res.ptr, res.len));
+          resolve(typeParsers.parseFfiString(res));
         });
 
         this.safeCore.encode_containers_resp(
@@ -354,10 +359,10 @@ class ClientManager extends FfiApi {
         const appListCb = ffi.Callback(Void, [voidPointer, int32, RegisteredAppArrayType, usize, usize],
           (userData, code, appList, len, cap) => {
             console.log('appListCb:: ', code, appList[0], len, cap);
-            // TODO parse appList
+            const authorisedApps = [];
             this.safeCore.authenticator_registered_app_free(appList);
             this.safeCore.authenticator_registered_apps_free(appList, len, cap);
-            resolve();
+            resolve(typeParsers.parseRegisteredAppArray(appList));
           });
 
         const onResult = (err, res) => {
@@ -396,51 +401,35 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('unauthorised')));
       }
 
-      const authReqCb = ffi.Callback(Void, [voidPointer, u32, AuthReq], (userData, reqId, req) => {
-        const parsedReq = {
-          app: {},
-          app_container: null,
-          containers: [ { cont_name: '_public', access: ['Read'] } ] // TODO remove it
-        };
-        parsedReq.app['id'] = this._reinterpret(req.app.id.ptr, req.app.id.len);
-        parsedReq.app['scope'] = this._reinterpret(req.app.scope, req.app.scope_len);
-        parsedReq.app['name'] = this._reinterpret(req.app.name.ptr, req.app.name.len);
-        parsedReq.app['vendor'] = this._reinterpret(req.app.vendor.ptr, req.app.vendor.len);
-
-        parsedReq.app_container = req.app_container;
-
-        console.log('req.containers', req.containers.ptr.length, req.containers.ptr[0], req.containers.len, req.containers.cap);
-        // let contPer = {};
-        // let  i = 0;
-        // for (i = 0; i < req.containers.len; i++) {
-        //   console.log('iiii :: ', i);
-        //   contPer = {
-        //     cont_name: this._reinterpret(req.containers.ptr[i].cont_name.ptr, req.containers.ptr[i].cont_name.len),
-        //     access: []
-        //   };
-        //   let j = 0;
-        //   for (j = 0; j < req.containers.ptr[i].access.len; j++) {
-        //     contPer.access.push(req.containers.ptr[i].access.ptr[j].key);
-        //   }
-        //   console.log('contPer', contPer);
-        //   // parsedReq.containers.push(contPer);
-        // }
+      this[_callbackRegistry]['decryptReqAuthCb'] = ffi.Callback(Void, [voidPointer, u32, AuthReq], (userData, reqId, req) => {
         this[_reqDecryptList][reqId] = req;
         if (typeof this[_authReqListener] !== 'function') {
           return;
         }
         this[_authReqListener]({
           reqId,
-          AuthReq: parsedReq
+          authReq: typeParsers.parseAuthReq(req)
         });
       });
 
-      const containerReqCb = ffi.Callback(Void, [voidPointer, int32, ContainersReq], (userData, res, req) => {
+      this[_callbackRegistry]['decryptReqContainerCb'] = ffi.Callback(Void, [voidPointer, int32, ContainersReq], (userData, res, req) => {
         console.log('containerReqCb :: ', req);
+        this[_reqDecryptList][reqId] = req;
+        if (typeof this[_containerReqListener] !== 'function') {
+          return;
+        }
+        this[_containerReqListener]({
+          reqId,
+          contReq: typeParsers.parseContainerReq(req)
+        });
       });
 
-      const reqErrorCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, res, error) => {
+      this[_callbackRegistry]['decryptReqErrorCb'] = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, res, error) => {
         console.log('reqErrorCb :: ', res, error);
+        if (typeof this[_reqErrorListener] !== 'function') {
+          return;
+        }
+        this[_reqErrorListener](typeParsers.parseFfiString(error));
       });
 
       try {
@@ -448,9 +437,9 @@ class ClientManager extends FfiApi {
           authenticatorHandle,
           this._createFFIString(msg),
           Null,
-          authReqCb,
-          containerReqCb,
-          reqErrorCb);
+          this[_callbackRegistry]['decryptReqAuthCb'],
+          this[_callbackRegistry]['decryptReqContainerCb'],
+          this[_callbackRegistry]['decryptReqErrorCb']);
       } catch (e) {
         console.error(`Auth request decrypt error :: ${e.message}`);
       }
@@ -515,21 +504,14 @@ class ClientManager extends FfiApi {
     return {}.hasOwnProperty.call(this[_clientHandle], clientHandleKey);
   }
 
-  _reinterpret(ptr, len) {
-    if (len === 0) {
-      return null
-    }
-    return ref.reinterpret(ptr, len).toString()
-  }
-
   /* eslint-disable class-methods-use-this */
   _isUserCredentialsValid(locator, secret) {
     /* eslint-enable class-methods-use-this */
-    if (!locator) {
+    if (!(locator && locator.trim())) {
       return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Locator')));
     }
 
-    if (!secret) {
+    if (!(secret && secret.trim())) {
       return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Secret')));
     }
 
@@ -539,14 +521,6 @@ class ClientManager extends FfiApi {
 
     if (typeof secret !== 'string') {
       return new Error(i18n.__('messages.must_be_string', i18n.__('Secret')));
-    }
-
-    if (!locator.trim()) {
-      return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Locator')));
-    }
-
-    if (!secret.trim()) {
-      return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Secret')));
     }
   }
 }

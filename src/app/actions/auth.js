@@ -76,10 +76,13 @@ export const clearAuthLoader = () => ({
   type: CLEAR_AUTH_LOADER
 });
 
-export const createAccount = (secret, password) => ({
-  type: CREATE_ACC,
-  payload: window.safeAuthenticator.createAccount(secret, password)
-});
+export const createAccount = (secret, password) => {
+  console.log('ui secret, password :: ', secret, password);
+  return ({
+    type: CREATE_ACC,
+    payload: window.safeAuthenticator.createAccount(secret, password)
+  })
+};
 
 export const login = (secret, password) => ({
   type: LOGIN,
