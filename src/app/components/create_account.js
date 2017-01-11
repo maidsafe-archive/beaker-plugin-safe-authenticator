@@ -10,10 +10,15 @@ import CONSTANTS from '../constants.json';
 
 export default class CreateAccount extends Component {
   static propTypes = {
+    isAuthorised: PropTypes.bool,
     navPos: PropTypes.number,
     loading: PropTypes.bool,
     setCreateAccNavPos: PropTypes.func,
     clearAuthLoader: PropTypes.func,
+    clearError: PropTypes.func,
+    clearAccSecret: PropTypes.func,
+    clearAccPassword: PropTypes.func,
+    resetCreateAccNavPos: PropTypes.func
   };
 
   static contextTypes = {
@@ -23,6 +28,14 @@ export default class CreateAccount extends Component {
   constructor() {
     super();
     this.getContainer = this.getContainer.bind(this);
+    this.reset = this.reset.bind(this);
+  }
+
+  componentWillMount() {
+    if (this.props.isAuthorised) {
+      return this.context.router.push('/');
+    }
+    this.reset();
   }
 
   componentWillUpdate(nextProps) {
@@ -44,6 +57,13 @@ export default class CreateAccount extends Component {
           <div>Oops!!</div>
         );
     }
+  }
+
+  reset() {
+    this.props.clearError();
+    this.props.clearAccSecret();
+    this.props.clearAccPassword();
+    this.props.resetCreateAccNavPos();
   }
 
   render() {
