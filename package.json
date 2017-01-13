@@ -6,6 +6,8 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.test.js",
     "lint": "eslint src test *.js",
+    "build-native": "cd native/safe_authenticator && cargo build --release && cd ../../ && cp -f native/target/release/*safe_authenticator* ./src/ffi",
+    "build-native-mock": "cd native/safe_authenticator && cargo build --release --features use-mock-routing && cd ../../ && cp -f native/target/release/*safe_authenticator* ./src/ffi",
     "build-app": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.development.js --progress --profile --colors",
     "build-api": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.api.js --progress --profile --colors",
     "build-protocol": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.protocol.js --progress --profile --colors",
@@ -84,5 +86,9 @@
     "ref-struct": "^1.1.0",
     "url": "^0.11.0",
     "zxcvbn": "^4.4.1"
+  },
+  "optionalDependencies": {
+    "ffi": "^2.2.0",
+    "ref": "^1.3.3"
   }
 }

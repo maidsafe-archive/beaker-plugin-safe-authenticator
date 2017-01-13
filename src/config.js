@@ -7,7 +7,7 @@ export default {
       locales: ['en'],
       directory: path.resolve(__dirname, '../../', 'locales'),
       objectNotation: true,
-      logWarnFn: function (msg) {
+      logWarnFn(msg) {
         console.warn('warn', msg);
       }
     });

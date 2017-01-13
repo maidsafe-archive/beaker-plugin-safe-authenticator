@@ -54,15 +54,13 @@ export const Permission = new Enum({
   ManagePermissions: 4
 });
 
-export const PermissionArrayType = ArrayType(Permission);
-
 export const AppInfo = StructType({
   info: AppExchangeInfo,
   keys: AppKeys
 });
 
 export const PermissionArray = StructType({
-  ptr: PermissionArrayType,
+  ptr: ref.refType(Permission),
   len: usize,
   cap: usize
 });
@@ -72,20 +70,18 @@ export const ContainerPermissions = StructType({
   access: PermissionArray
 });
 
-export const ContainersPermissionArrayType = ArrayType(ContainerPermissions);
-
 export const ContainerPermissionsArray = StructType({
-  ptr: ContainersPermissionArrayType,
+  ptr: ref.refType(ContainerPermissions),
   len: usize,
   cap: usize
 });
 
 export const RegisteredApp = StructType({
-  app_id: FfiString,
+  app_id: AppExchangeInfo,
   containers: ContainerPermissionsArray
 });
 
-export const RegisteredAppArrayType = ArrayType(RegisteredApp);
+export const RegisteredAppPointer = ref.refType(RegisteredApp);
 
 export const AuthReq = StructType({
   app: AppExchangeInfo,
