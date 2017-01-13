@@ -2,7 +2,7 @@
 import should from 'should';
 import i18n from 'i18n';
 import clientManager from '../src/ffi/client_manager';
-import FfiConst from '../src/ffi/constants.json';
+import FfiConst from '../src/constants.json';
 import { getRandomCredentials } from './utils';
 
 describe('Client', () => {
@@ -71,10 +71,11 @@ describe('Client', () => {
         })
     ));
 
-    it('should be able to create new account', () => (
-      clientManager.createAccount('test', 'test')
-        .should.be.fulfilled()
-    ));
+    it('should be able to create new account', () => {
+      const randomCredentials = getRandomCredentials();
+      return clientManager.createAccount(randomCredentials.locator, randomCredentials.secret)
+        .should.be.fulfilled();
+    });
   });
 
   describe('User login', () => {
@@ -133,10 +134,13 @@ describe('Client', () => {
         })
     ));
 
-    it('should be able to login', () => (
-      clientManager.login('test', 'test')
+    it('should be able to login', () => {
+      const randomCredentials = getRandomCredentials();
+      return clientManager.createAccount(randomCredentials.locator, randomCredentials.secret)
         .should.be.fulfilled()
-    ));
+        .then(() => clientManager.login(randomCredentials.locator, randomCredentials.secret))
+        .should.be.fulfilled()
+    });
   });
 
   describe('Revoke application', () => {

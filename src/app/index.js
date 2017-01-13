@@ -15,28 +15,49 @@ import {
   setNetworkDisconnected
 } from './actions/network_state';
 
+import { setAppList } from './actions/app';
+
 const store = configureStore();
 const history = syncHistoryWithStore(hashHistory, store);
 
-// set network listener
-if (window.safeAuthenticator && window.safeAuthenticator.setNetworkListener) {
-  window.safeAuthenticator.setNetworkListener((err, state) => {
-    switch (state) {
-      case CONSTANTS.NETWORK_STATUS.CONNECTING: {
-        return store.dispatch(setNetworkConnecting());
-      }
-      case CONSTANTS.NETWORK_STATUS.CONNECTED: {
-        return store.dispatch(setNetworkConnected());
-      }
-      case CONSTANTS.NETWORK_STATUS.DISCONNECTED: {
-        return store.dispatch(setNetworkDisconnected());
-      }
-      default: {
-        throw Error(I18n.t('invalid_network_state'));
-      }
+const registerNetworkStateListener = (cb) => {
+  // set network listener
+  if (window.safeAuthenticator && window.safeAuthenticator.setNetworkListener) {
+    window.safeAuthenticator.setNetworkListener(cb);
+  }
+};
+
+const networkStateListenerCb = (err, state) => {
+  registerNetworkStateListener(networkStateListenerCb);
+  switch (state) {
+    case CONSTANTS.NETWORK_STATUS.CONNECTING: {
+      return store.dispatch(setNetworkConnecting());
     }
-  });
-}
+    case CONSTANTS.NETWORK_STATUS.CONNECTED: {
+      return store.dispatch(setNetworkConnected());
+    }
+    case CONSTANTS.NETWORK_STATUS.DISCONNECTED: {
+      return store.dispatch(setNetworkDisconnected());
+    }
+    default: {
+      throw Error(I18n.t('invalid_network_state'));
+    }
+  }
+};
+
+const registerAppListUpdateListener = (cb) => {
+  if (window.safeAuthenticator && window.safeAuthenticator.setAppListUpdateListener) {
+    window.safeAuthenticator.setAppListUpdateListener(cb);
+  }
+};
+
+const appListUpdateListenerCb = (err, apps) => {
+  registerAppListUpdateListener(appListUpdateListenerCb);
+  return store.dispatch(setAppList(apps));
+};
+
+networkStateListenerCb(null, window.safeAuthenticator.getNetworkState());
+appListUpdateListenerCb(null, []);
 
 render(
   <Provider store={store}>

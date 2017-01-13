@@ -26,6 +26,12 @@ const processReqQueue = () => {
   clientManager.decryptRequest(reqQueue[0]);
 };
 
+const reqQueueProcessNext = () => {
+  isReqProcessing = false;
+  reqQueue.shift();
+  processReqQueue();
+};
+
 const registerAuthDecision = (event, authData, isAllowed) => {
   if (!authData) {
     return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('URL'))));
@@ -38,11 +44,10 @@ const registerAuthDecision = (event, authData, isAllowed) => {
   clientManager.authDecision(authData, isAllowed)
     .then((res) => {
       setTimeout(() => {
-        isReqProcessing = false;
-        reqQueue.shift();
-        processReqQueue();
+        reqQueueProcessNext();
+        console.warn('Auth res :: ', res);
         event.sender.send('onAuthDecisionRes', res);
-      }, 5000);
+      }, 1000);
       try {
         shell.openExternal(res);
       } catch (e) {
@@ -50,7 +55,9 @@ const registerAuthDecision = (event, authData, isAllowed) => {
       }
     })
     .catch((err) => {
-      console.error(err);
+      reqQueueProcessNext();
+      event.sender.send('onAuthDecisionRes', err);
+      console.error('Auth decision error :: ', err.message);
     });
 };
 
@@ -66,15 +73,20 @@ const registerContainerDecision = (event, contData, isAllowed) => {
   clientManager.containerDecision(contData, isAllowed)
     .then((res) => {
       setTimeout(() => {
-        isReqProcessing = false;
-        reqQueue.shift();
-        processReqQueue();
+        reqQueueProcessNext();
+        console.warn('Cont res :: ', res);
         event.sender.send('onContDecisionRes', res);
-      }, 5000);
-      shell.openExternal(res);
+      }, 1000);
+      try {
+        shell.openExternal(res);
+      } catch (e) {
+        console.error(e.message);
+      }
     })
     .catch((err) => {
-      console.error(err);
+      reqQueueProcessNext();
+      event.sender.send('onContDecisionRes', err);
+      console.error('Container decision error :: ', err.message);
     });
 };
 
@@ -95,9 +107,15 @@ const registerOnContainerReq = (event) => {
   });
 };
 
-const registerOnReqError = (event) => {
+const registerOnReqError = () => {
   clientManager.setReqErrorListener((error) => {
-    event.sender.send('onReqError', error);
+    console.warn('AuthReq error :: ', error);
+    reqQueueProcessNext();
+    try {
+      shell.openExternal(error);
+    } catch (e) {
+      console.error(e.message);
+    }
   });
 };
 
@@ -114,12 +132,12 @@ ipcMain.on('registerSafeNetworkListener', registerNetworkListener);
 ipcMain.on('decryptRequest', decryptRequest);
 ipcMain.on('registerOnAuthReq', registerOnAuthReq);
 ipcMain.on('registerOnContainerReq', registerOnContainerReq);
-ipcMain.on('registerOnReqError', registerOnReqError);
 ipcMain.on('registerAuthDecision', registerAuthDecision);
 ipcMain.on('registerContainerDecision', registerContainerDecision);
 
 const register = (client) => {
   clientManager = client;
+  registerOnReqError();
 };
 
 export default register;

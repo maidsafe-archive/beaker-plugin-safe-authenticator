@@ -53,20 +53,20 @@ export default class App extends Component {
             </section>
             {
               isAuthorised ? (
-                  <section className="rt">
-                    <div className="rt-i"><NetworkStatus status={networkState} message={'Connected'} /></div>
-                    <div className="rt-i btn-i">
-                      <button
-                        type="button"
-                        className="btn"
-                        onClick={() => {
-                          logout();
-                        }}
-                      >Logout
-                      </button>
-                    </div>
-                  </section>
-                ) : null
+                <section className="rt">
+                  <div className="rt-i"><NetworkStatus status={networkState} message={'Connected'} /></div>
+                  <div className="rt-i btn-i">
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={() => {
+                        logout();
+                      }}
+                    >Logout
+                    </button>
+                  </div>
+                </section>
+              ) : null
             }
           </div>
         </header>

@@ -2,6 +2,8 @@ import client from '../ffi/client_manager';
 
 export const manifest = {
   setNetworkListener: 'async',
+  setAppListUpdateListener: 'async',
+  getNetworkState: 'sync',
   getAuthenticatorHandle: 'sync',
   logout: 'sync',
   login: 'promise',
@@ -21,6 +23,10 @@ export const containerDecision = (contData, isAllowed) =>
 export const setNetworkIpcListener = (cb) => client.setNetworkIpcListener(cb);
 
 export const setNetworkListener = (cb) => client.setNetworkListener(cb);
+
+export const getNetworkState = () => client.getNetworkState();
+
+export const setAppListUpdateListener = (cb) => client.setAppListUpdateListener(cb);
 
 export const logout = () => client.logout();
 
