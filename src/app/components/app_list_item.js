@@ -1,13 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { Translate } from 'react-redux-i18n';
-import CONSTANTS from '../../constants.json';
 
 export default class ListItem extends Component {
   static propTypes = {
-    data: PropTypes.shape({
-      name: PropTypes.string,
-      vendor: PropTypes.string
-    }),
+    data: PropTypes.shape({}),
     isDefault: PropTypes.bool,
     loading: PropTypes.bool,
     revokeApp: PropTypes.func
@@ -16,37 +12,6 @@ export default class ListItem extends Component {
   constructor() {
     super();
     this.toggleList = this.toggleList.bind(this);
-  }
-
-  /* eslint-disable class-methods-use-this */
-  getPermission(permission) {
-    /* eslint-enable class-methods-use-this */
-    switch (permission) {
-      case CONSTANTS.APP_DEFAULT_PERMISSIONS.SAFE_DRIVE_ACCESS: {
-        return (
-          <li>
-            <span className="permission-icn safe-drive">{''}</span>
-            <span className="permission-title"><Translate value="SAFE DRIVE Permission" /></span>
-          </li>
-        );
-      }
-      case CONSTANTS.APP_DEFAULT_PERMISSIONS.LOW_LEVEL_API: {
-        return (
-          <li>
-            <span className="permission-icn low-level-api">{''}</span>
-            <span className="permission-title"><Translate value="LOW LEVEL API Permission" /></span>
-          </li>
-        );
-      }
-      default: {
-        return (
-          <li>
-            <span className="permission-icn low-level-api">{''}</span>
-            <span className="permission-title"><Translate value="No permissions" /></span>
-          </li>
-        );
-      }
-    }
   }
 
   toggleList(e) {
@@ -80,24 +45,48 @@ export default class ListItem extends Component {
         onClick={this.toggleList}
       >
         <div className="icn">
-          <span>{data.name[0]}</span>
+          <span>{data.app_id.name[0]}</span>
         </div>
         <div className="ctn">
           <div className="i-cnt">
             <div className="title">
-              <span>{data.name}</span>
+              <span>{data.app_id.name}</span>
             </div>
             <div className="vendor">
-              <span>{data.vendor}</span>
+              <span>{data.app_id.vendor}</span>
             </div>
           </div>
           <div className="app-list-detail">
             <div className="permission">
               <span className="permission-h"><Translate value="Permissions" /></span>
               <ul>
-                { data.permissions ?
-                  data.permissions.map((permission) => this.getPermission(permission)) :
-                  this.getPermission()
+                { data.containers ?
+                  data.containers.map((container, index) =>
+                    (
+                      <li key={index}>
+                        <span className="permission-icn">{''}</span>
+                        <span className="permission-title">{container.cont_name}</span>
+                        {
+                          (container.access && container.access.length > 0) ? (
+                            <div className="permission-i-ls">
+                              <ul>
+                                {
+                                  container.access.map((item, i) => (
+                                    <li key={i}>{item}</li>
+                                  ))
+                                }
+                              </ul>
+                            </div>
+                          ) : null
+                        }
+                      </li>
+                    )
+                  ) : (
+                    <li>
+                      <span className="permission-icn safe-drive">{''}</span>
+                      <span className="permission-title">No permission</span>
+                    </li>
+                  )
                 }
               </ul>
             </div>
@@ -111,7 +100,7 @@ export default class ListItem extends Component {
               onClick={(e) => {
                 e.stopPropagation();
                 e.nativeEvent.stopImmediatePropagation();
-                revokeApp(data.id);
+                revokeApp(data.app_id.id);
               }}
             ><Translate value="Revoke Access" /></button>
           </div>

@@ -54,6 +54,8 @@
       position: absolute;
       top: 0;
       left: 0;
+      text-transform: uppercase;
+      font-weight: 600;
       text-align: center;
       line-height: 40px;
       border-radius: 50%;
@@ -131,11 +133,30 @@
         font-size: 15px;
         font-weight: 600;
       }
-      ul {
+      & > ul {
         list-style-type: none;
         margin-top: 8px;
-        li {
+        & > li {
           margin-bottom: 8px;
+          background-color: #fff;
+          padding: 8px;
+          border: 1px solid #EEE;
+          .permission-i-ls {
+            & > ul {
+              list-style: none;
+              padding: 8px 8px 8px 45px;
+              li {
+                line-height: 24px;
+                font-size: 14px;
+                &:before {
+                  content: "-";
+                  padding-right: 10px;
+                  font-size: 16px;
+                  font-weight: 600;
+                }
+              }
+            }
+          }
         }
       }
       &-icn {
@@ -149,14 +170,9 @@
           size: 24px;
           repeat: no-repeat;
           position: center;
+          image: url("../img/safedrive_icon.svg");
         };
         float: left;
-        &.safe-drive {
-          background-image: url("../img/safedrive_icon.svg");
-        }
-        &.low-level-api {
-          background-image: url("../img/safedrive_icon.svg");
-        }
       }
       &-title {
         line-height: 30px;
