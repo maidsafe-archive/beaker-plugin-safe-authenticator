@@ -32,6 +32,8 @@ install:
   - ps: cd $env:APPVEYOR_BUILD_FOLDER
   - npm i
 build: off
+before_test:
+  - npm run grep-error-codes
 test_script:
   - npm run lint
   - npm test

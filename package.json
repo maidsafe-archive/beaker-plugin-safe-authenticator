@@ -12,7 +12,8 @@
     "build-api": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.api.js --progress --profile --colors",
     "build-protocol": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.protocol.js --progress --profile --colors",
     "build": "concurrently \"npm run build-app\" \"npm run build-api\" \"npm run build-protocol\"",
-    "prepublish": "npm run build-native-mock"
+    "prepublish": "npm run build-native-mock",
+    "grep-error-codes": "./node_modules/.bin/babel-node grep_error_codes.js"
   },
   "repository": {
     "type": "git",
@@ -39,6 +40,7 @@
   ],
   "homepage": "https://github.com/maidsafe/beaker-plugin-safe-authenticator#readme",
   "devDependencies": {
+    "babel-cli": "^6.18.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.7",
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -57,6 +59,7 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.7.1",
     "file-loader": "^0.9.0",
+    "fs-extra": "^2.0.0",
     "json-loader": "^0.5.4",
     "mocha": "^3.1.2",
     "node-sass": "^3.13.0",
