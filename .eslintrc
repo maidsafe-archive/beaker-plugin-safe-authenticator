@@ -19,7 +19,8 @@
     # https://github.com/eslint/eslint/issues/6274
     "generator-star-spacing": 0,
     "no-console": ["error", { allow: ["warn", "error"] }],
-    "jsx-a11y/no-static-element-interactions": 0
+    "jsx-a11y/no-static-element-interactions": 0,
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
   },
   "plugins": [
     "import",

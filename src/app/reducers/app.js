@@ -1,6 +1,7 @@
 import {
   GET_AUTHORISED_APPS,
-  REVOKE_APP
+  REVOKE_APP,
+  SET_APP_LIST
 } from '../actions/app';
 
 const initialState = {
@@ -15,21 +16,10 @@ const app = (state = initialState, action) => {
       return { ...state, fetchingApps: true };
     }
     case `${GET_AUTHORISED_APPS}_FULFILLED`: {
-      // TODO handle response (replace authorisedApps value with action.payload)
       return {
         ...state,
         fetchingApps: false,
-        authorisedApps: [
-          {
-            id: 1,
-            name: 'Cookley',
-            vendor: 'kpeters0'
-          }, {
-            id: 2,
-            name: 'Overhold',
-            vendor: 'jwallace1'
-          }
-        ]
+        authorisedApps: action.payload
       };
     }
     case `${GET_AUTHORISED_APPS}_REJECTED`: {
@@ -44,6 +34,9 @@ const app = (state = initialState, action) => {
     }
     case `${REVOKE_APP}_REJECTED`: {
       return { ...state, loading: false, error: action.payload.message };
+    }
+    case SET_APP_LIST: {
+      return { ...state, authorisedApps: action.apps };
     }
     default: {
       return state;

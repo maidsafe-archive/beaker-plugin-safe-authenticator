@@ -1,5 +1,6 @@
 {
   "Network listener callback": "Network listener callback",
+  "App list listener callback": "App list listener callback",
   "Locator": "Locator",
   "Secret": "Secret",
   "Client handle key": "Client handle key",
@@ -34,7 +35,7 @@
     }
   },
   "invalid_network_state": "Invalid network state",
-  "entries_mismatch" : "Entries don't match.",
+  "entries_mismatch": "Entries don't match.",
   "messages": {
     "must_be_function": "%s must be a function",
     "must_be_string": "%s must be string",
@@ -45,5 +46,6 @@
     "plugin_not_found": "%{name} plugin not found",
     "invalid_params": "Invalid params",
     "invalid_req": "Invalid Request"
-  }
+  },
+  "invalid_params": "invalid_params"
 }

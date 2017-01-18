@@ -31,7 +31,6 @@ export default {
   },
   externals: {
     fs: 'fs',
-    electron: 'electron',
-    'pauls-electron-rpc': 'pauls-electron-rpc'
+    electron: 'electron'
   }
 };

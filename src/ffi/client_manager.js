@@ -2,7 +2,6 @@
 /* eslint-disable import/no-unresolved, import/extensions */
 import ffi from 'ffi';
 import ref from 'ref';
-import crypto from 'crypto';
 /* eslint-enable import/no-unresolved, import/extensions */
 import i18n from 'i18n';
 import config from '../config';
@@ -12,7 +11,6 @@ import {
   usize,
   int32,
   bool,
-  u8Pointer,
   u32Pointer,
   voidPointer,
   AppHandlePointer,
@@ -21,7 +19,7 @@ import {
   FfiString,
   AuthReq,
   ContainersReq,
-  RegisteredAppArrayType
+  RegisteredAppPointer
 } from './model/types';
 import * as typeParsers from './model/typesParsers';
 import FfiApi from './FfiApi';
@@ -29,6 +27,7 @@ import CONST from './../constants.json';
 
 const _networkState = Symbol('networkState');
 const _networkStateChangeListener = Symbol('networkStateChangeListener');
+const _appListUpdateListener = Symbol('appListUpdateListener');
 const _networkStateChangeIpcListener = Symbol('networkStateChangeIpcListener');
 const _authReqListener = Symbol('authReqListener');
 const _containerReqListener = Symbol('containerReqListener');
@@ -43,6 +42,7 @@ class ClientManager extends FfiApi {
     config.i18n();
     this[_networkState] = CONST.NETWORK_STATUS.DISCONNECTED;
     this[_networkStateChangeListener] = null;
+    this[_appListUpdateListener] = null;
     this[_networkStateChangeIpcListener] = null;
     this[_authReqListener] = null;
     this[_containerReqListener] = null;
@@ -62,8 +62,7 @@ class ClientManager extends FfiApi {
       encode_auth_resp: [Void, [voidPointer, AuthReq, u32, bool, voidPointer, 'pointer']],
       encode_containers_resp: [Void, [voidPointer, ContainersReq, u32, bool, voidPointer, 'pointer']],
       authenticator_registered_apps: [int32, [voidPointer, voidPointer, 'pointer']],
-      authenticator_registered_apps_free: [Void, [RegisteredAppArrayType, usize, usize]],
-      authenticator_registered_app_free: [Void, [RegisteredAppArrayType]],
+      authenticator_registered_apps_free: [Void, [RegisteredAppPointer, usize, usize]],
       authenticator_revoke_app: [Void, [voidPointer, FfiString, voidPointer, 'pointer']],
       ffi_string_create: [int32, [u32Pointer, usize, ffiStringPointer]]
     };
@@ -87,6 +86,17 @@ class ClientManager extends FfiApi {
     }
     this[_networkStateChangeListener] = cb;
     // this[_networkStateChangeListener](null, this[_networkState]);
+  }
+
+  getNetworkState() {
+    return this[_networkState];
+  }
+
+  setAppListUpdateListener(cb) {
+    if (typeof cb !== 'function') {
+      throw new Error(i18n.__('messages.must_be_function', i18n.__('App list listener callback')));
+    }
+    this[_appListUpdateListener] = cb;
   }
 
   setAuthReqListener(cb) {
@@ -140,9 +150,13 @@ class ClientManager extends FfiApi {
       delete this[_reqDecryptList][req.reqId];
 
       try {
-        const authReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
-          resolve(typeParsers.parseFfiString(res));
-        });
+        this[_callbackRegistry].authDecisionCb = ffi.Callback(Void, [voidPointer, int32, FfiString],
+          (userData, code, res) => {
+            if (isAllowed) {
+              this._updateAppList();
+            }
+            resolve(typeParsers.parseFfiString(res));
+          });
 
         this.safeCore.encode_auth_resp(
           authenticatorHandle,
@@ -150,10 +164,10 @@ class ClientManager extends FfiApi {
           req.reqId,
           isAllowed,
           Null,
-          authReqCb
+          this[_callbackRegistry].authDecisionCb
         );
       } catch (e) {
-        reject(e.message);
+        reject(e);
       }
     });
   }
@@ -178,15 +192,18 @@ class ClientManager extends FfiApi {
       if (!req.reqId) {
         return reject(new Error(i18n.__('invalid_req')));
       }
-
       const contReq = this[_reqDecryptList][req.reqId];
 
       delete this[_reqDecryptList][req.reqId];
 
       try {
-        const contReqCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
-          resolve(typeParsers.parseFfiString(res));
-        });
+        this[_callbackRegistry].contDecisionCb = ffi.Callback(Void, [voidPointer, int32, FfiString],
+          (userData, code, res) => {
+            if (isAllowed) {
+              this._updateAppList();
+            }
+            resolve(typeParsers.parseFfiString(res));
+          });
 
         this.safeCore.encode_containers_resp(
           authenticatorHandle,
@@ -194,10 +211,10 @@ class ClientManager extends FfiApi {
           req.reqId,
           isAllowed,
           Null,
-          contReqCb
+          this[_callbackRegistry].contDecisionCb
         );
       } catch (e) {
-        reject(e.message);
+        reject(e);
       }
     });
   }
@@ -231,9 +248,11 @@ class ClientManager extends FfiApi {
 
 
       try {
-        const revokeCb = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, code, res) => {
-          resolve(typeParsers.parseFfiString(res));
-        });
+        const revokeCb = ffi.Callback(Void, [voidPointer, int32, FfiString],
+          (userData, code, res) => {
+            this._updateAppList();
+            resolve(typeParsers.parseFfiString(res));
+          });
 
         this.safeCore.authenticator_revoke_app(
           authenticatorHandle,
@@ -369,29 +388,19 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('messages.unauthorised')));
       }
 
-      // TODO Fix ffi array deref issue
-      return resolve();
-
       try {
-        const appListCb = ffi.Callback(Void, [voidPointer, int32, RegisteredAppArrayType, usize, usize],
+        this[_callbackRegistry].appListCb = ffi.Callback(Void,
+          [voidPointer, int32, RegisteredAppPointer, usize, usize],
           (userData, code, appList, len, cap) => {
-            const authorisedApps = [];
-            this.safeCore.authenticator_registered_app_free(appList);
+            const apps = typeParsers.parseRegisteredAppArray(appList, len);
             this.safeCore.authenticator_registered_apps_free(appList, len, cap);
-            resolve(typeParsers.parseRegisteredAppArray(appList));
+            resolve(apps);
           });
 
-        const onResult = (err, res) => {
-          if (err || res !== 0) {
-            return reject(err || res);
-          }
-        };
-
-        this.safeCore.authenticator_registered_apps.async(
+        this.safeCore.authenticator_registered_apps(
           authenticatorHandle,
           Null,
-          appListCb,
-          onResult
+          this[_callbackRegistry].appListCb
         );
       } catch (e) {
         reject(e.message);
@@ -403,8 +412,8 @@ class ClientManager extends FfiApi {
    * Decrypt request
    */
 
-  decryptRequest(msg) {
-    msg = msg.replace('safe-auth://', '');
+  decryptRequest(url) {
+    const msg = url.replace('safe-auth://', '');
     return new Promise((resolve, reject) => {
       if (!msg) {
         return reject();
@@ -416,47 +425,59 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('unauthorised')));
       }
 
-      this[_callbackRegistry]['decryptReqAuthCb'] = ffi.Callback(Void, [voidPointer, u32, AuthReq], (userData, reqId, req) => {
-        this[_reqDecryptList][reqId] = req;
-        if (typeof this[_authReqListener] !== 'function') {
-          return;
-        }
-        this[_authReqListener]({
-          reqId,
-          authReq: typeParsers.parseAuthReq(req)
+      this[_callbackRegistry].decryptReqAuthCb = ffi.Callback(Void,
+        [voidPointer, u32, AuthReq], (userData, reqId, req) => {
+          this[_reqDecryptList][reqId] = req;
+          if (typeof this[_authReqListener] !== 'function') {
+            return;
+          }
+          this[_authReqListener]({
+            reqId,
+            authReq: typeParsers.parseAuthReq(req)
+          });
         });
-      });
 
-      this[_callbackRegistry]['decryptReqContainerCb'] = ffi.Callback(Void, [voidPointer, int32, ContainersReq], (userData, res, req) => {
-        this[_reqDecryptList][reqId] = req;
-        if (typeof this[_containerReqListener] !== 'function') {
-          return;
-        }
-        this[_containerReqListener]({
-          reqId,
-          contReq: typeParsers.parseContainerReq(req)
+      this[_callbackRegistry].decryptReqContainerCb = ffi.Callback(Void,
+        [voidPointer, int32, ContainersReq], (userData, reqId, req) => {
+          this[_reqDecryptList][reqId] = req;
+          if (typeof this[_containerReqListener] !== 'function') {
+            return;
+          }
+          this[_containerReqListener]({
+            reqId,
+            contReq: typeParsers.parseContainerReq(req)
+          });
         });
-      });
 
-      this[_callbackRegistry]['decryptReqErrorCb'] = ffi.Callback(Void, [voidPointer, int32, FfiString], (userData, res, error) => {
-        if (typeof this[_reqErrorListener] !== 'function') {
-          return;
-        }
-        this[_reqErrorListener](typeParsers.parseFfiString(error));
-      });
+      this[_callbackRegistry].decryptReqErrorCb = ffi.Callback(Void,
+        [voidPointer, int32, FfiString], (userData, res, error) => {
+          if (typeof this[_reqErrorListener] !== 'function') {
+            return;
+          }
+          this[_reqErrorListener](typeParsers.parseFfiString(error));
+        });
 
       try {
         this.safeCore.decode_ipc_msg(
           authenticatorHandle,
           this._createFFIString(msg),
           Null,
-          this[_callbackRegistry]['decryptReqAuthCb'],
-          this[_callbackRegistry]['decryptReqContainerCb'],
-          this[_callbackRegistry]['decryptReqErrorCb']);
+          this[_callbackRegistry].decryptReqAuthCb,
+          this[_callbackRegistry].decryptReqContainerCb,
+          this[_callbackRegistry].decryptReqErrorCb);
       } catch (e) {
         console.error(`Auth request decrypt error :: ${e.message}`);
       }
     });
+  }
+
+  _updateAppList() {
+    this.getAuthorisedApps()
+      .then((apps) => {
+        if (typeof this[_appListUpdateListener] === 'function') {
+          this[_appListUpdateListener](null, apps);
+        }
+      });
   }
 
   /*
@@ -475,7 +496,7 @@ class ClientManager extends FfiApi {
     const stringPointer = ref.alloc(FfiString);
     const res = this.safeCore.ffi_string_create(buff, buff.length, stringPointer);
     if (res !== 0) {
-      throw 'Create string failed' + res;
+      throw new Error(`Create string failed ${res}`);
     }
     return stringPointer.deref();
   }
@@ -503,6 +524,9 @@ class ClientManager extends FfiApi {
     if (typeof networkState === 'undefined') {
       networkState = this[_networkState];
     }
+
+    this[_networkState] = networkState;
+
     if (typeof this[_networkStateChangeListener] === 'function') {
       this[_networkStateChangeListener](null, networkState);
     }
@@ -518,11 +542,11 @@ class ClientManager extends FfiApi {
   /* eslint-disable class-methods-use-this */
   _isUserCredentialsValid(locator, secret) {
     /* eslint-enable class-methods-use-this */
-    if (!(locator && locator.trim())) {
+    if (!locator) {
       return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Locator')));
     }
 
-    if (!(secret && secret.trim())) {
+    if (!secret) {
       return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Secret')));
     }
 
@@ -532,6 +556,13 @@ class ClientManager extends FfiApi {
 
     if (typeof secret !== 'string') {
       return new Error(i18n.__('messages.must_be_string', i18n.__('Secret')));
+    }
+    if (!locator.trim()) {
+      return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Locator')));
+    }
+
+    if (!secret.trim()) {
+      return new Error(i18n.__('messages.should_not_be_empty', i18n.__('Secret')));
     }
   }
 }
