@@ -2,23 +2,20 @@ import ref from 'ref';
 import ArrayType from 'ref-array';
 import * as types from './types';
 
-export const parseArray = (type, arrayBuf) => {
-  if (arrayBuf.len === 0) {
+export const parseArray = (type, arrayBuf, len) => {
+  if (len === 0) {
     return [];
   }
-  const arrPtr = ref.reinterpret(arrayBuf.ptr, type.size * arrayBuf.len);
+  const arrPtr = ref.reinterpret(arrayBuf.ptr, type.size * len);
   const ArrType = ArrayType(type);
   return ArrType(arrPtr);
 };
 
-export const parseFfiString = (ffiString) => {
-  if (!(ffiString instanceof types.FfiString)) {
-    return;
-  }
-  if (ffiString.len === 0) {
+export const parseCString = (str) => {
+  if (!str) {
     return null;
   }
-  return ref.reinterpret(ffiString.ptr, ffiString.len).toString();
+  return ref.readCString(str, 0);
 };
 
 export const parseU8Str = (u8, size) => {
@@ -33,17 +30,17 @@ export const parseAppExchangeInfo = (appExchangeInfo) => {
     return;
   }
   return {
-    id: parseFfiString(appExchangeInfo.id),
-    scope: parseU8Str(appExchangeInfo.scope, appExchangeInfo.scope_len),
-    name: parseFfiString(appExchangeInfo.name),
-    vendor: parseFfiString(appExchangeInfo.vendor)
+    id: parseCString(appExchangeInfo.id),
+    scope: parseCString(appExchangeInfo.scope),
+    name: parseCString(appExchangeInfo.name),
+    vendor: parseCString(appExchangeInfo.vendor)
   };
 };
 
-export const parsePermissionArray = (permissionArray) => {
+export const parsePermissionArray = (permissionArray, len) => {
   const res = [];
   let i = 0;
-  const permissions = parseArray(types.Permission, permissionArray);
+  const permissions = parseArray(types.Permission, permissionArray, len);
   for (i = 0; i < permissions.length; i++) {
     res.push(permissions[i].key);
   }
@@ -55,15 +52,17 @@ export const parseContainerPermissions = (containerPermissions) => {
     return;
   }
   return {
-    cont_name: parseFfiString(containerPermissions.cont_name),
-    access: parsePermissionArray(containerPermissions.access)
+    cont_name: parseCString(containerPermissions.cont_name),
+    access: parsePermissionArray(containerPermissions.access, containerPermissions.access_len),
+    access_len: containerPermissions.access_len,
+    access_cap: containerPermissions.access_cap
   };
 };
 
-export const parseContainerPermissionsArray = (containerPermissionsArray) => {
+export const parseContainerPermissionsArray = (containerPermissionsArray, len) => {
   const res = [];
   let i = 0;
-  const contArr = parseArray(types.ContainerPermissions, containerPermissionsArray);
+  const contArr = parseArray(types.ContainerPermissions, containerPermissionsArray, len);
   for (i = 0; i < contArr.length; i++) {
     res.push(parseContainerPermissions(contArr[i]));
   }
@@ -76,17 +75,16 @@ export const parseRegisteredApp = (registeredApp) => {
   }
   return {
     app_id: parseAppExchangeInfo(registeredApp.app_id),
-    containers: parseContainerPermissionsArray(registeredApp.containers)
+    containers: parseContainerPermissionsArray(registeredApp.containers, registeredApp.containers_len),
+    containers_len: registeredApp.containers_len,
+    containers_cap: registeredApp.containers_cap
   };
 };
 
 export const parseRegisteredAppArray = (registeredAppArray, len) => {
   const res = [];
   let i = 0;
-  const registeredApps = parseArray(types.RegisteredApp, {
-    ptr: registeredAppArray,
-    len
-  });
+  const registeredApps = parseArray(types.RegisteredApp, registeredAppArray, len);
   for (i = 0; i < registeredApps.length; i++) {
     res.push(parseRegisteredApp(registeredApps[i]));
   }
@@ -100,7 +98,9 @@ export const parseAuthReq = (authReq) => {
   return {
     app: parseAppExchangeInfo(authReq.app),
     app_container: authReq.app_container,
-    containers: parseContainerPermissionsArray(authReq.containers)
+    containers: parseContainerPermissionsArray(authReq.containers, authReq.containers_len),
+    containers_len: authReq.containers_len,
+    containers_cap: authReq.containers_cap
   };
 };
 
@@ -110,6 +110,8 @@ export const parseContainerReq = (containersReq) => {
   }
   return {
     app: parseAppExchangeInfo(containersReq.app),
-    containers: parseContainerPermissionsArray(containersReq.containers)
+    containers: parseContainerPermissionsArray(containersReq.containers, containersReq.containers_len),
+    containers_len: containersReq.containers_len,
+    containers_cap: containersReq.containers_cap
   };
 };

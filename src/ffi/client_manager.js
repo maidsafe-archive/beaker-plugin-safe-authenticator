@@ -11,12 +11,10 @@ import {
   usize,
   int32,
   bool,
-  u32Pointer,
+  CString,
   voidPointer,
   AppHandlePointer,
-  ffiStringPointer,
   Null,
-  FfiString,
   AuthReq,
   ContainersReq,
   RegisteredAppPointer
@@ -56,15 +54,13 @@ class ClientManager extends FfiApi {
   getFunctionsToRegister() {
     /* eslint-enable no-unused-vars, class-methods-use-this */
     return {
-      create_acc: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
-      login: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
-      decode_ipc_msg: [Void, [voidPointer, FfiString, voidPointer, 'pointer', 'pointer', 'pointer']],
+      create_acc: [int32, [CString, CString, AppHandlePointer, 'pointer', 'pointer']],
+      login: [int32, [CString, CString, AppHandlePointer, 'pointer', 'pointer']],
+      auth_decode_ipc_msg: [Void, [voidPointer, CString, voidPointer, 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [Void, [voidPointer, AuthReq, u32, bool, voidPointer, 'pointer']],
       encode_containers_resp: [Void, [voidPointer, ContainersReq, u32, bool, voidPointer, 'pointer']],
       authenticator_registered_apps: [int32, [voidPointer, voidPointer, 'pointer']],
-      authenticator_registered_apps_free: [Void, [RegisteredAppPointer, usize, usize]],
-      authenticator_revoke_app: [Void, [voidPointer, FfiString, voidPointer, 'pointer']],
-      ffi_string_create: [int32, [u32Pointer, usize, ffiStringPointer]]
+      authenticator_revoke_app: [Void, [voidPointer, CString, voidPointer, 'pointer']]
     };
   }
 
@@ -150,12 +146,12 @@ class ClientManager extends FfiApi {
       delete this[_reqDecryptList][req.reqId];
 
       try {
-        this[_callbackRegistry].authDecisionCb = ffi.Callback(Void, [voidPointer, int32, FfiString],
+        this[_callbackRegistry].authDecisionCb = ffi.Callback(Void, [voidPointer, int32, CString],
           (userData, code, res) => {
             if (isAllowed) {
               this._updateAppList();
             }
-            resolve(typeParsers.parseFfiString(res));
+            resolve(typeParsers.parseCString(res));
           });
 
         this.safeCore.encode_auth_resp(
@@ -197,12 +193,12 @@ class ClientManager extends FfiApi {
       delete this[_reqDecryptList][req.reqId];
 
       try {
-        this[_callbackRegistry].contDecisionCb = ffi.Callback(Void, [voidPointer, int32, FfiString],
+        this[_callbackRegistry].contDecisionCb = ffi.Callback(Void, [voidPointer, int32, CString],
           (userData, code, res) => {
             if (isAllowed) {
               this._updateAppList();
             }
-            resolve(typeParsers.parseFfiString(res));
+            resolve(typeParsers.parseCString(res));
           });
 
         this.safeCore.encode_containers_resp(
@@ -248,15 +244,15 @@ class ClientManager extends FfiApi {
 
 
       try {
-        const revokeCb = ffi.Callback(Void, [voidPointer, int32, FfiString],
+        const revokeCb = ffi.Callback(Void, [voidPointer, int32, CString],
           (userData, code, res) => {
             this._updateAppList();
-            resolve(typeParsers.parseFfiString(res));
+            resolve(typeParsers.parseCString(res));
           });
 
         this.safeCore.authenticator_revoke_app(
           authenticatorHandle,
-          this._getFfiStringStruct(appId),
+          this._getCString(appId),
           Null,
           revokeCb
         );
@@ -318,8 +314,8 @@ class ClientManager extends FfiApi {
           resolve();
         };
         this.safeCore.login.async(
-          this._getFfiStringStruct(locator),
-          this._getFfiStringStruct(secret),
+          this._getCString(locator),
+          this._getCString(secret),
           appHandle,
           Null,
           onStateChange,
@@ -356,8 +352,8 @@ class ClientManager extends FfiApi {
           resolve();
         };
         this.safeCore.create_acc.async(
-          this._getFfiStringStruct(locator),
-          this._getFfiStringStruct(secret),
+          this._getCString(locator),
+          this._getCString(secret),
           appHandle,
           Null,
           onStateChange,
@@ -393,7 +389,6 @@ class ClientManager extends FfiApi {
           [voidPointer, int32, RegisteredAppPointer, usize, usize],
           (userData, code, appList, len, cap) => {
             const apps = typeParsers.parseRegisteredAppArray(appList, len);
-            this.safeCore.authenticator_registered_apps_free(appList, len, cap);
             resolve(apps);
           });
 
@@ -450,17 +445,18 @@ class ClientManager extends FfiApi {
         });
 
       this[_callbackRegistry].decryptReqErrorCb = ffi.Callback(Void,
-        [voidPointer, int32, FfiString], (userData, res, error) => {
+        [voidPointer, int32, CString], (userData, res, error) => {
           if (typeof this[_reqErrorListener] !== 'function') {
             return;
           }
-          this[_reqErrorListener](typeParsers.parseFfiString(error));
+          console.log('Errorrrr: :: ', error);
+          this[_reqErrorListener](typeParsers.parseCString(error));
         });
 
       try {
-        this.safeCore.decode_ipc_msg(
+        this.safeCore.auth_decode_ipc_msg(
           authenticatorHandle,
-          this._createFFIString(msg),
+          this._getCString(msg),
           Null,
           this[_callbackRegistry].decryptReqAuthCb,
           this[_callbackRegistry].decryptReqContainerCb,
@@ -491,25 +487,10 @@ class ClientManager extends FfiApi {
     delete this[_clientHandle][key];
   }
 
-  _createFFIString(str) {
-    const buff = new Buffer(str);
-    const stringPointer = ref.alloc(FfiString);
-    const res = this.safeCore.ffi_string_create(buff, buff.length, stringPointer);
-    if (res !== 0) {
-      throw new Error(`Create string failed ${res}`);
-    }
-    return stringPointer.deref();
-  }
-
   /* eslint-disable class-methods-use-this */
-  _getFfiStringStruct(str) {
+  _getCString(str) {
     /* eslint-enable class-methods-use-this */
-    const strBuf = new Buffer(str);
-    return new FfiString({
-      ptr: strBuf,
-      len: strBuf.length,
-      cap: strBuf.length
-    });
+    return ref.allocCString(str);
   }
 
   _getFfiNetworkStateCb() {

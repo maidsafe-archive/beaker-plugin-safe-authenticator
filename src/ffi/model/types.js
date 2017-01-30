@@ -10,23 +10,17 @@ export const bool = ref.types.bool;
 export const int32 = ref.types.int32;
 export const Void = ref.types.void;
 export const Null = ref.NULL;
+export const CString = ref.types.CString;
 
 // Pointer Types
 export const u8Pointer = ref.refType(u8);
+export const CStringPointer = ref.refType(CString);
 export const u32Pointer = ref.refType(u32);
 export const voidPointer = ref.refType(Void);
 export const AppHandlePointer = ref.refType(voidPointer);
 
 // Struct types and Array types
 export const u8ArrayType = ArrayType(u8);
-
-export const FfiString = StructType({
-  ptr: u8Pointer,
-  len: usize,
-  cap: usize
-});
-
-export const ffiStringPointer = ref.refType(FfiString);
 
 export const AppKeys = StructType({
   owner_key: u8ArrayType,
@@ -38,12 +32,10 @@ export const AppKeys = StructType({
 });
 
 export const AppExchangeInfo = StructType({
-  id: FfiString,
-  scope: u8Pointer,
-  scope_len: usize,
-  scope_cap: usize,
-  name: FfiString,
-  vendor: FfiString
+  id: CString,
+  scope: CString,
+  name: CString,
+  vendor: CString
 });
 
 export const Permission = new Enum({
@@ -59,26 +51,30 @@ export const AppInfo = StructType({
   keys: AppKeys
 });
 
-export const PermissionArray = StructType({
-  ptr: ref.refType(Permission),
-  len: usize,
-  cap: usize
-});
+// export const PermissionArray = StructType({
+//   ptr: ref.refType(Permission),
+//   len: usize,
+//   cap: usize
+// });
 
 export const ContainerPermissions = StructType({
-  cont_name: FfiString,
-  access: PermissionArray
+  cont_name: CString,
+  access: ref.refType(Permission),
+  access_len: usize,
+  access_cap: usize
 });
 
-export const ContainerPermissionsArray = StructType({
-  ptr: ref.refType(ContainerPermissions),
-  len: usize,
-  cap: usize
-});
+// export const ContainerPermissionsArray = StructType({
+//   ptr: ref.refType(ContainerPermissions),
+//   len: usize,
+//   cap: usize
+// });
 
 export const RegisteredApp = StructType({
   app_id: AppExchangeInfo,
-  containers: ContainerPermissionsArray
+  containers: ref.refType(ContainerPermissions),
+  containers_len: usize,
+  containers_cap: usize
 });
 
 export const RegisteredAppPointer = ref.refType(RegisteredApp);
@@ -86,10 +82,14 @@ export const RegisteredAppPointer = ref.refType(RegisteredApp);
 export const AuthReq = StructType({
   app: AppExchangeInfo,
   app_container: bool,
-  containers: ContainerPermissionsArray
+  containers: ref.refType(ContainerPermissions),
+  containers_len: usize,
+  containers_cap: usize
 });
 
 export const ContainersReq = StructType({
   app: AppExchangeInfo,
-  containers: ContainerPermissionsArray
+  containers: ref.refType(ContainerPermissions),
+  containers_len: usize,
+  containers_cap: usize
 });
