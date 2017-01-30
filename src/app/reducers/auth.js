@@ -1,4 +1,3 @@
-import { I18n } from 'react-redux-i18n';
 import {
   SET_CREATE_ACC_NAV_POS,
   RESET_CREATE_ACC_NAV_POS,
@@ -110,8 +109,7 @@ const auth = (state = initialState, action) => {
       if (!state.loading) {
         return state;
       }
-      // TODO handle response (action.payload.message => errorCode)
-      return { ...state, loading: false, error: I18n.t('createAccFailed') };
+      return { ...state, loading: false, error: action.payload.message };
     }
 
     case `${LOGIN}_PENDING`: {
@@ -129,8 +127,7 @@ const auth = (state = initialState, action) => {
       if (!state.loading) {
         return state;
       }
-      // TODO handle response (action.payload.message => errorCode)
-      return { ...state, loading: false, error: I18n.t('loginFailed') };
+      return { ...state, loading: false, error: action.payload.message };
     }
 
     case `${LOGOUT}_FULFILLED`: {
