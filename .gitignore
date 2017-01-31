@@ -39,3 +39,4 @@ jspm_packages
 .idea
 dist
 src/ffi/*safe_authenticator*
+src/ffi/*system_uri*

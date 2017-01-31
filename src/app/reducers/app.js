@@ -29,7 +29,6 @@ const app = (state = initialState, action) => {
       return { ...state, loading: true };
     }
     case `${REVOKE_APP}_FULFILLED`: {
-      // TODO handle response and remove app from authorisedApps
       return { ...state, loading: false };
     }
     case `${REVOKE_APP}_REJECTED`: {

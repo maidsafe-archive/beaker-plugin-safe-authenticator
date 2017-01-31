@@ -22,6 +22,8 @@ import {
 import * as typeParsers from './model/typesParsers';
 import FfiApi from './FfiApi';
 import CONST from './../constants.json';
+import ERRORS from './error_code_lookup.json';
+import systemUriLoader from './system_uri';
 
 const _networkState = Symbol('networkState');
 const _networkStateChangeListener = Symbol('networkStateChangeListener');
@@ -148,6 +150,9 @@ class ClientManager extends FfiApi {
       try {
         this[_callbackRegistry].authDecisionCb = ffi.Callback(Void, [voidPointer, int32, CString],
           (userData, code, res) => {
+            if (code !== 0) {
+              return reject(ERRORS(code));
+            }
             if (isAllowed) {
               this._updateAppList();
             }
@@ -195,6 +200,9 @@ class ClientManager extends FfiApi {
       try {
         this[_callbackRegistry].contDecisionCb = ffi.Callback(Void, [voidPointer, int32, CString],
           (userData, code, res) => {
+            if (code !== 0) {
+              return reject(ERRORS(code));
+            }
             if (isAllowed) {
               this._updateAppList();
             }
@@ -242,10 +250,12 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('messages.unauthorised')));
       }
 
-
       try {
         const revokeCb = ffi.Callback(Void, [voidPointer, int32, CString],
           (userData, code, res) => {
+            if (code !== 0) {
+              return reject(ERRORS(code));
+            }
             this._updateAppList();
             resolve(typeParsers.parseCString(res));
           });
@@ -307,7 +317,7 @@ class ClientManager extends FfiApi {
       try {
         const onResult = (err, res) => {
           if (err || res !== 0) {
-            return reject(err || res);
+            return reject(ERRORS[res]);
           }
           this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, appHandle.deref());
           this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
@@ -345,7 +355,7 @@ class ClientManager extends FfiApi {
       try {
         const onResult = (err, res) => {
           if (err || res !== 0) {
-            return reject(err || res);
+            return reject(ERRORS[res]);
           }
           this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR, appHandle.deref());
           this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
@@ -465,6 +475,10 @@ class ClientManager extends FfiApi {
         console.error(`Auth request decrypt error :: ${e.message}`);
       }
     });
+  }
+
+  registerUriScheme(appInfo, schemes) {
+    return systemUriLoader.registerUriScheme(appInfo, schemes);
   }
 
   _updateAppList() {

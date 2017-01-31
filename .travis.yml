@@ -41,6 +41,9 @@ install:
   - ls $TRAVIS_BUILD_DIR
   - npm i
 
+before_script:
+  - npm run grep-error-codes
+
 script:
   - npm run lint
   - npm test
