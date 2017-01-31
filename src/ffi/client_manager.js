@@ -25,6 +25,7 @@ import * as typeParsers from './model/typesParsers';
 import FfiApi from './FfiApi';
 import CONST from './../constants.json';
 import ERRORS from './error_code_lookup.json';
+import systemUriLoader from './system_uri';
 
 const _networkState = Symbol('networkState');
 const _networkStateChangeListener = Symbol('networkStateChangeListener');
@@ -484,6 +485,10 @@ class ClientManager extends FfiApi {
         console.error(`Auth request decrypt error :: ${e.message}`);
       }
     });
+  }
+
+  registerUriScheme(appInfo, schemes) {
+    return systemUriLoader.registerUriScheme(appInfo, schemes);
   }
 
   _updateAppList() {

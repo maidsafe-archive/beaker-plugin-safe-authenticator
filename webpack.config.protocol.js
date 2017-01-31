@@ -31,6 +31,8 @@ export default {
   },
   externals: {
     fs: 'fs',
-    electron: 'electron'
+    electron: 'electron',
+    ffi: 'ffi',
+    ref: 'ref'
   }
 };

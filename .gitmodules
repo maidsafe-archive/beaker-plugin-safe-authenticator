@@ -2,3 +2,7 @@
 	path = native
 	url = https://github.com/shankar2105/safe_core.git
 	branch = patch_ffi
+[submodule "system_uri"]
+	path = system_uri
+	url = https://github.com/maidsafe/system_uri.git
+	branch = master
