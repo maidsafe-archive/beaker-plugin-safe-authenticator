@@ -26,7 +26,7 @@ import * as typeConstructor from './model/typesConstructor';
 import FfiApi from './FfiApi';
 import CONST from './../constants.json';
 import ERRORS from './error_code_lookup.json';
-import systemUriLoader from './system_uri';
+import systemUriLoader from './sys_uri_loader';
 
 const _networkState = Symbol('networkState');
 const _networkStateChangeListener = Symbol('networkStateChangeListener');
