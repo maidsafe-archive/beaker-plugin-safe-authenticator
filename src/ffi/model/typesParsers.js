@@ -6,23 +6,9 @@ export const parseArray = (type, arrayBuf, len) => {
   if (len === 0) {
     return [];
   }
-  const arrPtr = ref.reinterpret(arrayBuf.ptr, type.size * len);
+  const arrPtr = ref.reinterpret(arrayBuf, type.size * len);
   const ArrType = ArrayType(type);
   return ArrType(arrPtr);
-};
-
-export const parseCString = (str) => {
-  if (!str) {
-    return null;
-  }
-  return ref.readCString(str, 0);
-};
-
-export const parseU8Str = (u8, size) => {
-  if (size === 0) {
-    return null;
-  }
-  return ref.reinterpret(u8, size).toString();
 };
 
 export const parseAppExchangeInfo = (appExchangeInfo) => {
@@ -30,10 +16,10 @@ export const parseAppExchangeInfo = (appExchangeInfo) => {
     return;
   }
   return {
-    id: parseCString(appExchangeInfo.id),
-    scope: parseCString(appExchangeInfo.scope),
-    name: parseCString(appExchangeInfo.name),
-    vendor: parseCString(appExchangeInfo.vendor)
+    id: appExchangeInfo.id,
+    scope: appExchangeInfo.scope,
+    name: appExchangeInfo.name,
+    vendor: appExchangeInfo.vendor
   };
 };
 
@@ -52,7 +38,7 @@ export const parseContainerPermissions = (containerPermissions) => {
     return;
   }
   return {
-    cont_name: parseCString(containerPermissions.cont_name),
+    cont_name: containerPermissions.cont_name,
     access: parsePermissionArray(containerPermissions.access, containerPermissions.access_len),
     access_len: containerPermissions.access_len,
     access_cap: containerPermissions.access_cap

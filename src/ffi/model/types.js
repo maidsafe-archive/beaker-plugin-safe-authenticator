@@ -87,9 +87,13 @@ export const AuthReq = StructType({
   containers_cap: usize
 });
 
+export const AuthReqPointer = ref.refType(AuthReq);
+
 export const ContainersReq = StructType({
   app: AppExchangeInfo,
   containers: ref.refType(ContainerPermissions),
   containers_len: usize,
   containers_cap: usize
 });
+
+export const ContainersReqPointer = ref.refType(ContainersReq);

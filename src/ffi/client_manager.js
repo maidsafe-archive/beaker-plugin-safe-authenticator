@@ -17,9 +17,12 @@ import {
   Null,
   AuthReq,
   ContainersReq,
-  RegisteredAppPointer
+  RegisteredAppPointer,
+  AuthReqPointer,
+  ContainersReqPointer
 } from './model/types';
 import * as typeParsers from './model/typesParsers';
+import * as typeConstructor from './model/typesConstructor';
 import FfiApi from './FfiApi';
 import CONST from './../constants.json';
 import ERRORS from './error_code_lookup.json';
@@ -59,7 +62,7 @@ class ClientManager extends FfiApi {
       create_acc: [int32, [CString, CString, AppHandlePointer, 'pointer', 'pointer']],
       login: [int32, [CString, CString, AppHandlePointer, 'pointer', 'pointer']],
       auth_decode_ipc_msg: [Void, [voidPointer, CString, voidPointer, 'pointer', 'pointer', 'pointer']],
-      encode_auth_resp: [Void, [voidPointer, AuthReq, u32, bool, voidPointer, 'pointer']],
+      encode_auth_resp: [Void, [voidPointer, AuthReqPointer, u32, bool, voidPointer, 'pointer']],
       encode_containers_resp: [Void, [voidPointer, ContainersReq, u32, bool, voidPointer, 'pointer']],
       authenticator_registered_apps: [int32, [voidPointer, voidPointer, 'pointer']],
       authenticator_revoke_app: [Void, [voidPointer, CString, voidPointer, 'pointer']]
@@ -143,7 +146,7 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('invalid_req')));
       }
 
-      const authReq = this[_reqDecryptList][req.reqId];
+      const authReq = ref.alloc(AuthReq, typeConstructor.constructAuthReq(this[_reqDecryptList][req.reqId]));
 
       delete this[_reqDecryptList][req.reqId];
 
@@ -151,14 +154,13 @@ class ClientManager extends FfiApi {
         this[_callbackRegistry].authDecisionCb = ffi.Callback(Void, [voidPointer, int32, CString],
           (userData, code, res) => {
             if (code !== 0) {
-              return reject(ERRORS(code));
+              return reject(ERRORS[code]);
             }
             if (isAllowed) {
               this._updateAppList();
             }
-            resolve(typeParsers.parseCString(res));
+            resolve(res);
           });
-
         this.safeCore.encode_auth_resp(
           authenticatorHandle,
           authReq,
@@ -168,6 +170,7 @@ class ClientManager extends FfiApi {
           this[_callbackRegistry].authDecisionCb
         );
       } catch (e) {
+        console.log("Error :", e);
         reject(e);
       }
     });
@@ -193,7 +196,7 @@ class ClientManager extends FfiApi {
       if (!req.reqId) {
         return reject(new Error(i18n.__('invalid_req')));
       }
-      const contReq = this[_reqDecryptList][req.reqId];
+      const contReq = ref.alloc(ContainersReq, typeConstructor.constructContainerReq(this[_reqDecryptList][req.reqId]));
 
       delete this[_reqDecryptList][req.reqId];
 
@@ -201,12 +204,12 @@ class ClientManager extends FfiApi {
         this[_callbackRegistry].contDecisionCb = ffi.Callback(Void, [voidPointer, int32, CString],
           (userData, code, res) => {
             if (code !== 0) {
-              return reject(ERRORS(code));
+              return reject(ERRORS[code]);
             }
             if (isAllowed) {
               this._updateAppList();
             }
-            resolve(typeParsers.parseCString(res));
+            resolve(res);
           });
 
         this.safeCore.encode_containers_resp(
@@ -254,10 +257,10 @@ class ClientManager extends FfiApi {
         const revokeCb = ffi.Callback(Void, [voidPointer, int32, CString],
           (userData, code, res) => {
             if (code !== 0) {
-              return reject(ERRORS(code));
+              return reject(ERRORS[code]);
             }
             this._updateAppList();
-            resolve(typeParsers.parseCString(res));
+            resolve(res);
           });
 
         this.safeCore.authenticator_revoke_app(
@@ -431,36 +434,38 @@ class ClientManager extends FfiApi {
       }
 
       this[_callbackRegistry].decryptReqAuthCb = ffi.Callback(Void,
-        [voidPointer, u32, AuthReq], (userData, reqId, req) => {
-          this[_reqDecryptList][reqId] = req;
+        [voidPointer, u32, AuthReqPointer], (userData, reqId, req) => {
           if (typeof this[_authReqListener] !== 'function') {
             return;
           }
+          const authReq = typeParsers.parseAuthReq(req.deref());
+          this[_reqDecryptList][reqId] = authReq;
           this[_authReqListener]({
             reqId,
-            authReq: typeParsers.parseAuthReq(req)
+            authReq
           });
         });
 
       this[_callbackRegistry].decryptReqContainerCb = ffi.Callback(Void,
-        [voidPointer, int32, ContainersReq], (userData, reqId, req) => {
-          this[_reqDecryptList][reqId] = req;
+        [voidPointer, int32, ContainersReqPointer], (userData, reqId, req) => {
           if (typeof this[_containerReqListener] !== 'function') {
             return;
           }
+          const contReq = typeParsers.parseContainerReq(req.deref());
+          this[_reqDecryptList][reqId] = contReq;
           this[_containerReqListener]({
             reqId,
-            contReq: typeParsers.parseContainerReq(req)
+            contReq
           });
         });
 
       this[_callbackRegistry].decryptReqErrorCb = ffi.Callback(Void,
-        [voidPointer, int32, CString], (userData, res, error) => {
+        [voidPointer, int32, CString], (userData, code, error) => {
           if (typeof this[_reqErrorListener] !== 'function') {
             return;
           }
-          console.log('Errorrrr: :: ', error);
-          this[_reqErrorListener](typeParsers.parseCString(error));
+          console.log('Errorrr :: ', ERRORS[code]);
+          this[_reqErrorListener](error);
         });
 
       try {
