@@ -63,7 +63,7 @@ class ClientManager extends FfiApi {
       login: [int32, [CString, CString, AppHandlePointer, 'pointer', 'pointer']],
       auth_decode_ipc_msg: [Void, [voidPointer, CString, voidPointer, 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [Void, [voidPointer, AuthReqPointer, u32, bool, voidPointer, 'pointer']],
-      encode_containers_resp: [Void, [voidPointer, ContainersReq, u32, bool, voidPointer, 'pointer']],
+      encode_containers_resp: [Void, [voidPointer, ContainersReqPointer, u32, bool, voidPointer, 'pointer']],
       authenticator_registered_apps: [int32, [voidPointer, voidPointer, 'pointer']],
       authenticator_revoke_app: [Void, [voidPointer, CString, voidPointer, 'pointer']]
     };
@@ -465,7 +465,7 @@ class ClientManager extends FfiApi {
             return;
           }
           console.log('Errorrr :: ', ERRORS[code]);
-          this[_reqErrorListener](error);
+          this[_reqErrorListener](ERRORS[code]);
         });
 
       try {
