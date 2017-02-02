@@ -1,4 +1,5 @@
 import * as types from './types';
+import ArrayType from 'ref-array';
 
 export const constructAppExchangeInfo = (appInfo) => {
   return new types.AppExchangeInfo({
