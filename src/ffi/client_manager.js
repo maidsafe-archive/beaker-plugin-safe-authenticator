@@ -59,13 +59,13 @@ class ClientManager extends FfiApi {
     return {
       create_acc: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
       login: [int32, [FfiString, FfiString, AppHandlePointer, 'pointer', 'pointer']],
-      decode_ipc_msg: [Void, [voidPointer, FfiString, voidPointer, 'pointer', 'pointer', 'pointer']],
+      auth_decode_ipc_msg: [Void, [voidPointer, FfiString, voidPointer, 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [Void, [voidPointer, AuthReq, u32, bool, voidPointer, 'pointer']],
       encode_containers_resp: [Void, [voidPointer, ContainersReq, u32, bool, voidPointer, 'pointer']],
       authenticator_registered_apps: [int32, [voidPointer, voidPointer, 'pointer']],
-      authenticator_registered_apps_free: [Void, [RegisteredAppPointer, usize, usize]],
+      // authenticator_registered_apps_free: [Void, [RegisteredAppPointer, usize, usize]],
       authenticator_revoke_app: [Void, [voidPointer, FfiString, voidPointer, 'pointer']],
-      ffi_string_create: [int32, [u32Pointer, usize, ffiStringPointer]]
+      // ffi_string_create: [int32, [u32Pointer, usize, ffiStringPointer]]
     };
   }
 
@@ -475,7 +475,7 @@ class ClientManager extends FfiApi {
       try {
         this.safeCore.decode_ipc_msg(
           authenticatorHandle,
-          this._createFFIString(msg),
+          msg,
           Null,
           this[_callbackRegistry].decryptReqAuthCb,
           this[_callbackRegistry].decryptReqContainerCb,
@@ -504,16 +504,6 @@ class ClientManager extends FfiApi {
     }
     // TODO drop client handle at ffi
     delete this[_clientHandle][key];
-  }
-
-  _createFFIString(str) {
-    const buff = new Buffer(str);
-    const stringPointer = ref.alloc(FfiString);
-    const res = this.safeCore.ffi_string_create(buff, buff.length, stringPointer);
-    if (res !== 0) {
-      throw new Error(`Create string failed ${res}`);
-    }
-    return stringPointer.deref();
   }
 
   /* eslint-disable class-methods-use-this */

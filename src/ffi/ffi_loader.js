@@ -17,27 +17,47 @@ class FfiLoader {
       let ffiFunctions = {};
 
       // Load all modules
+      let functionsToRegister;
       this.mods.forEach((mod) => {
         if (!(mod instanceof FfiApi)) {
           return;
         }
-        const functionsToRegister = mod.getFunctionsToRegister();
+        functionsToRegister = mod.getFunctionsToRegister();
         if (!functionsToRegister) {
           return;
         }
         ffiFunctions = Object.assign({}, ffiFunctions, functionsToRegister);
       });
+      try {
+          let safeCore;
+          // safeCore = ffi.Library(path.resolve(__dirname, libPath), ffiFunctions);
 
-      const safeCore = ffi.Library(path.resolve(__dirname, libPath), ffiFunctions);
+          const RTLD_NOW = ffi.DynamicLibrary.FLAGS.RTLD_NOW;
+          const RTLD_GLOBAL = ffi.DynamicLibrary.FLAGS.RTLD_GLOBAL;
+          const mode = RTLD_NOW | RTLD_GLOBAL;
 
-      this.mods.forEach((mod) => {
-        if (!(mod instanceof FfiApi)) {
-          return;
-        }
-        mod.setSafeCore(safeCore);
-      });
+          safeCore = {};
+          if (os.platform() === 'win32') {
+            ffi.DynamicLibrary(path.resolve(__dirname, 'libwinpthread-1'), mode);
+          }
+          const lib = ffi.DynamicLibrary(path.resolve(__dirname, 'safe_authenticator'), mode);
+          let funcDefinition;
+          Object.keys(ffiFunctions).forEach(funcName => {
+              funcDefinition = ffiFunctions[funcName];
+              safeCore[funcName] = ffi.ForeignFunction(lib.get(funcName), funcDefinition[0], funcDefinition[1]);
+          });
 
-      resolve();
+          this.mods.forEach((mod) => {
+            if (!(mod instanceof FfiApi)) {
+              return;
+            }
+            mod.setSafeCore(safeCore);
+          });
+
+          resolve();
+      } catch(e) {
+        reject(e);
+      }
     });
   }
 }

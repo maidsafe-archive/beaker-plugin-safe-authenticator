@@ -8,6 +8,14 @@ const SAFE_CORE = {
   linux: '*.so'
 };
 
+const dependenciesToCopy = [
+    { context: 'src/ffi', from: SAFE_CORE[os.platform()], flatten: true }
+];
+
+if (os.platform() === 'win32') {
+  dependenciesToCopy.push({ context: 'src/ffi', from: 'libwinpthread-1.dll', flatten: true });
+}
+
 export default {
   devtool: 'cheap-module-source-map',
   entry: path.resolve(__dirname, 'src/api/index.js'),
@@ -43,8 +51,6 @@ export default {
     ref: 'ref'
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { context: 'src/ffi', from: SAFE_CORE[os.platform()], flatten: true }
-    ])
+    new CopyWebpackPlugin(dependenciesToCopy)
   ]
 };
