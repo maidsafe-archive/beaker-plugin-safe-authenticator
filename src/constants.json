@@ -4,6 +4,11 @@
     "darwin": "./libsafe_authenticator.dylib",
     "linux": "./libsafe_authenticator.so"
   },
+  "DEFAULT_SYSTEM_URI_LIB_PATH": {
+    "win32": "./system_uri.dll",
+    "darwin": "./libsystem_uri.dylib",
+    "linux": "./libsystem_uri.so"
+  },
   "DEFAULT_CLIENT_HANDLE_KEYS": {
     "UNAUTHORISED": "unauthorised",
     "AUTHENTICATOR": "authenticator"

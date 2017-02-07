@@ -2,7 +2,8 @@ import path from 'path';
 import childProcess from 'child_process';
 import fse from 'fs-extra';
 
-const targetErrorFilePath = path.resolve(__dirname, 'native', 'safe_authenticator', 'src', 'errors.rs');
+// const targetErrorFilePath = path.resolve(__dirname, 'native', 'safe_authenticator', 'src', 'errors.rs');
+const targetErrorFilePath = path.resolve('/Users/shankar/Dev/Libs/safe_core/safe_authenticator/src', 'errors.rs');
 const destErrorFilePath = path.resolve(__dirname, 'src', 'ffi', 'error_code_lookup.json');
 const matchText = 'pub const ERR_';
 

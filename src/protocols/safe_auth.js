@@ -4,11 +4,23 @@ import url from 'url';
 /* eslint-disable import/extensions */
 import { protocol } from 'electron';
 /* eslint-enable import/extensions */
+import client from '../ffi/client_manager';
+
 const safeAuthScheme = 'safe-auth';
+
+const appInfo = {
+  id: 'net.maidsafe.safebrowser',
+  exec: '',
+  vendor: 'maidsafe',
+  name: 'safe-browser',
+  icon: ''
+};
 
 const DIST_PATH = __dirname;
 
 const registerSafeAuthProtocol = () => {
+  client.registerUriScheme(appInfo, safeAuthScheme);
+
   protocol.registerBufferProtocol(safeAuthScheme, (req, cb) => {
     const parsedUrl = url.parse(req.url);
     switch (parsedUrl.pathname) {

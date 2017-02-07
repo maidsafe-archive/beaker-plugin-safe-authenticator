@@ -20,9 +20,10 @@ Rust and Nodejs are required for development.
 1. Clone the project
 2. Run `git submodule init && git submodule update`
 3. Run `npm i` to install the nodejs dependency
-4. `npm run build` will build the project to the `dist` folder
+4. Build the native modules `npm run build-native-mock && npm run build-system-uri`
+5. `npm run build` will build the project to the `dist` folder.
 
-The `dist` folder is to be published or used in the beaker browser as a dependency.
+The `dist` folder is to be used in the beaker browser as a dependency.
 
 In [safe_browser](https://github.com/maidsafe/safe_browser/) `app/node_modules`, create a folder `beaker-plugin-safe-authenticator` and add the contents of the `dist` folder.
 
