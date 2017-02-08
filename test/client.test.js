@@ -6,20 +6,8 @@ import FfiConst from '../src/constants.json';
 import { getRandomCredentials } from './utils';
 
 describe('Client', () => {
-  describe('Unregistered client', () => {
-    after(() => clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED));
-
-    it('should be able to create unregistered client', () => (
-      clientManager.createUnregisteredClient()
-        .should.be.fulfilled()
-    ));
-  });
-
   describe('Create account', () => {
-    before(() => clientManager.createUnregisteredClient());
-
     after(() => {
-      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED);
       clientManager.logout();
     });
 
@@ -79,10 +67,7 @@ describe('Client', () => {
   });
 
   describe('User login', () => {
-    before(() => clientManager.createUnregisteredClient());
-
     after(() => {
-      clientManager.dropHandle(FfiConst.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED);
       clientManager.logout();
     });
 

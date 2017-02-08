@@ -275,31 +275,6 @@ class ClientManager extends FfiApi {
     });
   }
 
-  /*
-   * Create unregistered client
-   * */
-  createUnregisteredClient() {
-    return new Promise((resolve) => {
-      // TODO integrate ffi function - create unregistered client
-      // this.networkState = CONST.NETWORK_STATUS.CONNECTING;
-
-      // const onStateChange = ffi.Callback(Void, [int32], (state) => {
-      //   this.networkState = state;
-      //   if (this.networkStateChangeListener) {
-      //     this.networkStateChangeListener(state);
-      //   }
-      // });
-
-      // this[_networkState] = CONST.NETWORK_STATUS.CONNECTED;
-      this.setClientHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.UNAUTHORISED, 1);
-
-      // if (typeof this[_networkStateChangeListener] === 'function') {
-      //   this[_networkStateChangeListener](null, this[_networkState]);
-      // }
-      resolve();
-    });
-  }
-
   /**
    * User login
    * @param {string} locator
@@ -382,7 +357,11 @@ class ClientManager extends FfiApi {
    */
   logout() {
     this._pushNetworkState(-1);
-    this.dropHandle(CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR);
+    const key = CONST.DEFAULT_CLIENT_HANDLE_KEYS.AUTHENTICATOR;
+    if (!key || !this._isClientHandleExist(key)) {
+      return;
+    }
+    delete this[_clientHandle][key];
   }
 
   /**
@@ -493,17 +472,6 @@ class ClientManager extends FfiApi {
           this[_appListUpdateListener](null, apps);
         }
       });
-  }
-
-  /*
-   * Drop client handle
-   * */
-  dropHandle(key) {
-    if (!key || !this._isClientHandleExist(key)) {
-      return;
-    }
-    // TODO drop client handle at ffi
-    delete this[_clientHandle][key];
   }
 
   /* eslint-disable class-methods-use-this */

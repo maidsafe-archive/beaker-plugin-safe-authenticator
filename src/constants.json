@@ -10,7 +10,6 @@
     "linux": "./libsystem_uri.so"
   },
   "DEFAULT_CLIENT_HANDLE_KEYS": {
-    "UNAUTHORISED": "unauthorised",
     "AUTHENTICATOR": "authenticator"
   },
   "NETWORK_STATUS": {

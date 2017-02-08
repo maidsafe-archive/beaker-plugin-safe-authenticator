@@ -6,8 +6,6 @@ safeAuthRpc(api.ffi.client);
 
 // load ffi library
 api.ffi.ffiLoader.loadLibrary()
-// create unregistered client
-  .then(() => api.ffi.client.createUnregisteredClient())
   // TODO notify on browser
   .catch((err) => console.error(err));
 
