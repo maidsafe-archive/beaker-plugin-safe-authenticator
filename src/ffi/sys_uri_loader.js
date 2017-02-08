@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-unresolved, import/extensions */
 import ffi from 'ffi';
 /* eslint-enable import/no-unresolved, import/extensions */
@@ -13,12 +14,12 @@ class SystemUriLoader {
   constructor() {
     this[_libPath] = CONST.DEFAULT_SYSTEM_URI_LIB_PATH[os.platform()];
     this[_ffiFunctions] = {
-      install: [type.int32, ['string', //bundle
-        'string', //vendor
-        'string', //name
-        'string', //exec
-        'string', //icon
-        'string', //schemes
+      install: [type.int32, ['string',
+        'string',
+        'string',
+        'string',
+        'string',
+        'string',
       ]],
     };
     this.lib = ffi.Library(path.resolve(__dirname, this[_libPath]), this[_ffiFunctions]);
@@ -34,7 +35,7 @@ class SystemUriLoader {
 
     const ret = this.lib.install(bundle, vendor, name, exec, icon, joinedSchemes);
     if (ret === -1) {
-      throw new Error("Error occured installing: " + ret);
+      throw new Error(`Error occured installing: ${ret}`);
     }
   }
 }

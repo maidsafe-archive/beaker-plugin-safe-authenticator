@@ -2,7 +2,6 @@
 import should from 'should';
 import i18n from 'i18n';
 import clientManager from '../src/ffi/client_manager';
-import FfiConst from '../src/constants.json';
 import { getRandomCredentials } from './utils';
 
 describe('Client', () => {

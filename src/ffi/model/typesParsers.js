@@ -61,7 +61,8 @@ export const parseRegisteredApp = (registeredApp) => {
   }
   return {
     app_id: parseAppExchangeInfo(registeredApp.app_id),
-    containers: parseContainerPermissionsArray(registeredApp.containers, registeredApp.containers_len),
+    containers: parseContainerPermissionsArray(registeredApp.containers,
+      registeredApp.containers_len),
     containers_len: registeredApp.containers_len,
     containers_cap: registeredApp.containers_cap
   };
@@ -96,7 +97,8 @@ export const parseContainerReq = (containersReq) => {
   }
   return {
     app: parseAppExchangeInfo(containersReq.app),
-    containers: parseContainerPermissionsArray(containersReq.containers, containersReq.containers_len),
+    containers: parseContainerPermissionsArray(containersReq.containers,
+      containersReq.containers_len),
     containers_len: containersReq.containers_len,
     containers_cap: containersReq.containers_cap
   };

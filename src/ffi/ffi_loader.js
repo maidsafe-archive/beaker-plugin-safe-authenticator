@@ -29,33 +29,33 @@ class FfiLoader {
         ffiFunctions = Object.assign({}, ffiFunctions, functionsToRegister);
       });
       try {
-          let safeCore;
-          // safeCore = ffi.Library(path.resolve(__dirname, libPath), ffiFunctions);
+        const safeCore = {};
+        // safeCore = ffi.Library(path.resolve(__dirname, libPath), ffiFunctions);
 
-          const RTLD_NOW = ffi.DynamicLibrary.FLAGS.RTLD_NOW;
-          const RTLD_GLOBAL = ffi.DynamicLibrary.FLAGS.RTLD_GLOBAL;
-          const mode = RTLD_NOW | RTLD_GLOBAL;
+        const RTLD_NOW = ffi.DynamicLibrary.FLAGS.RTLD_NOW;
+        const RTLD_GLOBAL = ffi.DynamicLibrary.FLAGS.RTLD_GLOBAL;
+        const mode = RTLD_NOW || RTLD_GLOBAL;
 
-          safeCore = {};
-          if (os.platform() === 'win32') {
-            ffi.DynamicLibrary(path.resolve(__dirname, 'libwinpthread-1'), mode);
+        if (os.platform() === 'win32') {
+          ffi.DynamicLibrary(path.resolve(__dirname, 'libwinpthread-1'), mode);
+        }
+        const lib = ffi.DynamicLibrary(path.resolve(__dirname, libPath), mode);
+        let funcDefinition;
+        Object.keys(ffiFunctions).forEach((funcName) => {
+          funcDefinition = ffiFunctions[funcName];
+          safeCore[funcName] = ffi.ForeignFunction(lib.get(funcName),
+            funcDefinition[0], funcDefinition[1]);
+        });
+
+        this.mods.forEach((mod) => {
+          if (!(mod instanceof FfiApi)) {
+            return;
           }
-          const lib = ffi.DynamicLibrary(path.resolve(__dirname, libPath), mode);
-          let funcDefinition;
-          Object.keys(ffiFunctions).forEach(funcName => {
-              funcDefinition = ffiFunctions[funcName];
-              safeCore[funcName] = ffi.ForeignFunction(lib.get(funcName), funcDefinition[0], funcDefinition[1]);
-          });
+          mod.setSafeCore(safeCore);
+        });
 
-          this.mods.forEach((mod) => {
-            if (!(mod instanceof FfiApi)) {
-              return;
-            }
-            mod.setSafeCore(safeCore);
-          });
-
-          resolve();
-      } catch(e) {
+        resolve();
+      } catch (e) {
         reject(e);
       }
     });

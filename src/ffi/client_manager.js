@@ -146,7 +146,8 @@ class ClientManager extends FfiApi {
         return reject(new Error(i18n.__('invalid_req')));
       }
 
-      const authReq = ref.alloc(AuthReq, typeConstructor.constructAuthReq(this[_reqDecryptList][req.reqId]));
+      const authReq = ref.alloc(AuthReq,
+        typeConstructor.constructAuthReq(this[_reqDecryptList][req.reqId]));
 
       delete this[_reqDecryptList][req.reqId];
 
@@ -170,7 +171,6 @@ class ClientManager extends FfiApi {
           this[_callbackRegistry].authDecisionCb
         );
       } catch (e) {
-        console.log("Error :", e);
         reject(e);
       }
     });
@@ -196,7 +196,8 @@ class ClientManager extends FfiApi {
       if (!req.reqId) {
         return reject(new Error(i18n.__('invalid_req')));
       }
-      const contReq = ref.alloc(ContainersReq, typeConstructor.constructContainerReq(this[_reqDecryptList][req.reqId]));
+      const contReq = ref.alloc(ContainersReq,
+        typeConstructor.constructContainerReq(this[_reqDecryptList][req.reqId]));
 
       delete this[_reqDecryptList][req.reqId];
 
@@ -379,7 +380,7 @@ class ClientManager extends FfiApi {
       try {
         this[_callbackRegistry].appListCb = ffi.Callback(Void,
           [voidPointer, int32, RegisteredAppPointer, usize, usize],
-          (userData, code, appList, len, cap) => {
+          (userData, code, appList, len) => {
             const apps = typeParsers.parseRegisteredAppArray(appList, len);
             resolve(apps);
           });
@@ -443,8 +444,7 @@ class ClientManager extends FfiApi {
           if (typeof this[_reqErrorListener] !== 'function') {
             return;
           }
-          console.log('Errorrr :: ', ERRORS[code]);
-          this[_reqErrorListener](ERRORS[code]);
+          this[_reqErrorListener](error || ERRORS[code]);
         });
 
       try {
@@ -461,7 +461,9 @@ class ClientManager extends FfiApi {
     });
   }
 
+  /* eslint-disable class-methods-use-this */
   registerUriScheme(appInfo, schemes) {
+    /* eslint-enable class-methods-use-this */
     return systemUriLoader.registerUriScheme(appInfo, schemes);
   }
 
