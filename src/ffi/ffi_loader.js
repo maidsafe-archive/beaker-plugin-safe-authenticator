@@ -13,7 +13,7 @@ class FfiLoader {
   }
 
   loadLibrary(libPath = CONST.DEFAULT_LIB_PATH[os.platform()]) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       let ffiFunctions = {};
 
       // Load all modules
@@ -40,7 +40,7 @@ class FfiLoader {
           if (os.platform() === 'win32') {
             ffi.DynamicLibrary(path.resolve(__dirname, 'libwinpthread-1'), mode);
           }
-          const lib = ffi.DynamicLibrary(path.resolve(__dirname, 'safe_authenticator'), mode);
+          const lib = ffi.DynamicLibrary(path.resolve(__dirname, libPath), mode);
           let funcDefinition;
           Object.keys(ffiFunctions).forEach(funcName => {
               funcDefinition = ffiFunctions[funcName];
