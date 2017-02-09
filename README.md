@@ -23,9 +23,7 @@ Rust and Nodejs are required for development.
 4. Build the native modules `npm run build-native-mock && npm run build-system-uri`
 5. `npm run build` will build the project to the `dist` folder.
 
-The `dist` folder is to be used in the beaker browser as a dependency.
-
-In [safe_browser](https://github.com/maidsafe/safe_browser/) `app/node_modules`, create a folder `beaker-plugin-safe-authenticator` and add the contents of the `dist` folder.
+In [safe_browser](https://github.com/maidsafe/safe_browser/) `app/node_modules`, create a folder `beaker-plugin-safe-authenticator` and add `index.html` file and the `dist` folder obtained after building the plugin.
 
 # License
 
