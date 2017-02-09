@@ -37,6 +37,7 @@
   "-202": "Invalid msg",
   "-203": "Already authorised",
   "-204": "Unknown app",
+  "-205": "String error",
   "-300": "Directory exists",
   "-301": "Destination and source are same",
   "-302": "Directory not found",
@@ -46,5 +47,7 @@
   "-306": "Invalid range",
   "-307": "Invalid parameter",
   "-1013": "Io error",
+  "-1014": "No such public id",
+  "-1015": "Public id exists",
   "-2000": "Unexpected"
 }
