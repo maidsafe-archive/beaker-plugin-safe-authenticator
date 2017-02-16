@@ -11,19 +11,19 @@ SAFE Authenticator plugin for SAFE Browser.
 
 ## Dependency
 
-Project depends on [Safe_client_libs](https://github.com/maidsafe/safe_client_libs). The dependency is specified as a git submodule.
+This project depends on [safe_client_libs](https://github.com/maidsafe/safe_client_libs). The dependency is specified as a git submodule.
 
 ## Development
 
-Rust and Nodejs are required for development.
+Rust and Node.js are required for development.
 
 1. Clone the project
-2. Run `git submodule init && git submodule update`
-3. Run `npm i` to install the nodejs dependency
+2. Run `git submodule update --init`
+3. Run `npm install` to install the Node.js dependencies
 4. Build the native modules `npm run build-native-mock && npm run build-system-uri`
-5. `npm run build` will build the project to the `dist` folder.
+5. `npm run build` will build the project to the `dist` folder
 
-In [safe_browser](https://github.com/maidsafe/safe_browser/) `app/node_modules`, create a folder `beaker-plugin-safe-authenticator` and add `index.html` file and the `dist` folder obtained after building the plugin.
+In [safe_browser](https://github.com/maidsafe/safe_browser/) `app/node_modules`, create a folder called `beaker-plugin-safe-authenticator` and add the `index.js` file and the `dist` folder obtained after building the plugin.
 
 # License
 
