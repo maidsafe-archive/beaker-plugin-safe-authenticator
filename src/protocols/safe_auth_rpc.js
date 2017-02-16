@@ -13,6 +13,12 @@ const reqQueue = [];
 
 let isReqProcessing = false;
 
+const parseResUrl = (url) => {
+  const split = url.split(':');
+  split[0] = split[0].toLocaleLowerCase().replace('==', '');
+  return split.join(':');
+};
+
 const processReqQueue = () => {
   if (isReqProcessing || reqQueue.length === 0) {
     return;
@@ -45,11 +51,11 @@ const registerAuthDecision = (event, authData, isAllowed) => {
     .then((res) => {
       setTimeout(() => {
         reqQueueProcessNext();
-        console.warn('Auth res :: ', res);
+        console.warn('Auth res :: ', parseResUrl(res));
         event.sender.send('onAuthDecisionRes', res);
       }, 1000);
       try {
-        shell.openExternal(res);
+        shell.openExternal(parseResUrl(res));
       } catch (e) {
         console.error(e.message);
       }
@@ -74,11 +80,11 @@ const registerContainerDecision = (event, contData, isAllowed) => {
     .then((res) => {
       setTimeout(() => {
         reqQueueProcessNext();
-        console.warn('Cont res :: ', res);
+        console.warn('Cont res :: ', parseResUrl(res));
         event.sender.send('onContDecisionRes', res);
       }, 1000);
       try {
-        shell.openExternal(res);
+        shell.openExternal(parseResUrl(res));
       } catch (e) {
         console.error(e.message);
       }
@@ -112,7 +118,7 @@ const registerOnReqError = () => {
     console.warn('AuthReq error :: ', error);
     reqQueueProcessNext();
     try {
-      shell.openExternal(error);
+      shell.openExternal(parseResUrl(error));
     } catch (e) {
       console.error(e.message);
     }
