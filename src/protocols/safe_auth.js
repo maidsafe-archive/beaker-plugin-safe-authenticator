@@ -7,6 +7,7 @@ import { protocol } from 'electron';
 import client from '../ffi/client_manager';
 
 const safeAuthScheme = 'safe-auth';
+const safeScheme = 'safe';
 
 const appInfo = {
   id: 'net.maidsafe.safebrowser',
@@ -16,10 +17,8 @@ const appInfo = {
   icon: ''
 };
 
-const DIST_PATH = __dirname;
-
 const registerSafeAuthProtocol = () => {
-  client.registerUriScheme(appInfo, safeAuthScheme);
+  client.registerUriScheme(appInfo, [safeAuthScheme, safeScheme]);
 
   protocol.registerBufferProtocol(safeAuthScheme, (req, cb) => {
     const parsedUrl = url.parse(req.url);
@@ -27,17 +26,17 @@ const registerSafeAuthProtocol = () => {
       case '/bundle.js':
         cb({
           mimeType: 'application/javascript',
-          data: fs.readFileSync(path.resolve(DIST_PATH, 'bundle.js'))
+          data: fs.readFileSync(path.resolve(__dirname, 'bundle.js'))
         });
         break;
       case '/bundle.js.map':
         cb({
           mimeType: 'application/octet-stream',
-          data: fs.readFileSync(path.resolve(DIST_PATH, 'bundle.js.map'))
+          data: fs.readFileSync(path.resolve(__dirname, 'bundle.js.map'))
         });
         break;
       default:
-        cb({ mimeType: 'text/html', data: fs.readFileSync(path.resolve(DIST_PATH, 'app.html')) });
+        cb({ mimeType: 'text/html', data: fs.readFileSync(path.resolve(__dirname, 'app.html')) });
         break;
     }
   }, (err) => {
@@ -52,4 +51,5 @@ const scheme = {
   isInternal: true,
   register: registerSafeAuthProtocol
 };
+
 export default scheme;

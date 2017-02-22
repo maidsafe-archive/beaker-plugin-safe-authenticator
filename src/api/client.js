@@ -12,7 +12,7 @@ export const manifest = {
   revokeApp: 'promise'
 };
 
-export const getAuthenticatorHandle = () => client.getAuthenticatorHandle();
+export const getAuthenticatorHandle = () => (client.authenticatorHandle);
 
 export const authDecision = (authData, isAllowed) =>
   client.authDecision(authData, isAllowed);
@@ -24,7 +24,7 @@ export const setNetworkIpcListener = (cb) => client.setNetworkIpcListener(cb);
 
 export const setNetworkListener = (cb) => client.setNetworkListener(cb);
 
-export const getNetworkState = () => client.getNetworkState();
+export const getNetworkState = () => (client.networkState);
 
 export const setAppListUpdateListener = (cb) => client.setAppListUpdateListener(cb);
 

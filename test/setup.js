@@ -11,13 +11,9 @@ i18n.configure({
 
 i18n.setLocale('en');
 
-const init = async () => {
-  try {
-    // load ffi library
-    await ffiLoader.loadLibrary();
-  } catch (e) {
-    throw (e);
-  }
+const init = () => {
+  ffiLoader.loadLibrary()
+    .catch(console.error)
 };
 
 init();

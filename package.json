@@ -4,19 +4,20 @@
   "description": "SAFE Browser add-on for authenticating user to access SAFE Network",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.test.js",
+    "grep-error-codes": "./node_modules/.bin/babel-node grep_error_codes.js",
     "lint": "eslint src test *.js",
-    "build-system-uri": "cd system_uri && cargo build --release && cd ../ && cp -f system_uri/target/release/*system_uri* ./src/ffi",
-    "build-system-uri-win": "cd system_uri && cargo build --release && cd ../ && cp -f system_uri/target/release/system_uri.dll ./src/ffi",
-    "build-native": "cd native/safe_authenticator && cargo build --release && cd ../../ && cp -f native/target/release/*safe_authenticator* ./src/ffi",
-    "build-native-mock": "cd native/safe_authenticator && cargo build --release --features \"use-mock-routing\" && cd ../../ && cp -f native/target/release/*safe_authenticator* ./src/ffi",
-    "build-native-mock-win": "cd native/safe_authenticator && cargo build --release --features \"use-mock-routing\" && cd ../../ && cp -f native/target/release/safe_authenticator* ./src/ffi",
+    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.test.js",
     "build-app": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.development.js --progress --profile --colors",
     "build-api": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.api.js --progress --profile --colors",
     "build-protocol": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.protocol.js --progress --profile --colors",
     "build": "concurrently \"npm run build-app\" \"npm run build-api\" \"npm run build-protocol\"",
-    "prepublish": "npm run build-native-mock",
-    "grep-error-codes": "./node_modules/.bin/babel-node grep_error_codes.js"
+    "copy-binaries:unix": "cp -f system_uri/target/release/*system_uri* ./src/ffi && cp -f native/target/release/*safe_authenticator* ./src/ffi",
+    "copy-binaries:win": "cp -f ./system_uri/target/release/system_uri.dll ./src/ffi && cp -f native/target/release/safe_authenticator.dll ./src/ffi",
+    "build-system-uri": "cd system_uri && cargo build --release && cd ../",
+    "build-native": "npm run build-system-uri && cd native/safe_authenticator && cargo build --release && cd ../../",
+    "build-native-mock": "cd native/safe_authenticator && cargo build --release --features \"use-mock-routing\" && cd ../../",
+    "release": "npm run build-native && npm run build-system-uri",
+    "release:mock": "npm run build-native-mock && npm run build-system-uri"
   },
   "repository": {
     "type": "git",
