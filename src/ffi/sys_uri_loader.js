@@ -5,7 +5,7 @@ import ffi from 'ffi';
 import os from 'os';
 import path from 'path';
 import CONST from './../constants.json';
-import * as type from './model/types';
+import * as type from './refs/types';
 
 const _ffiFunctions = Symbol('ffiFunctions');
 const _libPath = Symbol('libPath');
