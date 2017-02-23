@@ -7,7 +7,6 @@ import { protocol } from 'electron';
 import client from '../ffi/client_manager';
 
 const safeAuthScheme = 'safe-auth';
-const safeScheme = 'safe';
 
 const appInfo = {
   id: 'net.maidsafe.safebrowser',
@@ -18,7 +17,7 @@ const appInfo = {
 };
 
 const registerSafeAuthProtocol = () => {
-  client.registerUriScheme(appInfo, [safeAuthScheme, safeScheme]);
+  client.registerUriScheme(appInfo, safeAuthScheme);
 
   protocol.registerBufferProtocol(safeAuthScheme, (req, cb) => {
     const parsedUrl = url.parse(req.url);
