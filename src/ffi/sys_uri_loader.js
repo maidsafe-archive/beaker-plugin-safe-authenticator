@@ -5,7 +5,7 @@ import ffi from 'ffi';
 import os from 'os';
 import path from 'path';
 import CONST from './../constants.json';
-import * as type from './model/types';
+import * as type from './refs/types';
 
 const _ffiFunctions = Symbol('ffiFunctions');
 const _libPath = Symbol('libPath');
@@ -14,6 +14,7 @@ class SystemUriLoader {
   constructor() {
     this[_libPath] = CONST.DEFAULT_SYSTEM_URI_LIB_PATH[os.platform()];
     this[_ffiFunctions] = {
+      open: [type.int32, ['string']],
       install: [type.int32, ['string',
         'string',
         'string',
@@ -36,6 +37,13 @@ class SystemUriLoader {
     const ret = this.lib.install(bundle, vendor, name, exec, icon, joinedSchemes);
     if (ret === -1) {
       throw new Error(`Error occured installing: ${ret}`);
+    }
+  }
+
+  openUri(str) {
+    const ret = this.lib.open(str);
+    if (ret === -1) {
+      throw new Error(`Error occured opening ${str} : ${ret}`);
     }
   }
 }

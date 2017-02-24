@@ -29,7 +29,7 @@ class FfiLoader {
         ffiFunctions = Object.assign({}, ffiFunctions, functionsToRegister);
       });
       try {
-        const safeCore = {};
+        const safeLib = {};
         // safeCore = ffi.Library(path.resolve(__dirname, libPath), ffiFunctions);
 
         const RTLD_NOW = ffi.DynamicLibrary.FLAGS.RTLD_NOW;
@@ -43,7 +43,7 @@ class FfiLoader {
         let funcDefinition;
         Object.keys(ffiFunctions).forEach((funcName) => {
           funcDefinition = ffiFunctions[funcName];
-          safeCore[funcName] = ffi.ForeignFunction(lib.get(funcName),
+          safeLib[funcName] = ffi.ForeignFunction(lib.get(funcName),
             funcDefinition[0], funcDefinition[1]);
         });
 
@@ -51,7 +51,7 @@ class FfiLoader {
           if (!(mod instanceof FfiApi)) {
             return;
           }
-          mod.setSafeCore(safeCore);
+          mod.setSafeLib(safeLib);
         });
 
         resolve();
