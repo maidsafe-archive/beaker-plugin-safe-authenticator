@@ -16,8 +16,6 @@ const appInfo = {
   icon: ''
 };
 
-const DIST_PATH = __dirname;
-
 const registerSafeAuthProtocol = () => {
   client.registerUriScheme(appInfo, safeAuthScheme);
 
@@ -27,17 +25,17 @@ const registerSafeAuthProtocol = () => {
       case '/bundle.js':
         cb({
           mimeType: 'application/javascript',
-          data: fs.readFileSync(path.resolve(DIST_PATH, 'bundle.js'))
+          data: fs.readFileSync(path.resolve(__dirname, 'bundle.js'))
         });
         break;
       case '/bundle.js.map':
         cb({
           mimeType: 'application/octet-stream',
-          data: fs.readFileSync(path.resolve(DIST_PATH, 'bundle.js.map'))
+          data: fs.readFileSync(path.resolve(__dirname, 'bundle.js.map'))
         });
         break;
       default:
-        cb({ mimeType: 'text/html', data: fs.readFileSync(path.resolve(DIST_PATH, 'app.html')) });
+        cb({ mimeType: 'text/html', data: fs.readFileSync(path.resolve(__dirname, 'app.html')) });
         break;
     }
   }, (err) => {
@@ -52,4 +50,5 @@ const scheme = {
   isInternal: true,
   register: registerSafeAuthProtocol
 };
+
 export default scheme;

@@ -1,15 +1,15 @@
 export default class FfiApi {
   constructor() {
-    this.safeCore = null;
+    this.safeLib = null;
   }
 
-  setSafeCore(safeCore) {
-    this.safeCore = safeCore;
+  setSafeLib(safeLib) {
+    this.safeLib = safeLib;
   }
   // Abstract methods
   /* eslint-disable class-methods-use-this */
   /* eslint-disable no-unused-vars */
-  drop(safeCore) {}
+  drop(safeLib) {}
   /* eslint-enable no-unused-vars */
   getFunctionsToRegister() {}
   /* eslint-enable class-methods-use-this */

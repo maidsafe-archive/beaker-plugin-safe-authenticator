@@ -46,6 +46,5 @@
     "plugin_not_found": "%{name} plugin not found",
     "invalid_params": "Invalid params",
     "invalid_req": "Invalid Request"
-  },
-  "invalid_params": "invalid_params"
+  }
 }

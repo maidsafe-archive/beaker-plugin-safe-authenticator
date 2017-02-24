@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable import/extensions */
-import { shell, ipcMain } from 'electron';
+import { ipcMain } from 'electron';
 /* eslint-enable import/extensions */
 import i18n from 'i18n';
 import config from '../config';
@@ -17,6 +17,12 @@ const parseResUrl = (url) => {
   const split = url.split(':');
   split[0] = split[0].toLocaleLowerCase().replace('==', '');
   return split.join(':');
+};
+
+const openExternal = (uri) => {
+  try {
+    clientManager.openUri(parseResUrl(uri));
+  } catch (err) { console.error(err); }
 };
 
 const processReqQueue = () => {
@@ -51,14 +57,9 @@ const registerAuthDecision = (event, authData, isAllowed) => {
     .then((res) => {
       setTimeout(() => {
         reqQueueProcessNext();
-        console.warn('Auth res :: ', parseResUrl(res));
         event.sender.send('onAuthDecisionRes', res);
       }, 1000);
-      try {
-        shell.openExternal(parseResUrl(res));
-      } catch (e) {
-        console.error(e.message);
-      }
+      openExternal(res);
     })
     .catch((err) => {
       reqQueueProcessNext();
@@ -80,14 +81,9 @@ const registerContainerDecision = (event, contData, isAllowed) => {
     .then((res) => {
       setTimeout(() => {
         reqQueueProcessNext();
-        console.warn('Cont res :: ', parseResUrl(res));
         event.sender.send('onContDecisionRes', res);
       }, 1000);
-      try {
-        shell.openExternal(parseResUrl(res));
-      } catch (e) {
-        console.error(e.message);
-      }
+      openExternal(res);
     })
     .catch((err) => {
       reqQueueProcessNext();
@@ -115,13 +111,8 @@ const registerOnContainerReq = (event) => {
 
 const registerOnReqError = () => {
   clientManager.setReqErrorListener((error) => {
-    console.warn('AuthReq error :: ', error);
     reqQueueProcessNext();
-    try {
-      shell.openExternal(parseResUrl(error));
-    } catch (e) {
-      console.error(e.message);
-    }
+    openExternal(error);
   });
 };
 
