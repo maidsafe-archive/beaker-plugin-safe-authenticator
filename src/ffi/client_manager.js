@@ -210,7 +210,7 @@ class ClientManager extends FfiApi {
       try {
         this[_callbackRegistry].contDecisionCb = ffi.Callback(types.Void,
           [types.voidPointer, types.int32, types.CString], (userData, code, res) => {
-            if (code !== 0) {
+            if (code !== 0 && !res) {
               return reject(ERRORS[code]);
             }
             if (isAllowed) {
@@ -268,7 +268,7 @@ class ClientManager extends FfiApi {
             try {
               this.openUri(res);
             } catch (e) {
-              console.error(`Revoke app :: Open URI :: ${e.message}`);
+              console.error('Failed to open custom URI after revoke');
             }
             resolve();
           });

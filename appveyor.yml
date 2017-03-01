@@ -35,7 +35,7 @@ install:
 build: off
 
 before_test:
-  - npm run release:mock
+  - npm run build-libs:mock
   - npm run copy-binaries:win
   - npm run grep-error-codes
   - ps: |
