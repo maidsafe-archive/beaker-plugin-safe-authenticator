@@ -10,10 +10,10 @@ const safeAuthScheme = 'safe-auth';
 
 const appInfo = {
   id: 'net.maidsafe.safebrowser',
-  exec: '',
+  exec: path.resolve(__dirname, '../../../../../SAFEBrowser'),
   vendor: 'maidsafe',
   name: 'safe-browser',
-  icon: ''
+  icon: 'iconPath'
 };
 
 const registerSafeAuthProtocol = () => {
