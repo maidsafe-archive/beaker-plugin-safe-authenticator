@@ -41,7 +41,7 @@ install:
   - npm i
 
 before_script:
-  - npm run release:mock
+  - npm run build-libs:mock
   - npm run copy-binaries:unix
   - npm run grep-error-codes
 

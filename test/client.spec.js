@@ -8,17 +8,17 @@ import CONST from '../src/constants.json';
 
 describe('Client', () => {
   let randomCredentials = null;
-  const encodedAuthUri = 'safe-auth:AAAAAGtirRgAAAAAAAAAAAAAAB5uZXQubWFpZHNhZmUuZXhhbXBsZXMudGVzdC1' +
-    'hcHABAAAAAAAAAAAAAAAAAAAAEk5vZGVKUyBleGFtcGxlIEFwcAAAAAAAAAARTWFpZFNhZmUubmV0IEx0ZC4AAAAAAA' +
-    'AAAAEAAAAAAAAAB19wdWJsaWMAAAAAAAAAAwAAAAAAAAABAAAAAg==';
-  const encodedContUri = 'safe-auth:AAAAAL5Zyd8AAAABAAAAAAAAAB5uZXQubWFpZHNhZmUuZXhhbXBsZXMud' +
-    'GVzdC1hcHABAAAAAAAAAAAAAAAAAAAAEk5vZGVKUyBleGFtcGxlIEFwcAAAAAAAAAARTWFpZFNhZmUubmV0IEx0Z' +
-    'C4AAAAAAAAAAQAAAAAAAAAHX3B1YmxpYwAAAAAAAAACAAAAAwAAAAQ=';
+  const encodedAuthUri = 'safe-auth:AAAAAApSmvkAAAAAAAAAAAAAAB5uZXQubWFpZHNhZmUuZXh' +
+    'hbXBsZXMudGVzdC1hcHABAAAAAAAAAAAAAAAAAAAAEk5vZGVKUyBleGFtcGxlIEFwcAAAAAAAAAART' +
+    'WFpZFNhZmUubmV0IEx0ZC4AAAAAAAAAAAEAAAAAAAAAB19wdWJsaWMAAAAAAAAAAQAAAAA=';
+  const encodedContUri = 'safe-auth:AAAAADl3fhQAAAABAAAAAAAAAB5uZXQubWFpZHNhZmUuZXhhbXBsZXMudGVzd' +
+    'C1hcHABAAAAAAAAAAAAAAAAAAAAEk5vZGVKUyBleGFtcGxlIEFwcAAAAAAAAAARTWFpZFNhZmUubmV0IEx0ZC4AA' +
+    'AAAAAAAAQAAAAAAAAAHX3B1YmxpYwAAAAAAAAAEAAAAAAAAAAEAAAADAAAABA==';
 
   const decodedReqForRandomClient = (uri) => helper.createRandomAccount()
     .then(() => client.decryptRequest(uri));
 
-  describe('Create Account', () => {
+  describe('create Account', () => {
     after(() => helper.clearAccount());
 
     it('throws an error when account locator is empty', () => client.createAccount()
@@ -88,7 +88,7 @@ describe('Client', () => {
     );
   });
 
-  describe('Login', () => {
+  describe('login', () => {
     before(() => helper.createRandomAccount()
       .then((credential) => (randomCredentials = credential))
     );
@@ -161,7 +161,7 @@ describe('Client', () => {
     );
   });
 
-  describe('Decrypt request', () => {
+  describe('decrypt request', () => {
     before(() => helper.createRandomAccount());
 
     after(() => helper.clearAccount());
@@ -179,16 +179,6 @@ describe('Client', () => {
           resolve(err);
         });
         client.decryptRequest(encodedContUri);
-      })
-    ));
-
-    it.skip('throws an error for invalid scheme', () => (
-      new Promise((resolve, reject) => {
-        client.setAuthReqListener((res) => reject(res));
-
-        client.setReqErrorListener((err) => resolve(err));
-
-        client.decryptRequest(encodedAuthUri.replace('safe-auth:', 'safe-uri:'));
       })
     ));
 
@@ -262,11 +252,72 @@ describe('Client', () => {
       })
     ));
 
-    it.skip('retuns a decoded request for encoded Container request', () => {
-    });
+    it('retuns a decoded request for encoded Container request', () => (
+      new Promise((resolve, reject) => {
+        client.setContainerReqListener((res) => {
+          should(res).not.be.undefined().and.be.Object().and.not.empty().and.have.properties(['reqId', 'contReq']);
+          should(res.reqId).not.be.undefined().and.be.Number();
+          should(res.contReq).be.Object().and.not.empty().and.have.properties([
+            'app',
+            'containers',
+            'containers_len',
+            'containers_cap']);
+          should(res.contReq.app).be.Object().and.not.empty().and.have.properties([
+            'id',
+            'scope',
+            'name',
+            'vendor']);
+          should(res.contReq.app.id).not.be.undefined().and.not.be.empty().and.be.String();
+          should(res.contReq.app.scope).not.be.undefined().and.be.String();
+          should(res.contReq.app.name).not.be.undefined().and.not.be.empty().and.be.String();
+          should(res.contReq.app.vendor).not.be.undefined().and.not.be.empty().and.be.String();
+          should(res.contReq.containers).not.be.undefined().and.be.Array();
+          should(res.contReq.containers_len).not.be.undefined().and.be.Number();
+          should(res.contReq.containers_cap).not.be.undefined().and.be.Number();
+
+          if (res.contReq.containers_len > 0) {
+            const container0 = res.contReq.containers[0];
+            should(container0).be.Object().and.not.empty().and.have.properties([
+              'cont_name',
+              'access',
+              'access_len',
+              'access_cap'
+            ]);
+            should(container0.cont_name).not.be.undefined().and.not.be.empty().and.be.String();
+            should(container0.access).not.be.undefined().and.not.be.empty().and.be.Array();
+            should(container0.access_len).not.be.undefined().and.be.Number();
+            should(container0.access_cap).not.be.undefined().and.be.Number();
+          }
+          return resolve();
+        });
+
+        client.setAuthReqListener((req) => {
+          client.authDecision(req, true).then(() => client.decryptRequest(encodedContUri));
+        });
+
+        client.setReqErrorListener((err) => reject(err));
+
+        client.decryptRequest(encodedAuthUri);
+      }))
+    );
+
+    it('returns a decoded request for encoded Container request without safe-auth: scheme', () => (
+      new Promise((resolve, reject) => {
+        client.setContainerReqListener((res) => {
+          should(res).not.be.undefined().and.be.Object().and.not.empty().and.have.properties(['reqId', 'contReq']);
+          return resolve();
+        });
+
+        client.setAuthReqListener((req) => reject(req));
+
+        client.setReqErrorListener((err) => reject(err));
+
+        client.decryptRequest(encodedContUri);
+      })
+    ));
   });
 
-  describe('Encode Auth response', () => {
+  describe('encode auth response', () => {
     let decodedReq = null;
     const prepareReq = () => new Promise((resolve, reject) => {
       client.setAuthReqListener((req) => {
@@ -322,7 +373,7 @@ describe('Client', () => {
     );
   });
 
-  describe('Encode Container Req', () => {
+  describe('encode container response', () => {
     let decodedReq = null;
     const prepareReq = () => new Promise((resolve, reject) => {
       client.setContainerReqListener((req) => {
@@ -370,19 +421,19 @@ describe('Client', () => {
       .then((err) => should(err.message).be.equal(i18n.__('messages.invalid_req')))
     );
 
-    it.skip('returns encoded response URI on success of deny', () => client.containerDecision(decodedReq, false)
+    it('returns encoded response URI on success of deny', () => client.containerDecision(decodedReq, false)
       .should.be.fulfilled()
       .then((res) => should(res).not.be.empty().and.be.String())
     );
 
-    it.skip('returns encoded response URI on success of allow', () => prepareReq()
+    it('returns encoded response URI on success of allow', () => prepareReq()
       .then(() => client.containerDecision(decodedReq, true))
       .should.be.fulfilled()
       .then((res) => should(res).not.be.empty().and.be.String())
     );
   });
 
-  describe('Get Authorised Apps', () => {
+  describe('get authorised apps', () => {
     const prepareReq = () => new Promise((resolve, reject) => {
       client.setAuthReqListener((req) => client.authDecision(req, true).then(resolve));
 
@@ -407,7 +458,7 @@ describe('Client', () => {
     );
   });
 
-  describe('Revoke app', () => {
+  describe('revoke app', () => {
     let appId = null;
     before(() => new Promise(
       (resolve, reject) => {
@@ -447,6 +498,32 @@ describe('Client', () => {
       .should.be.fulfilled()
       .then(() => client.getAuthorisedApps())
       .then((apps) => should(apps).be.Array().and.be.empty())
+    );
+  });
+
+  describe('after revoking', () => {
+    before(() => new Promise(
+      (resolve, reject) => {
+        client.setAuthReqListener((req) => {
+          const appId = req.authReq.app.id;
+          return client.authDecision(req, true)
+            .then(() => client.revokeApp(appId).then(resolve));
+        });
+
+        client.setReqErrorListener(reject);
+
+        decodedReqForRandomClient(encodedAuthUri);
+      })
+    );
+
+    after(() => helper.clearAccount());
+
+    it.skip('same app can be registered again', () => (
+      new Promise((resolve, reject) => {
+        client.setAuthReqListener(resolve);
+        client.setReqErrorListener(reject);
+        client.decryptRequest(encodedAuthUri);
+      }))
     );
   });
 });
