@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable import/extensions */
-import { ipcMain } from 'electron';
+import { ipcMain, shell } from 'electron';
 /* eslint-enable import/extensions */
 import i18n from 'i18n';
 import config from '../config';
@@ -21,7 +21,7 @@ const parseResUrl = (url) => {
 
 const openExternal = (uri) => {
   try {
-    clientManager.openUri(parseResUrl(uri));
+    shell.openExternal(parseResUrl(uri));
   } catch (err) { console.error(err); }
 };
 
