@@ -17,7 +17,7 @@ if (feature === 'mock-routing') {
   cmd = 'npm run build-libs:actual';
 }
 
-if (os.platform === 'win32') {
+if (os.platform() === 'win32') {
   cmd += ' && npm run copy-binaries:win';
 } else {
   cmd += ' && npm run copy-binaries:unix';
