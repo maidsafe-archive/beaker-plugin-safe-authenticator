@@ -6,12 +6,17 @@ import i18n from 'i18n';
 import config from '../config';
 
 config.i18n();
+const CLIENT_TYPES = {
+  DESKTOP: 'DESKTOP',
+  WEB: 'WEB'
+};
 
 let clientManager = null;
 
 const reqQueue = [];
 
 let isReqProcessing = false;
+let currentReqType = null;
 
 const parseResUrl = (url) => {
   const split = url.split(':');
@@ -20,6 +25,9 @@ const parseResUrl = (url) => {
 };
 
 const openExternal = (uri) => {
+  if (currentReqType !== CLIENT_TYPES.DESKTOP) {
+    return;
+  }
   try {
     shell.openExternal(parseResUrl(uri));
   } catch (err) { console.error(err); }
@@ -35,7 +43,9 @@ const processReqQueue = () => {
   }
 
   isReqProcessing = true;
-  clientManager.decryptRequest(reqQueue[0]);
+  const req = reqQueue[0];
+  currentReqType = req.type;
+  clientManager.decryptRequest(req.data);
 };
 
 const reqQueueProcessNext = () => {
@@ -43,6 +53,8 @@ const reqQueueProcessNext = () => {
   reqQueue.shift();
   processReqQueue();
 };
+
+const prepareResponse = (res) => ({ type: currentReqType, res });
 
 const registerAuthDecision = (event, authData, isAllowed) => {
   if (!authData) {
@@ -55,16 +67,14 @@ const registerAuthDecision = (event, authData, isAllowed) => {
 
   clientManager.authDecision(authData, isAllowed)
     .then((res) => {
-      setTimeout(() => {
-        reqQueueProcessNext();
-        event.sender.send('onAuthDecisionRes', res);
-      }, 1000);
+      event.sender.send('onAuthDecisionRes', prepareResponse(res));
       openExternal(res);
+      reqQueueProcessNext();
     })
     .catch((err) => {
-      reqQueueProcessNext();
-      event.sender.send('onAuthDecisionRes', err);
+      event.sender.send('onAuthDecisionRes', prepareResponse(err));
       console.error('Auth decision error :: ', err.message);
+      reqQueueProcessNext();
     });
 };
 
@@ -79,20 +89,24 @@ const registerContainerDecision = (event, contData, isAllowed) => {
 
   clientManager.containerDecision(contData, isAllowed)
     .then((res) => {
-      setTimeout(() => {
-        reqQueueProcessNext();
-        event.sender.send('onContDecisionRes', res);
-      }, 1000);
+      event.sender.send('onContDecisionRes', prepareResponse(res));
       openExternal(res);
+      reqQueueProcessNext();
     })
     .catch((err) => {
-      reqQueueProcessNext();
-      event.sender.send('onContDecisionRes', err);
+      event.sender.send('onContDecisionRes', prepareResponse(err));
       console.error('Container decision error :: ', err.message);
+      reqQueueProcessNext();
     });
 };
 
 const decryptRequest = (event, req) => {
+  if (typeof req !== 'object' || !req.type || !req.data) {
+    return console.error('Invalid request');
+  }
+  if (Object.keys(CLIENT_TYPES).indexOf(req.type) === -1) {
+    return console.error('Invalid request client');
+  }
   reqQueue.push(req);
   processReqQueue();
 };
