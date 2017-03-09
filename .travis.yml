@@ -41,8 +41,7 @@ install:
   - npm i
 
 before_script:
-  - npm run build-libs:mock
-  - npm run copy-binaries:unix
+  - npm run build-libs features="mock-routing"
   - npm run grep-error-codes
 
 script:
