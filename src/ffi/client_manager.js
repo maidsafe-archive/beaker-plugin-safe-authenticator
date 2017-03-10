@@ -447,7 +447,10 @@ class ClientManager extends FfiApi {
           if (typeof this[_reqErrorListener] !== 'function') {
             return;
           }
-          this[_reqErrorListener](error || ERRORS[code]);
+          this[_reqErrorListener]({
+            code: code,
+            msg: error
+          });
         });
 
       try {

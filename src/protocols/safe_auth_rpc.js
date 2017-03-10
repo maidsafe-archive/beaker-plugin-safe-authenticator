@@ -123,10 +123,15 @@ const registerOnContainerReq = (event) => {
   });
 };
 
-const registerOnReqError = () => {
+const registerOnReqError = (event) => {
   clientManager.setReqErrorListener((error) => {
+    if (error.code === -203) { // handle app already authorised
+      event.sender.send('onAuthDecisionRes', prepareResponse(error.msg));
+    } else {
+      event.sender.send('onAuthResError', prepareResponse(error.msg));
+    }
+    openExternal(error.msg);
     reqQueueProcessNext();
-    openExternal(error);
   });
 };
 
@@ -145,10 +150,10 @@ ipcMain.on('registerOnAuthReq', registerOnAuthReq);
 ipcMain.on('registerOnContainerReq', registerOnContainerReq);
 ipcMain.on('registerAuthDecision', registerAuthDecision);
 ipcMain.on('registerContainerDecision', registerContainerDecision);
+ipcMain.on('registerOnReqError', registerOnReqError);
 
 const register = (client) => {
   clientManager = client;
-  registerOnReqError();
 };
 
 export default register;
