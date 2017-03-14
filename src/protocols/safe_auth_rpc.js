@@ -25,7 +25,7 @@ const parseResUrl = (url) => {
 };
 
 const openExternal = (uri) => {
-  if (currentReqType !== CLIENT_TYPES.DESKTOP) {
+  if (!uri || (uri.indexOf('safe') !== 0) || currentReqType !== CLIENT_TYPES.DESKTOP) {
     return;
   }
   try {

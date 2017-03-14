@@ -448,7 +448,7 @@ class ClientManager extends FfiApi {
             return;
           }
           this[_reqErrorListener]({
-            code: code,
+            code,
             msg: error
           });
         });

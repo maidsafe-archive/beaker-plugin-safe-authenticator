@@ -175,7 +175,7 @@ describe('Client', () => {
         client.setContainerReqListener((res) => reject(res));
 
         client.setReqErrorListener((err) => {
-          should(err).not.be.empty().and.be.String();
+          should(err).not.be.empty().and.be.Object();
           resolve(err);
         });
         client.decryptRequest(encodedContUri);
