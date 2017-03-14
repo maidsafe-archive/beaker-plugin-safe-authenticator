@@ -125,11 +125,7 @@ const registerOnContainerReq = (event) => {
 
 const registerOnReqError = (event) => {
   clientManager.setReqErrorListener((error) => {
-    if (error.code === -203) { // handle app already authorised
-      event.sender.send('onAuthDecisionRes', prepareResponse(error.msg));
-    } else {
-      event.sender.send('onAuthResError', prepareResponse(error.msg));
-    }
+    event.sender.send('onAuthResError', prepareResponse(error.msg));
     openExternal(error.msg);
     reqQueueProcessNext();
   });
