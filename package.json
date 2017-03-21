@@ -11,14 +11,13 @@
     "build-api": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.api.js --progress --profile --colors",
     "build-protocol": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.protocol.js --progress --profile --colors",
     "build": "concurrently \"npm run build-app\" \"npm run build-api\" \"npm run build-protocol\"",
-    "copy-binaries:unix": "cp -f ./system_uri/target/release/*system_uri* ./src/ffi && cp -f ./native/target/release/*safe_authenticator* ./src/ffi",
-    "copy-binaries:win": "cp -f ./system_uri/target/release/system_uri.dll ./src/ffi && cp -f ./native/target/release/safe_authenticator.dll ./src/ffi",
+    "copy-binaries:unix": "cp -f system_uri/target/release/*system_uri* ./src/ffi && cp -f native/target/release/*safe_authenticator* ./src/ffi",
+    "copy-binaries:win": "cp -f ./system_uri/target/release/system_uri.dll ./src/ffi && cp -f native/target/release/safe_authenticator.dll ./src/ffi",
     "build-system-uri": "cd system_uri && cargo clean && cargo update && cargo build --release && cd ../",
-    "build-native": "cd ./native/safe_authenticator && cargo clean && cargo update && cargo build --release && cd ../../",
-    "build-native-mock": "cd ./native/safe_authenticator && cargo clean && cargo update && cargo build --release --features \"use-mock-routing\" && cd ../../",
-    "build-libs:actual": "npm run build-native && npm run build-system-uri",
-    "build-libs:mock": "npm run build-native-mock && npm run build-system-uri",
-    "build-libs": "node ./build_libs.js"
+    "build-native": "cd native/safe_authenticator && cargo clean && cargo update && cargo build --release && cd ../../",
+    "build-native-mock": "cd native/safe_authenticator && cargo clean && cargo update && cargo build --release --features \"use-mock-routing\" && cd ../../",
+    "build-libs": "npm run build-native && npm run build-system-uri",
+    "build-libs:mock": "npm run build-native-mock && npm run build-system-uri"
   },
   "repository": {
     "type": "git",

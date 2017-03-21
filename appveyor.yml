@@ -35,7 +35,8 @@ install:
 build: off
 
 before_test:
-  - npm run build-libs features="mock-routing"
+  - npm run build-libs:mock
+  - npm run copy-binaries:win
   - npm run grep-error-codes
   - ps: |
           if($env:platform -eq "x86") {

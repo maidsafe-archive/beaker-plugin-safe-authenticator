@@ -18,21 +18,12 @@ This project depends on [safe_client_libs](https://github.com/maidsafe/safe_clie
 Rust and Node.js are required for development.
 
 1. Clone the project
-2. Run `git submodule update --init --recursive --remote`
+2. Run `git submodule update --init`
 3. Run `npm install` to install the Node.js dependencies
-4. Build the native modules
-   
-   **Actual routing**
-   ```
-   $ npm run build-libs
-   ``` 
-   
-   **Mock routing**
-   ```
-   $ npm run build-libs features="mock-routing"
-   ```
-   
+4. Build the native modules `npm run build-native-mock && npm run build-system-uri`
 5. `npm run build` will build the project to the `dist` folder
+
+In [safe_browser](https://github.com/maidsafe/safe_browser/) `app/node_modules`, create a folder called `beaker-plugin-safe-authenticator` and add the `index.js` file and the `dist` folder obtained after building the plugin.
 
 # License
 
