@@ -12,7 +12,7 @@ const isDevMode = process.execPath.match(/[\\/]electron/);
 
 const appInfo = {
   id: 'net.maidsafe.safebrowser',
-  exec: isDevMode ? process.execPath + ' ' + app.getAppPath() : app.getPath('exe'),
+  exec: isDevMode ? `${process.execPath} ${app.getAppPath()}` : app.getPath('exe'),
   vendor: 'maidsafe',
   name: 'safe-browser',
   icon: 'iconPath'
