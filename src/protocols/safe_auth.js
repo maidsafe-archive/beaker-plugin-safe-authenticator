@@ -2,15 +2,17 @@ import path from 'path';
 import fs from 'fs';
 import url from 'url';
 /* eslint-disable import/extensions */
-import { protocol } from 'electron';
+import { protocol, app } from 'electron';
 /* eslint-enable import/extensions */
 import client from '../ffi/client_manager';
 
 const safeAuthScheme = 'safe-auth';
 
+const isDevMode = process.execPath.match(/[\\/]electron/);
+
 const appInfo = {
   id: 'net.maidsafe.safebrowser',
-  exec: path.resolve(__dirname, '../../../../../SAFEBrowser'),
+  exec: isDevMode ? process.execPath + ' ' + app.getAppPath() : app.getPath('exe'),
   vendor: 'maidsafe',
   name: 'safe-browser',
   icon: 'iconPath'
