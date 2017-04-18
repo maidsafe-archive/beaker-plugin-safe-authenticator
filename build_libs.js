@@ -20,15 +20,15 @@ if (feature === 'mock-routing') {
 const build = spawn('npm', ['run', cmd]);
 
 build.stdout.on('data', (data) => {
-  console.log(data.toString());
+  console.warn(data.toString());
 });
 
 build.stderr.on('data', (data) => {
-  console.log(data.toString());
+  console.warn(data.toString());
 });
 
 build.on('exit', (code) => {
-  console.log(`Build Authenticator exited with code ${code}`);
+  console.warn(`Build Authenticator exited with code ${code}`);
   if (code !== 0) {
     return;
   }
@@ -40,14 +40,14 @@ build.on('exit', (code) => {
   }
   const copy = spawn('npm', ['run', copyCmd]);
   copy.stdout.on('data', (data) => {
-    console.log(data.toString());
+    console.warn(data.toString());
   });
 
   copy.stderr.on('data', (data) => {
-    console.log(data.toString());
+    console.warn(data.toString());
   });
 
-  copy.on('exit', (code) => {
-    console.log(`Copy Authenticator exited with code ${code}`);
+  copy.on('exit', (c) => {
+    console.warn(`Copy Authenticator exited with code ${c}`);
   });
 });
