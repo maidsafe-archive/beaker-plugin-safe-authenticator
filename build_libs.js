@@ -1,4 +1,4 @@
-const exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
 const os = require('os');
 
 let cmd = '';
@@ -12,24 +12,42 @@ const feature = process.argv.reduce((acc, arg) => {
 }, '');
 
 if (feature === 'mock-routing') {
-  cmd = 'npm run build-libs:mock';
+  cmd = 'build-libs:mock';
 } else {
-  cmd = 'npm run build-libs:actual';
+  cmd = 'build-libs:actual';
 }
 
-if (os.platform() === 'win32') {
-  cmd += ' && npm run copy-binaries:win';
-} else {
-  cmd += ' && npm run copy-binaries:unix';
-}
+const build = spawn('npm', ['run', cmd]);
 
-exec(cmd, (error, stdout, stderr) => {
-  if (error) {
-    console.error(`exec error: ${error}`);
+build.stdout.on('data', (data) => {
+  console.warn(data.toString());
+});
+
+build.stderr.on('data', (data) => {
+  console.warn(data.toString());
+});
+
+build.on('exit', (code) => {
+  console.warn(`Build Authenticator exited with code ${code}`);
+  if (code !== 0) {
     return;
   }
-  console.warn(stdout);
-  if (stderr) {
-    console.warn(`Error: ${stderr}`);
+  let copyCmd = '';
+  if (os.platform() === 'win32') {
+    copyCmd = 'copy-binaries:win';
+  } else {
+    copyCmd = 'copy-binaries:unix';
   }
+  const copy = spawn('npm', ['run', copyCmd]);
+  copy.stdout.on('data', (data) => {
+    console.warn(data.toString());
+  });
+
+  copy.stderr.on('data', (data) => {
+    console.warn(data.toString());
+  });
+
+  copy.on('exit', (c) => {
+    console.warn(`Copy Authenticator exited with code ${c}`);
+  });
 });
