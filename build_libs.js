@@ -1,6 +1,8 @@
 const spawn = require('child_process').spawn;
 const os = require('os');
 
+const osPlatform = os.platform();
+const npmCmd = osPlatform === 'win32' ? 'npm.cmd' : 'npm';
 let cmd = '';
 
 const feature = process.argv.reduce((acc, arg) => {
@@ -17,7 +19,7 @@ if (feature === 'mock-routing') {
   cmd = 'build-libs:actual';
 }
 
-const build = spawn('npm', ['run', cmd]);
+const build = spawn(npmCmd, ['run', cmd]);
 
 build.stdout.on('data', (data) => {
   console.warn(data.toString());
@@ -33,12 +35,12 @@ build.on('exit', (code) => {
     return;
   }
   let copyCmd = '';
-  if (os.platform() === 'win32') {
+  if (osPlatform === 'win32') {
     copyCmd = 'copy-binaries:win';
   } else {
     copyCmd = 'copy-binaries:unix';
   }
-  const copy = spawn('npm', ['run', copyCmd]);
+  const copy = spawn(npmCmd, ['run', copyCmd]);
   copy.stdout.on('data', (data) => {
     console.warn(data.toString());
   });
