@@ -6,6 +6,7 @@
 /* eslint-disable import/no-unresolved, import/extensions */
 import ffi from 'ffi';
 /* eslint-enable import/no-unresolved, import/extensions */
+import crypto from 'crypto';
 import i18n from 'i18n';
 import config from '../config';
 import * as types from './refs/types';
@@ -60,7 +61,7 @@ class ClientManager extends FfiApi {
   getFunctionsToRegister() {
     /* eslint-enable no-unused-vars, class-methods-use-this */
     return {
-      create_acc: [types.int32, [types.CString, types.CString, types.AppHandlePointer, 'pointer', 'pointer']],
+      create_acc: [types.int32, [types.CString, types.CString, types.CString, types.AppHandlePointer, 'pointer', 'pointer']],
       login: [types.int32, [types.CString, types.CString, types.AppHandlePointer, 'pointer', 'pointer']],
       auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [types.Void, [types.voidPointer, types.AuthReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
@@ -339,7 +340,7 @@ class ClientManager extends FfiApi {
       const appHandle = types.allocAppHandlePointer();
 
       const onStateChange = this._getFfiNetworkStateCb();
-
+      const invitation = crypto.randomBytes(10).toString('hex');
       try {
         const onResult = (err, res) => {
           if (err || res !== 0) {
@@ -352,6 +353,7 @@ class ClientManager extends FfiApi {
         this.safeLib.create_acc.async(
           types.allocCString(locator),
           types.allocCString(secret),
+          types.allocCString(invitation),
           appHandle,
           types.Null,
           onStateChange,
