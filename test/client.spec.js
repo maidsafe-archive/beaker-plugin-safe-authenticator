@@ -520,21 +520,49 @@ describe('Client', () => {
 
     after(() => helper.clearAccount());
 
-    it.skip('same app can be registered again', () => (
+    it('same app can be registered again', () => (
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          client.setAuthReqListener((req) => (
+            client.authDecision(req, true)
+              .then(() => client.getAuthorisedApps()
+                .then((apps) => {
+                  should(apps.length).be.equal(1);
+                  return resolve();
+                }))
+          ));
+          client.setReqErrorListener(reject);
+          client.decryptRequest(encodedAuthUri);
+        }, 1000);
+      }))
+    );
+  });
+
+  describe('re-authorising', () => {
+    before(() => new Promise(
+      (resolve, reject) => {
+        client.setAuthReqListener((req) => client.authDecision(req, true).then(resolve));
+
+        client.setReqErrorListener(reject);
+
+        decodedReqForRandomClient(encodedAuthUri);
+      })
+    );
+
+    after(() => helper.clearAccount());
+
+    it('doesn\'t throw error', () => (
       new Promise((resolve, reject) => {
         client.setAuthReqListener((req) => (
           client.authDecision(req, true)
-            .then(() => client.getAuthorisedApps())
-            .then((apps) => {
-              console.warn('apps list', apps);
-              // TODO check assertion
-              // should(apps).be.Array().and.not.be.empty();
+            .then((res) => {
+              should(res).not.be.empty().and.be.String();
               return resolve();
             })
         ));
         client.setReqErrorListener(reject);
         client.decryptRequest(encodedAuthUri);
-      }))
-    );
+      })
+    ));
   });
 });
