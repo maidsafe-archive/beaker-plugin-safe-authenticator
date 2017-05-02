@@ -87,6 +87,7 @@ export default class InviteCode extends Component {
               <button
                 type="button"
                 className="btn flat primary"
+                disabled="disabled"
                 onClick={(e) => {
                   e.preventDefault();
                   this.props.toggleInvitePopup();
@@ -111,7 +112,7 @@ export default class InviteCode extends Component {
             { show: this.props.showPopupWindow }
           )}
         >
-          <iframe src="http://localhost:9000" frameBorder="0">{''}</iframe>
+          <iframe src="#" frameBorder="0">{''}</iframe>
           <button
             type="button"
             className="frame-close"

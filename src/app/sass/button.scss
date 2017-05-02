@@ -10,6 +10,10 @@
   }
   color: $default-btn;
   cursor: pointer;
+  &:disabled {
+    background: gray !important;
+    cursor: not-allowed;
+  }
   &.flat {
     border-radius: 3px;
     &.primary {
