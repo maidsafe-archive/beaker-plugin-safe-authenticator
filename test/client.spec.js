@@ -67,7 +67,8 @@ describe('Client', () => {
 
     it('sets authenticator handle when account creation is successful', () => {
       randomCredentials = helper.getRandomCredentials();
-      return client.createAccount(randomCredentials.locator, randomCredentials.secret)
+      return client.createAccount(randomCredentials.locator,
+        randomCredentials.secret, randomCredentials.invite)
         .should.be.fulfilled()
         .then(() => {
           should(client.authenticatorHandle).not.be.empty();

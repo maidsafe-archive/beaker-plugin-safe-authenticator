@@ -16,6 +16,7 @@ import {
 } from './actions/network_state';
 
 import { setAppList } from './actions/app';
+import { setInviteCode, toggleInvitePopup } from './actions/auth';
 
 const store = configureStore();
 const history = syncHistoryWithStore(hashHistory, store);
@@ -58,6 +59,12 @@ const appListUpdateListenerCb = (err, apps) => {
 
 networkStateListenerCb(null, window.safeAuthenticator.getNetworkState());
 appListUpdateListenerCb(null, []);
+
+window.addEventListener('message', (evt) => {
+  console.warn('Invitation code ::', evt.data);
+  store.dispatch(setInviteCode(evt.data));
+  store.dispatch(toggleInvitePopup());
+}, false);
 
 render(
   <Provider store={store}>

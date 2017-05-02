@@ -19,8 +19,9 @@
   },
   "CREATE_ACC_NAV": {
     "WELCOME": 1,
-    "SECRET_FORM": 2,
-    "PASSWORD_FORM": 3
+    "INVITE_CODE": 2,
+    "SECRET_FORM": 3,
+    "PASSWORD_FORM": 4
   },
   "PASSPHRASE_STRENGTH": {
     "VERY_WEAK": 4,
