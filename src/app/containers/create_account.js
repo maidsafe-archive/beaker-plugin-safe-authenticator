@@ -13,6 +13,8 @@ const mapStateToProps = (state) => (
     error: state.auth.error,
     userSecret: state.auth.userSecret,
     userPassword: state.auth.userPassword,
+    inviteCode: state.auth.inviteCode,
+    showPopupWindow: state.auth.showPopupWindow,
     loading: state.auth.loading
   }
 );

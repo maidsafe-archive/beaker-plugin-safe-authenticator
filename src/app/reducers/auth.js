@@ -9,9 +9,12 @@ import {
   CLEAR_ACC_SECRET,
   SET_ACC_PASSWORD,
   CLEAR_ACC_PASSWORD,
+  SET_INVITE_CODE,
+  CLEAR_INVITE_CODE,
   SET_AUTH_LOADER,
   CLEAR_AUTH_LOADER,
   CREATE_ACC,
+  TOGGLE_INVITE_POPUP,
   LOGIN,
   LOGOUT
 } from '../actions/auth';
@@ -23,10 +26,12 @@ const initialState = {
   createAccNavPos: 1,
   userSecret: null,
   userPassword: null,
+  inviteCode: null,
   secretStrength: 0,
   passwordStrength: 0,
   error: null,
-  loading: false
+  loading: false,
+  showPopupWindow: false
 };
 
 const auth = (state = initialState, action) => {
@@ -41,13 +46,17 @@ const auth = (state = initialState, action) => {
         nextState.passwordStrength = 0;
       }
 
+      if (!state.inviteCode && action.position === CONSTANTS.CREATE_ACC_NAV.SECRET_FORM) {
+        return nextState;
+      }
+
       if (!state.userSecret && action.position === CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM) {
         if (state.createAccNavPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
           return { ...nextState, createAccNavPos: CONSTANTS.CREATE_ACC_NAV.SECRET_FORM };
         }
         return nextState;
       }
-      return { ...nextState, createAccNavPos: action.position };
+      return { ...nextState, createAccNavPos: action.position, error: null };
     }
 
     case RESET_CREATE_ACC_NAV_POS: {
@@ -86,6 +95,14 @@ const auth = (state = initialState, action) => {
       return { ...state, userPassword: null };
     }
 
+    case SET_INVITE_CODE: {
+      return { ...state, inviteCode: action.invite };
+    }
+
+    case CLEAR_INVITE_CODE: {
+      return { ...state, inviteCode: null };
+    }
+
     case SET_AUTH_LOADER: {
       return { ...state, loading: true };
     }
@@ -109,7 +126,12 @@ const auth = (state = initialState, action) => {
       if (!state.loading) {
         return state;
       }
-      return { ...state, loading: false, error: action.payload.message };
+      return {
+        ...state,
+        loading: false,
+        error: action.payload.message,
+        createAccNavPos: CONSTANTS.CREATE_ACC_NAV.INVITE_CODE
+      };
     }
 
     case `${LOGIN}_PENDING`: {
@@ -132,6 +154,10 @@ const auth = (state = initialState, action) => {
 
     case `${LOGOUT}_FULFILLED`: {
       return { ...state, loading: false, isAuthorised: false };
+    }
+
+    case TOGGLE_INVITE_POPUP: {
+      return { ...state, showPopupWindow: !state.showPopupWindow };
     }
 
     default: {

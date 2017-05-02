@@ -8,9 +8,12 @@ export const SET_ACC_SECRET = 'SET_ACC_SECRET';
 export const CLEAR_ACC_SECRET = 'CLEAR_ACC_SECRET';
 export const SET_ACC_PASSWORD = 'SET_ACC_PASSWORD';
 export const CLEAR_ACC_PASSWORD = 'CLEAR_ACC_PASSWORD';
+export const SET_INVITE_CODE = 'SET_INVITE_CODE';
+export const CLEAR_INVITE_CODE = 'CLEAR_INVITE_CODE';
 export const SET_AUTH_LOADER = 'SET_AUTH_LOADER';
 export const CLEAR_AUTH_LOADER = 'CLEAR_AUTH_LOADER';
 export const CREATE_ACC = 'CREATE_ACC';
+export const TOGGLE_INVITE_POPUP = 'TOGGLE_INVITE_POPUP';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 
@@ -68,17 +71,30 @@ export const clearAccPassword = () => ({
   type: CLEAR_ACC_PASSWORD
 });
 
+export const setInviteCode = (invite) => ({
+  type: SET_INVITE_CODE,
+  invite
+});
+
+export const clearInviteCode = () => ({
+  type: CLEAR_INVITE_CODE
+});
+
 export const setAuthLoader = () => ({
   type: SET_AUTH_LOADER
+});
+
+export const toggleInvitePopup = () => ({
+  type: TOGGLE_INVITE_POPUP
 });
 
 export const clearAuthLoader = () => ({
   type: CLEAR_AUTH_LOADER
 });
 
-export const createAccount = (secret, password) => ({
+export const createAccount = (secret, password, invitation) => ({
   type: CREATE_ACC,
-  payload: window.safeAuthenticator.createAccount(secret, password)
+  payload: window.safeAuthenticator.createAccount(secret, password, invitation)
 });
 
 export const login = (secret, password) => ({

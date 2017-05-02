@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import CreateAccountWelcome from './create_account_welcome';
 import CreateAccountSecret from './create_account_secret';
 import CreateAccountPassword from './create_account_password';
+import InviteCode from './invite_code';
 import AuthLoader from './auth_loader';
 import CONSTANTS from '../../constants.json';
 
@@ -18,7 +19,8 @@ export default class CreateAccount extends Component {
     clearError: PropTypes.func,
     clearAccSecret: PropTypes.func,
     clearAccPassword: PropTypes.func,
-    resetCreateAccNavPos: PropTypes.func
+    resetCreateAccNavPos: PropTypes.func,
+    clearInviteCode: PropTypes.func
   };
 
   static contextTypes = {
@@ -48,6 +50,8 @@ export default class CreateAccount extends Component {
     switch (this.props.navPos) {
       case CONSTANTS.CREATE_ACC_NAV.WELCOME:
         return <CreateAccountWelcome {...this.props} />;
+      case CONSTANTS.CREATE_ACC_NAV.INVITE_CODE:
+        return <InviteCode {...this.props} />;
       case CONSTANTS.CREATE_ACC_NAV.SECRET_FORM:
         return <CreateAccountSecret {...this.props} />;
       case CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM:
@@ -63,6 +67,7 @@ export default class CreateAccount extends Component {
     this.props.clearError();
     this.props.clearAccSecret();
     this.props.clearAccPassword();
+    this.props.clearInviteCode();
     this.props.resetCreateAccNavPos();
   }
 
@@ -80,8 +85,9 @@ export default class CreateAccount extends Component {
             {container}
             <div className="intro-nav">
               <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME })} onClick={() => { setCreateAccNavPos(1); }}>{''}</span>
-              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.SECRET_FORM })} onClick={() => { setCreateAccNavPos(2); }}>{''}</span>
-              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM })} onClick={() => { setCreateAccNavPos(3); }}>{''}</span>
+              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.INVITE_CODE })} onClick={() => { setCreateAccNavPos(2); }}>{''}</span>
+              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.SECRET_FORM })} onClick={() => { setCreateAccNavPos(3); }}>{''}</span>
+              <span className={classNames({ active: navPos === CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM })} onClick={() => { setCreateAccNavPos(4); }}>{''}</span>
             </div>
           </div>
           <div className="auth-foot">

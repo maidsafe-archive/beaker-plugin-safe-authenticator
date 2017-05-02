@@ -9,6 +9,7 @@
   "URL": "URL",
   "Account Secret": "Account Secret",
   "Account Password": "Account Password",
+  "Invite Code": "Invite Code",
   "Login": "Login",
   "Create Account": "Create Account",
   "Back": "Back",
@@ -31,7 +32,8 @@
     "desc": {
       "welcome": "Authenticator will act as your gateway to the SAFE Network, you can use it to access data on the network and to authorise apps to connect on your behalf.",
       "secret": "Your 'account secret' is private and should not be shared with anyone.",
-      "password": "Your 'account password' is never stored or transmitted, it will not leave your computer."
+      "password": "Your 'account password' is never stored or transmitted, it will not leave your computer.",
+      "inviteCode": "Enter an invitation token or click on the 'Claim an invitation' button."
     }
   },
   "invalid_network_state": "Invalid network state",
@@ -45,6 +47,7 @@
     "need_to_be_stronger": "%{name} needs to be stronger",
     "plugin_not_found": "%{name} plugin not found",
     "invalid_params": "Invalid params",
-    "invalid_req": "Invalid Request"
+    "invalid_req": "Invalid Request",
+    "invalid_invite_code": "Invalid Invite code"
   }
 }

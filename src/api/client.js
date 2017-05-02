@@ -32,7 +32,8 @@ export const logout = () => client.logout();
 
 export const login = (secret, password) => client.login(secret, password);
 
-export const createAccount = (secret, password) => client.createAccount(secret, password);
+export const createAccount = (secret, password, invitation) =>
+  client.createAccount(secret, password, invitation);
 
 export const getAuthorisedApps = () => client.getAuthorisedApps();
 

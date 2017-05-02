@@ -162,6 +162,21 @@
   }
 }
 
+.invite-cnt {
+  margin-top: 20px !important;
+  .inviteClaimBtn {
+    text-align: center;
+    padding: 10px 0;
+    .separator {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    button {
+      margin-top: 20px;
+    }
+  }
+}
+
 @keyframes authLoader {
   0% {
     left: 0;

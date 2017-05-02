@@ -6,7 +6,6 @@
 /* eslint-disable import/no-unresolved, import/extensions */
 import ffi from 'ffi';
 /* eslint-enable import/no-unresolved, import/extensions */
-import crypto from 'crypto';
 import i18n from 'i18n';
 import config from '../config';
 import * as types from './refs/types';
@@ -331,7 +330,7 @@ class ClientManager extends FfiApi {
    * @param {string} secret
    * @returns {Promise}
    */
-  createAccount(locator, secret) {
+  createAccount(locator, secret, invitation) {
     return new Promise((resolve, reject) => {
       const validationErr = this._isUserCredentialsValid(locator, secret);
       if (validationErr) {
@@ -340,7 +339,11 @@ class ClientManager extends FfiApi {
       const appHandle = types.allocAppHandlePointer();
 
       const onStateChange = this._getFfiNetworkStateCb();
-      const invitation = crypto.randomBytes(10).toString('hex');
+
+      if (!(invitation && (typeof invitation === 'string') && invitation.trim())) {
+        return Promise.reject(new Error(i18n.__('messages.invalid_invite_code')));
+      }
+
       try {
         const onResult = (err, res) => {
           if (err || res !== 0) {
