@@ -3,7 +3,7 @@ environment:
   global:
     RUST_BACKTRACE: 1
   matrix:
-    - RUST_VERSION: 1.16.0
+    - RUST_VERSION: 1.17.0
 
 platform:
   - x86
