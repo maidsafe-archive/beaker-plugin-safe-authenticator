@@ -60,7 +60,7 @@ export const parseRegisteredApp = (registeredApp) => {
     return;
   }
   return {
-    app_id: parseAppExchangeInfo(registeredApp.app_id),
+    app_info: parseAppExchangeInfo(registeredApp.app_info),
     containers: parseContainerPermissionsArray(registeredApp.containers,
       registeredApp.containers_len),
     containers_len: registeredApp.containers_len,

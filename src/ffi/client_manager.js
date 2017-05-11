@@ -65,7 +65,7 @@ class ClientManager extends FfiApi {
       auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [types.Void, [types.voidPointer, types.AuthReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       encode_containers_resp: [types.Void, [types.voidPointer, types.ContainersReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
-      authenticator_registered_apps: [types.int32, [types.voidPointer, types.voidPointer, 'pointer']],
+      authenticator_registered_apps: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
       authenticator_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']]
     };
   }
@@ -160,7 +160,8 @@ class ClientManager extends FfiApi {
 
       try {
         this[_callbackRegistry].authDecisionCb = ffi.Callback(types.Void,
-          [types.voidPointer, types.int32, types.CString], (userData, code, res) => {
+          [types.voidPointer, types.FfiResult, types.CString], (userData, result, res) => {
+            const code = result.error_code;
             if (code !== 0 && !res) {
               return reject(ERRORS[code]);
             }
@@ -209,7 +210,8 @@ class ClientManager extends FfiApi {
 
       try {
         this[_callbackRegistry].contDecisionCb = ffi.Callback(types.Void,
-          [types.voidPointer, types.int32, types.CString], (userData, code, res) => {
+          [types.voidPointer, types.FfiResult, types.CString], (userData, result, res) => {
+            const code = result.error_code;
             if (code !== 0 && !res) {
               return reject(ERRORS[code]);
             }
@@ -259,8 +261,10 @@ class ClientManager extends FfiApi {
       }
 
       try {
-        const revokeCb = ffi.Callback(types.Void, [types.voidPointer, types.int32, types.CString],
-          (userData, code, res) => {
+        this[_callbackRegistry].revokeCb = ffi.Callback(types.Void,
+          [types.voidPointer, types.FfiResult, types.CString],
+          (userData, result, res) => {
+            const code = result.error_code;
             if (code !== 0) {
               return reject(ERRORS[code]);
             }
@@ -277,7 +281,7 @@ class ClientManager extends FfiApi {
           this.authenticatorHandle,
           types.allocCString(appId),
           types.Null,
-          revokeCb
+          this[_callbackRegistry].revokeCb
         );
       } catch (e) {
         reject(e.message);
@@ -384,15 +388,16 @@ class ClientManager extends FfiApi {
       if (!this.authenticatorHandle) {
         return reject(new Error(i18n.__('messages.unauthorised')));
       }
-
       try {
         this[_callbackRegistry].appListCb = ffi.Callback(types.Void,
-          [types.voidPointer, types.int32, types.RegisteredAppPointer, types.usize, types.usize],
-          (userData, code, appList, len) => {
+          [types.voidPointer, types.FfiResult, types.RegisteredAppPointer, types.usize],
+          (userData, result, appList, len) => {
+            if (result.error_code !== 0) {
+              return reject(ERRORS[result.error_code]);
+            }
             const apps = typeParser.parseRegisteredAppArray(appList, len);
             resolve(apps);
           });
-
         this.safeLib.authenticator_registered_apps(
           this.authenticatorHandle,
           types.Null,
@@ -435,7 +440,7 @@ class ClientManager extends FfiApi {
         });
 
       this[_callbackRegistry].decryptReqContainerCb = ffi.Callback(types.Void,
-        [types.voidPointer, types.int32, types.ContainersReqPointer], (userData, reqId, req) => {
+        [types.voidPointer, types.u32, types.ContainersReqPointer], (userData, reqId, req) => {
           if (typeof this[_containerReqListener] !== 'function') {
             return;
           }
@@ -448,12 +453,12 @@ class ClientManager extends FfiApi {
         });
 
       this[_callbackRegistry].decryptReqErrorCb = ffi.Callback(types.Void,
-        [types.voidPointer, types.int32, types.CString], (userData, code, error) => {
+        [types.voidPointer, types.FfiResult, types.CString], (userData, result, error) => {
           if (typeof this[_reqErrorListener] !== 'function') {
             return;
           }
           this[_reqErrorListener]({
-            code,
+            code: result.error_code,
             msg: error
           });
         });

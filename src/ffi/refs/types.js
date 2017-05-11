@@ -38,7 +38,7 @@ export const ContainerPermissions = StructType({
 });
 
 export const RegisteredApp = StructType({
-  app_id: AppExchangeInfo,
+  app_info: AppExchangeInfo,
   containers: ref.refType(ContainerPermissions),
   containers_len: usize,
   containers_cap: usize
@@ -61,6 +61,11 @@ export const ContainersReq = StructType({
   containers: ref.refType(ContainerPermissions),
   containers_len: usize,
   containers_cap: usize
+});
+
+export const FfiResult = StructType({
+  error_code: int32,
+  description: CString
 });
 
 export const ContainersReqPointer = ref.refType(ContainersReq);
