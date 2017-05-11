@@ -261,7 +261,8 @@ class ClientManager extends FfiApi {
       }
 
       try {
-        this[_callbackRegistry].revokeCb = ffi.Callback(types.Void, [types.voidPointer, types.FfiResult, types.CString],
+        this[_callbackRegistry].revokeCb = ffi.Callback(types.Void,
+          [types.voidPointer, types.FfiResult, types.CString],
           (userData, result, res) => {
             const code = result.error_code;
             if (code !== 0) {

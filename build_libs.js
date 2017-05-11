@@ -11,10 +11,10 @@ const features = process.argv.reduce((acc, arg) => {
   return arr[1];
 }, '');
 
-let cmd = `build-libs:${(features === 'mock-routing') ? 'mock' : 'actual'}`;
+const cmd = `build-libs:${(features === 'mock-routing') ? 'mock' : 'actual'}`;
 
-const runSpawn = (title, cmdStr) => {
-  return new Promise((resolve) => {
+const runSpawn = (title, cmdStr) => (
+  new Promise((resolve) => {
     cmdStr = cmdStr.split(' ');
     if (osPlatform === 'win32') {
       cmdStr[0] += '.cmd';
@@ -37,11 +37,11 @@ const runSpawn = (title, cmdStr) => {
       }
       resolve();
     });
-  });
-};
+  })
+);
 
 runSpawn('Build Authenticator', `npm run ${cmd}`)
   .then(() => {
     const copyCmd = `copy-binaries:${(osPlatform === 'win32') ? 'win' : 'unix'}`;
-    runSpawn('Copy Authenticator files', `npm run ${copyCmd}`)
+    runSpawn('Copy Authenticator files', `npm run ${copyCmd}`);
   });
