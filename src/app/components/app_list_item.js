@@ -45,15 +45,15 @@ export default class ListItem extends Component {
         onClick={this.toggleList}
       >
         <div className="icn">
-          <span>{data.app_id.name[0]}</span>
+          <span>{data.app_info.name[0]}</span>
         </div>
         <div className="ctn">
           <div className="i-cnt">
             <div className="title">
-              <span>{data.app_id.name}</span>
+              <span>{data.app_info.name}</span>
             </div>
             <div className="vendor">
-              <span>{data.app_id.vendor}</span>
+              <span>{data.app_info.vendor}</span>
             </div>
           </div>
           <div className="app-list-detail">
@@ -100,7 +100,7 @@ export default class ListItem extends Component {
               onClick={(e) => {
                 e.stopPropagation();
                 e.nativeEvent.stopImmediatePropagation();
-                revokeApp(data.app_id.id);
+                revokeApp(data.app_info.id);
               }}
             ><Translate value="Revoke Access" /></button>
           </div>
