@@ -2,16 +2,7 @@ const spawn = require('child_process').spawn;
 const os = require('os');
 
 const osPlatform = os.platform();
-
-const features = process.argv.reduce((acc, arg) => {
-  const arr = arg.split('=');
-  if (!(arr.length === 2 && arr[0] === 'features')) {
-    return '';
-  }
-  return arr[1];
-}, '');
-
-const cmd = `build-libs:${(features === 'mock-routing') ? 'mock' : 'actual'}`;
+let params = {};
 
 const runSpawn = (title, cmdStr) => (
   new Promise((resolve) => {
@@ -40,8 +31,39 @@ const runSpawn = (title, cmdStr) => (
   })
 );
 
-runSpawn('Build Authenticator', `npm run ${cmd}`)
-  .then(() => {
-    const copyCmd = `copy-binaries:${(osPlatform === 'win32') ? 'win' : 'unix'}`;
-    runSpawn('Copy Authenticator files', `npm run ${copyCmd}`);
-  });
+const parseCmdParams = () => {
+  const argv = process.argv;
+  const features = argv.filter((e) => (e.indexOf('--features') !== -1))
+    .toString()
+    .split('=')
+    .slice(1)
+    .toString();
+  const cleanLibs = (argv.indexOf('--clean') !== -1);
+  params = {
+    features,
+    cleanLibs
+  };
+};
+
+const cleanLibs = () => {
+  const cmd = 'npm run clean-libs';
+  if (!params.cleanLibs) {
+    return Promise.resolve(true);
+  }
+  return runSpawn('Cleaning native modules', cmd);
+};
+
+const buildAuthenticator = () => {
+  const cmd = `npm run build-libs:${(params.features === 'mock-routing') ? 'mock' : 'actual'}`;
+  return runSpawn('Build Authenticator', cmd);
+};
+
+const copyLibs = () => {
+  const cmd = `npm run copy-binaries:${(osPlatform === 'win32') ? 'win' : 'unix'}`;
+  return runSpawn('Copy Authenticator files', cmd);
+};
+
+parseCmdParams();
+cleanLibs()
+  .then(() => buildAuthenticator())
+  .then(() => copyLibs());
