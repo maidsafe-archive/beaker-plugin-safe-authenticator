@@ -35,6 +35,7 @@ This project depends on [safe_client_libs](https://github.com/maidsafe/safe_clie
    ```
    $ npm run build-libs
    ``` 
+   > Add `--` before using following options.
    * If you specify `--features=mock-routing` binary will use mock routing or else actual routing will be used.
    * If you specify `--clean`, will clean all the cargo dependencies installed and do a fresh build. To manually clean the dependencies run `npm run clean-libs`.
    
