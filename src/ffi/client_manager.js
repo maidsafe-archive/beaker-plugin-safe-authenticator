@@ -15,6 +15,7 @@ import systemUriLoader from './sys_uri_loader';
 import FfiApi from './FfiApi';
 import CONST from './../constants.json';
 import ERRORS from './error_code_lookup.json';
+import { openExternal } from '../common';
 
 // Private variable symbols
 const _networkState = Symbol('networkState');
@@ -269,11 +270,7 @@ class ClientManager extends FfiApi {
               return reject(ERRORS[code]);
             }
             this._updateAppList();
-            try {
-              this.openUri(res);
-            } catch (e) {
-              console.error('Failed to open custom URI after revoke');
-            }
+            openExternal(res);
             resolve();
           });
 
@@ -433,10 +430,22 @@ class ClientManager extends FfiApi {
           }
           const authReq = typeParser.parseAuthReq(req.deref());
           this[_reqDecryptList][reqId] = authReq;
-          this[_authReqListener]({
+          const result = {
             reqId,
             authReq
-          });
+          };
+          return this._isAlreadyAuthorised(authReq)
+            .then((isAuthorised) => {
+              if (isAuthorised) {
+                return this.authDecision(result, true)
+                  .then((res) => {
+                    openExternal(res);
+                    resolve(true);
+                  });
+              }
+              this[_authReqListener](result);
+              resolve();
+            })
         });
 
       this[_callbackRegistry].decryptReqContainerCb = ffi.Callback(types.Void,
@@ -497,7 +506,19 @@ class ClientManager extends FfiApi {
   /* eslint-disable class-methods-use-this */
   openUri(uri) {
     /* eslint-enable class-methods-use-this */
-    return systemUriLoader.openUri(uri);
+    try {
+      return systemUriLoader.openUri(uri);
+    } catch (e) {
+      console.log('Open URI error ', e);
+    }
+  }
+
+  _isAlreadyAuthorised(req) {
+    return this.getAuthorisedApps()
+      .then((authorisedApps) => (
+        (authorisedApps.filter((apps) => {
+          return (apps.toString() === req.toString());
+        })).length !== 0));
   }
 
   /**

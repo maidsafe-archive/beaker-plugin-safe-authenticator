@@ -1,9 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable import/extensions */
-import { ipcMain, shell } from 'electron';
+import { ipcMain } from 'electron';
 /* eslint-enable import/extensions */
 import i18n from 'i18n';
 import config from '../config';
+import * as utils from '../common';
 
 config.i18n();
 const CLIENT_TYPES = {
@@ -18,19 +19,11 @@ const reqQueue = [];
 let isReqProcessing = false;
 let currentReqType = null;
 
-const parseResUrl = (url) => {
-  const split = url.split(':');
-  split[0] = split[0].toLocaleLowerCase().replace('==', '');
-  return split.join(':');
-};
-
 const openExternal = (uri) => {
-  if (!uri || (uri.indexOf('safe') !== 0) || currentReqType !== CLIENT_TYPES.DESKTOP) {
+  if (currentReqType !== CLIENT_TYPES.DESKTOP) {
     return;
   }
-  try {
-    shell.openExternal(parseResUrl(uri));
-  } catch (err) { console.error(err); }
+  utils.openExternal(uri);
 };
 
 const processReqQueue = () => {
@@ -45,7 +38,12 @@ const processReqQueue = () => {
   isReqProcessing = true;
   const req = reqQueue[0];
   currentReqType = req.type;
-  clientManager.decryptRequest(req.data);
+  clientManager.decryptRequest(req.data).then((alreadyAuthorised) => {
+    if (!alreadyAuthorised) {
+      return;
+    }
+    reqQueueProcessNext();
+  });
 };
 
 const reqQueueProcessNext = () => {
