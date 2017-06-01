@@ -552,7 +552,7 @@ describe('Client', () => {
 
     after(() => helper.clearAccount());
 
-    it('doesn\'t throw error', () => (
+    it.skip('doesn\'t throw error', () => (
       new Promise((resolve, reject) => {
         client.setAuthReqListener((req) => (
           client.authDecision(req, true)

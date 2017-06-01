@@ -1,4 +1,7 @@
+/* eslint-disable import/extensions */
 import { shell } from 'electron';
+/* eslint-enable import/extensions */
+
 export const parseResUrl = (url) => {
   const split = url.split(':');
   split[0] = split[0].toLocaleLowerCase().replace('==', '');

@@ -445,7 +445,7 @@ class ClientManager extends FfiApi {
               }
               this[_authReqListener](result);
               resolve();
-            })
+            });
         });
 
       this[_callbackRegistry].decryptReqContainerCb = ffi.Callback(types.Void,
@@ -509,16 +509,14 @@ class ClientManager extends FfiApi {
     try {
       return systemUriLoader.openUri(uri);
     } catch (e) {
-      console.log('Open URI error ', e);
+      console.warn('Open URI error ', e);
     }
   }
 
   _isAlreadyAuthorised(req) {
     return this.getAuthorisedApps()
       .then((authorisedApps) => (
-        (authorisedApps.filter((apps) => {
-          return (apps.toString() === req.toString());
-        })).length !== 0));
+        (authorisedApps.filter((apps) => (apps.toString() === req.toString()))).length !== 0));
   }
 
   /**
