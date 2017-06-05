@@ -15,6 +15,7 @@ const CLIENT_TYPES = {
 let clientManager = null;
 
 const reqQueue = [];
+let decryptRequestEvent = null;
 
 let isReqProcessing = false;
 let currentReqType = null;
@@ -38,10 +39,14 @@ const processReqQueue = () => {
   isReqProcessing = true;
   const req = reqQueue[0];
   currentReqType = req.type;
-  clientManager.decryptRequest(req.data).then((alreadyAuthorised) => {
-    if (!alreadyAuthorised) {
+  clientManager.decryptRequest(req.data).then((res) => {
+    if (!res) {
       return;
     }
+    if (decryptRequestEvent) {
+      decryptRequestEvent.sender.send('onAuthDecisionRes', prepareResponse(res));
+    }
+    openExternal(res);
     reqQueueProcessNext();
   });
 };
@@ -105,6 +110,7 @@ const decryptRequest = (event, req) => {
   if (Object.keys(CLIENT_TYPES).indexOf(req.type) === -1) {
     return console.error('Invalid request client');
   }
+  decryptRequestEvent = event;
   reqQueue.push(req);
   processReqQueue();
 };
