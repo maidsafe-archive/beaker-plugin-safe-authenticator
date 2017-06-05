@@ -15,6 +15,6 @@ export const openExternal = (uri) => {
   try {
     shell.openExternal(parseResUrl(uri));
   } catch (err) {
-    console.error(err);
+    console.error(err.message);
   }
 };

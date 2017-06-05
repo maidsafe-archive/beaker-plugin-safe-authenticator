@@ -438,10 +438,7 @@ class ClientManager extends FfiApi {
             .then((isAuthorised) => {
               if (isAuthorised) {
                 return this.authDecision(result, true)
-                  .then((res) => {
-                    openExternal(res);
-                    resolve(true);
-                  });
+                  .then(resolve);
               }
               this[_authReqListener](result);
               resolve();
@@ -515,8 +512,9 @@ class ClientManager extends FfiApi {
 
   _isAlreadyAuthorised(req) {
     return this.getAuthorisedApps()
-      .then((authorisedApps) => (
-        (authorisedApps.filter((apps) => (apps.toString() === req.toString()))).length !== 0));
+      .then((authorisedApps) =>
+        ((authorisedApps.filter((apps) =>
+          (JSON.stringify(apps.app_info) === JSON.stringify(req.app)))).length !== 0));
   }
 
   /**
