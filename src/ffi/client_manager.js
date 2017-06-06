@@ -6,6 +6,7 @@
 /* eslint-disable import/no-unresolved, import/extensions */
 import ffi from 'ffi';
 /* eslint-enable import/no-unresolved, import/extensions */
+import lodash from 'lodash';
 import i18n from 'i18n';
 import config from '../config';
 import * as types from './refs/types';
@@ -514,7 +515,7 @@ class ClientManager extends FfiApi {
     return this.getAuthorisedApps()
       .then((authorisedApps) =>
         ((authorisedApps.filter((apps) =>
-          (JSON.stringify(apps.app_info) === JSON.stringify(req.app)))).length !== 0));
+          (lodash.isEqual(apps.app_info, req.app)))).length !== 0));
   }
 
   /**
