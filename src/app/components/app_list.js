@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react';
+import Spinner from './spinner';
 import ListItem from './app_list_item';
 
 export default class AppList extends Component {
   static propTypes = {
     fetchingApps: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     authorisedApps: PropTypes.shape,
     getAuthorisedApps: PropTypes.func,
     revokeApp: PropTypes.func
@@ -76,6 +78,7 @@ export default class AppList extends Component {
             </div>
           </div>
         </div>
+        <Spinner show={this.props.loading} />
       </div>
     );
   }
