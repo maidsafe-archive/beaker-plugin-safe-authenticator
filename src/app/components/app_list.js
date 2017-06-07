@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import Spinner from './spinner';
 import ListItem from './app_list_item';
 
 export default class AppList extends Component {
@@ -76,6 +77,7 @@ export default class AppList extends Component {
             </div>
           </div>
         </div>
+        <Spinner show={this.props.loading} />
       </div>
     );
   }

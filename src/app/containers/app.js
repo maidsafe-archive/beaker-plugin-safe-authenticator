@@ -6,7 +6,8 @@ import { logout } from '../actions/auth';
 const mapStateToProps = (state) => (
   {
     networkState: state.networkState.state,
-    isAuthorised: state.auth.isAuthorised
+    isAuthorised: state.auth.isAuthorised,
+    loading: state.app.loading
   }
 );
 
