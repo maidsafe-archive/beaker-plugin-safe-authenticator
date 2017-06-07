@@ -5,6 +5,7 @@ import ListItem from './app_list_item';
 export default class AppList extends Component {
   static propTypes = {
     fetchingApps: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     authorisedApps: PropTypes.shape,
     getAuthorisedApps: PropTypes.func,
     revokeApp: PropTypes.func
