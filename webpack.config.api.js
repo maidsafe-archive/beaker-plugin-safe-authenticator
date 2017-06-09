@@ -48,8 +48,7 @@ export default {
   },
   externals: {
     ffi: 'ffi',
-    ref: 'ref',
-    electron: 'electron'
+    ref: 'ref'
   },
   plugins: [
     new CopyWebpackPlugin(dependenciesToCopy)

@@ -16,7 +16,6 @@ import systemUriLoader from './sys_uri_loader';
 import FfiApi from './FfiApi';
 import CONST from './../constants.json';
 import ERRORS from './error_code_lookup.json';
-import { openExternal } from '../common';
 
 // Private variable symbols
 const _networkState = Symbol('networkState');
@@ -271,8 +270,7 @@ class ClientManager extends FfiApi {
               return reject(ERRORS[code]);
             }
             this._updateAppList();
-            openExternal(res);
-            resolve();
+            resolve(res);
           });
 
         this.safeLib.authenticator_revoke_app(
