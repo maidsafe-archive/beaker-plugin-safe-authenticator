@@ -68,7 +68,8 @@ class ClientManager extends FfiApi {
       encode_auth_resp: [types.Void, [types.voidPointer, types.AuthReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       encode_containers_resp: [types.Void, [types.voidPointer, types.ContainersReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       authenticator_registered_apps: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
-      authenticator_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']]
+      authenticator_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']],
+      encode_unregistered_resp: [types.Void, [types.voidPointer, types.u32, types.bool, types.voidPointer, 'pointer']]
     };
   }
 
@@ -470,12 +471,21 @@ class ClientManager extends FfiApi {
           });
         });
 
+      this[_callbackRegistry].unregisteredCb = ffi.Callback(types.Void,
+        [types.voidPointer, types.u32], (userData, reqId) => {
+          if (!reqId) {
+            return reject(new Error('Invalid Response while decoding Unregisterd client request'));
+          }
+          this._encodeUnRegisteredResp(reqId)
+            .then(resolve);
+        });
       try {
         this.safeLib.auth_decode_ipc_msg(
           this.authenticatorHandle,
           types.allocCString(msg),
           types.Null,
           this[_callbackRegistry].decryptReqAuthCb,
+          this[_callbackRegistry].unregisteredCb,
           this[_callbackRegistry].decryptReqContainerCb,
           this[_callbackRegistry].decryptReqErrorCb);
       } catch (e) {
@@ -509,6 +519,40 @@ class ClientManager extends FfiApi {
     } catch (e) {
       console.warn('Open URI error ', e);
     }
+  }
+
+  /**
+   * Encode unregistered client response
+   * @param reqId
+   * @return {Promise}
+   * @private
+   */
+  _encodeUnRegisteredResp(reqId) {
+    return new Promise((resolve, reject) => {
+      if (!this.authenticatorHandle) {
+        return reject(new Error(i18n.__('messages.unauthorised')));
+      }
+      try {
+        this[_callbackRegistry].encodeUnAuthCb = ffi.Callback(types.Void,
+          [types.voidPointer, types.FfiResult, types.CString],
+          (userData, result, res) => {
+            const code = result.error_code;
+            if (code !== 0 && !res) {
+              return reject(ERRORS[code]);
+            }
+            resolve(res);
+          });
+        this.safeLib.encode_unregistered_resp(
+          this.authenticatorHandle,
+          reqId,
+          true,
+          types.Null,
+          this[_callbackRegistry].encodeUnAuthCb
+        );
+      } catch (e) {
+        reject(e.message);
+      }
+    });
   }
 
   _isAlreadyAuthorised(req) {
