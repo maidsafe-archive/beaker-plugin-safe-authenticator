@@ -529,9 +529,6 @@ class ClientManager extends FfiApi {
    */
   _encodeUnRegisteredResp(reqId) {
     return new Promise((resolve, reject) => {
-      if (!this.authenticatorHandle) {
-        return reject(new Error(i18n.__('messages.unauthorised')));
-      }
       try {
         this[_callbackRegistry].encodeUnAuthCb = ffi.Callback(types.Void,
           [types.voidPointer, types.FfiResult, types.CString],
