@@ -12,10 +12,7 @@ describe('Client', () => {
     'hZmUuZXhhbXBsZXMudGVzdC1hcHAAEgAAAAAAAABOb2RlSlMgZXhhbXBsZSBBcHARAAAAA' +
     'AAAAE1haWRTYWZlLm5ldCBMdGQuAAEAAAAAAAAABwAAAAAAAABfcHVibGljBAAAAAAAAAAA' +
     'AAAAAQAAAAMAAAAEAAAA';
-  const encodedUnRegisterAuthUri = 'safe-auth:AAAAABq3ESUAAAAAHgAAAAAAAABuZXQubWFpZHN' +
-    'hZmUuZXhhbXBsZXMudGVzdC1hcHAAEgAAAAAAAABOb2RlSlMgZXhhbXBsZSBBcHARAAAAA' +
-    'AAAAE1haWRTYWZlLm5ldCBMdGQuAAEAAAAAAAAABwAAAAAAAABfcHVibGljBAAAAAAAAAAA' +
-    'AAAAAQAAAAMAAAAEAAAA';
+  const encodedUnRegisterAuthUri = 'safe-auth:AAAAAKfmUZgCAAAA';
   const encodedContUri = 'safe-auth:AAAAACeJbVQBAAAAHgAAAAAAAABuZXQubWFpZHN' +
     'hZmUuZXhhbXBsZXMudGVzdC1hcHAAEgAAAAAAAABOb2RlSlMgZXhhbXBsZSBBcHARAAAAA' +
     'AAAAE1haWRTYWZlLm5ldCBMdGQuAQAAAAAAAAAHAAAAAAAAAF9wdWJsaWMEAAAAAAAAAAA' +
@@ -25,14 +22,18 @@ describe('Client', () => {
     .then(() => client.decryptRequest(uri));
 
   describe('Unregistered client', () => {
-    it('able to get encoded response', () => (
-      new Promise((resolve, reject) => {
-        client.setAuthReqListener((res) => {
-          should(res).not.be.undefined().and.be.Object().and.not.empty().and.have.properties(['reqId', 'authReq']);
-          resolve();
-        });
-        client.setReqErrorListener((err) => reject(err));
-        client.decryptRequest(encodedUnRegisterAuthUri);
+    before(() => helper.createRandomAccount()); // TODO create unregistered client
+
+    after(() => helper.clearAccount());
+
+    it('gets back encoded response', () => (
+      new Promise((resolve) => {
+        client.decryptRequest(encodedUnRegisterAuthUri)
+          .then((res) => {
+            should(res).be.String();
+            should(res.indexOf('safe-')).be.not.equal(-1);
+            return resolve();
+          });
       })
     ));
   });

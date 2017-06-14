@@ -30,6 +30,8 @@ export const setAppListUpdateListener = (cb) => client.setAppListUpdateListener(
 
 export const logout = () => client.logout();
 
+export const createUnregisteredClient = () => client.createUnregisteredClient();
+
 export const login = (secret, password) => client.login(secret, password);
 
 export const createAccount = (secret, password, invitation) =>

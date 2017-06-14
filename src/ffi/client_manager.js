@@ -27,6 +27,7 @@ const _authReqListener = Symbol('authReqListener');
 const _containerReqListener = Symbol('containerReqListener');
 const _reqErrorListener = Symbol('reqErrorListener');
 const _authenticatorHandle = Symbol('clientHandle');
+const _unRegAuthenticatorHandle = Symbol('unRegisteredClientHandle');
 const _reqDecryptList = Symbol('reqDecryptList');
 const _callbackRegistry = Symbol('callbackRegistry');
 
@@ -42,12 +43,13 @@ class ClientManager extends FfiApi {
     this[_containerReqListener] = null;
     this[_reqErrorListener] = null;
     this[_authenticatorHandle] = null;
+    this[_unRegAuthenticatorHandle] = null;
     this[_reqDecryptList] = {};
     this[_callbackRegistry] = {};
   }
 
   get authenticatorHandle() {
-    return this[_authenticatorHandle];
+    return this[_authenticatorHandle] || this[_unRegAuthenticatorHandle];
   }
 
   get networkState() {
@@ -64,7 +66,7 @@ class ClientManager extends FfiApi {
     return {
       create_acc: [types.int32, [types.CString, types.CString, types.CString, types.AppHandlePointer, 'pointer', 'pointer']],
       login: [types.int32, [types.CString, types.CString, types.AppHandlePointer, 'pointer', 'pointer']],
-      auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer']],
+      auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [types.Void, [types.voidPointer, types.AuthReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       encode_containers_resp: [types.Void, [types.voidPointer, types.ContainersReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       authenticator_registered_apps: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
@@ -134,6 +136,12 @@ class ClientManager extends FfiApi {
    */
   setNetworkIpcListener(cb) {
     this[_networkStateChangeIpcListener] = cb;
+  }
+
+  createUnregisteredClient() {
+    return new Promise((resolve, reject) => {
+      this[_unRegAuthenticatorHandle] = null; // FIXME update with API
+    });
   }
 
   /**
@@ -476,7 +484,7 @@ class ClientManager extends FfiApi {
           if (!reqId) {
             return reject(new Error('Invalid Response while decoding Unregisterd client request'));
           }
-          this._encodeUnRegisteredResp(reqId)
+          return this._encodeUnRegisteredResp(reqId)
             .then(resolve);
         });
       try {
