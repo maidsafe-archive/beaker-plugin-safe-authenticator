@@ -139,8 +139,9 @@ class ClientManager extends FfiApi {
   }
 
   createUnregisteredClient() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this[_unRegAuthenticatorHandle] = null; // FIXME update with API
+      resolve();
     });
   }
 
