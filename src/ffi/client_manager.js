@@ -31,6 +31,28 @@ const _unRegAuthenticatorHandle = Symbol('unRegisteredClientHandle');
 const _reqDecryptList = Symbol('reqDecryptList');
 const _callbackRegistry = Symbol('callbackRegistry');
 
+class AppListCallback {
+  constructor(cbPool, resolve, reject) {
+    const self = this;
+    this.id = Date.now();
+    this.cb = ffi.Callback(types.Void,
+      [types.voidPointer, types.FfiResult, types.RegisteredAppPointer, types.usize],
+      (userData, result, appList, len) => {
+        delete cbPool[self.id];
+        if (result.error_code !== 0) {
+          return reject(ERRORS[result.error_code]);
+        }
+        const apps = typeParser.parseRegisteredAppArray(appList, len);
+        resolve(apps);
+      });
+    cbPool[this.id] = this.cb;
+  }
+
+  getCallback() {
+    return this.cb;
+  }
+}
+
 class ClientManager extends FfiApi {
   constructor() {
     super();
@@ -396,20 +418,12 @@ class ClientManager extends FfiApi {
       if (!this.authenticatorHandle) {
         return reject(new Error(i18n.__('messages.unauthorised')));
       }
+      const cb = new AppListCallback(this[_callbackRegistry], resolve, reject);
       try {
-        this[_callbackRegistry].appListCb = ffi.Callback(types.Void,
-          [types.voidPointer, types.FfiResult, types.RegisteredAppPointer, types.usize],
-          (userData, result, appList, len) => {
-            if (result.error_code !== 0) {
-              return reject(ERRORS[result.error_code]);
-            }
-            const apps = typeParser.parseRegisteredAppArray(appList, len);
-            resolve(apps);
-          });
         this.safeLib.authenticator_registered_apps(
           this.authenticatorHandle,
           types.Null,
-          this[_callbackRegistry].appListCb
+          cb.getCallback()
         );
       } catch (e) {
         reject(e.message);
