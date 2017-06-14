@@ -15,7 +15,6 @@ import * as typeConstructor from './refs/typesConstructor';
 import systemUriLoader from './sys_uri_loader';
 import FfiApi from './FfiApi';
 import CONST from './../constants.json';
-import ERRORS from './error_code_lookup.json';
 
 // Private variable symbols
 const _networkState = Symbol('networkState');
@@ -39,7 +38,7 @@ class AppListCallback {
       (userData, result, appList, len) => {
         delete cbPool[self.id];
         if (result.error_code !== 0) {
-          return reject(ERRORS[result.error_code]);
+          return reject(result.description);
         }
         const apps = typeParser.parseRegisteredAppArray(appList, len);
         resolve(apps);
@@ -85,8 +84,8 @@ class ClientManager extends FfiApi {
   getFunctionsToRegister() {
     /* eslint-enable no-unused-vars, class-methods-use-this */
     return {
-      create_acc: [types.int32, [types.CString, types.CString, types.CString, types.AppHandlePointer, 'pointer', 'pointer']],
-      login: [types.int32, [types.CString, types.CString, types.AppHandlePointer, 'pointer', 'pointer']],
+      create_acc: [types.int32, [types.CString, types.CString, types.CString, types.voidPointer, 'pointer', 'pointer']],
+      login: [types.int32, [types.CString, types.CString, types.voidPointer, 'pointer', 'pointer']],
       auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [types.Void, [types.voidPointer, types.AuthReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       encode_containers_resp: [types.Void, [types.voidPointer, types.ContainersReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
@@ -196,7 +195,7 @@ class ClientManager extends FfiApi {
           [types.voidPointer, types.FfiResult, types.CString], (userData, result, res) => {
             const code = result.error_code;
             if (code !== 0 && !res) {
-              return reject(ERRORS[code]);
+              return reject(result.description);
             }
             if (isAllowed) {
               this._updateAppList();
@@ -246,7 +245,7 @@ class ClientManager extends FfiApi {
           [types.voidPointer, types.FfiResult, types.CString], (userData, result, res) => {
             const code = result.error_code;
             if (code !== 0 && !res) {
-              return reject(ERRORS[code]);
+              return reject(result.description);
             }
             if (isAllowed) {
               this._updateAppList();
@@ -299,7 +298,7 @@ class ClientManager extends FfiApi {
           (userData, result, res) => {
             const code = result.error_code;
             if (code !== 0) {
-              return reject(ERRORS[code]);
+              return reject(result.description);
             }
             this._updateAppList();
             resolve(res);
@@ -330,26 +329,28 @@ class ClientManager extends FfiApi {
         return reject(validationErr);
       }
 
-      const appHandle = types.allocAppHandlePointer();
-
-      const onStateChange = this._getFfiNetworkStateCb();
+      this[_callbackRegistry].loginNwCb = this._getFfiNetworkStateCb();
 
       try {
-        const onResult = (err, res) => {
-          if (err || res !== 0) {
-            return reject(ERRORS[res]);
-          }
-          this[_authenticatorHandle] = appHandle.deref();
-          this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
-          resolve();
-        };
-        this.safeLib.login.async(
+        this[_callbackRegistry].loginCb = ffi.Callback(types.Void,
+          [types.voidPointer, types.FfiResult, types.AppHandlePointer],
+          (userData, result, authenticator) => {
+          console.log('resultresult', result, authenticator)
+            const code = result.error_code;
+            if (code !== 0 && !authenticator) {
+              return reject(result.description);
+            }
+            this[_authenticatorHandle] = authenticator;
+            this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
+            resolve();
+          });
+
+        this.safeLib.login(
           types.allocCString(locator),
           types.allocCString(secret),
-          appHandle,
           types.Null,
-          onStateChange,
-          onResult);
+          this[_callbackRegistry].loginNwCb,
+          this[_callbackRegistry].loginCb);
       } catch (e) {
         console.error(`Login error :: ${e.message}`);
       }
@@ -368,31 +369,31 @@ class ClientManager extends FfiApi {
       if (validationErr) {
         return reject(validationErr);
       }
-      const appHandle = types.allocAppHandlePointer();
 
-      const onStateChange = this._getFfiNetworkStateCb();
-
+      this[_callbackRegistry].CreateAccNwCb = this._getFfiNetworkStateCb();
       if (!(invitation && (typeof invitation === 'string') && invitation.trim())) {
         return Promise.reject(new Error(i18n.__('messages.invalid_invite_code')));
       }
-
       try {
-        const onResult = (err, res) => {
-          if (err || res !== 0) {
-            return reject(ERRORS[res]);
-          }
-          this[_authenticatorHandle] = appHandle.deref();
-          this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
-          resolve();
-        };
-        this.safeLib.create_acc.async(
+        this[_callbackRegistry].createAccCb = ffi.Callback(types.Void,
+          [types.voidPointer, types.FfiResult, types.AppHandlePointer],
+          (userData, result, authenticator) => {
+            const code = result.error_code;
+            if (code !== 0 && !authenticator) {
+              return reject(result.description);
+            }
+            this[_authenticatorHandle] = authenticator;
+            this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
+            resolve();
+          });
+
+        this.safeLib.create_acc(
           types.allocCString(locator),
           types.allocCString(secret),
           types.allocCString(invitation),
-          appHandle,
           types.Null,
-          onStateChange,
-          onResult);
+          this[_callbackRegistry].CreateAccNwCb,
+          this[_callbackRegistry].createAccCb);
       } catch (e) {
         console.error(`Create account error :: ${e.message}`);
       }
@@ -556,7 +557,7 @@ class ClientManager extends FfiApi {
           (userData, result, res) => {
             const code = result.error_code;
             if (code !== 0 && !res) {
-              return reject(ERRORS[code]);
+              return reject(result.description);
             }
             resolve(res);
           });

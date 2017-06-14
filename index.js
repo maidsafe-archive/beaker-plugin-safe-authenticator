@@ -5,8 +5,8 @@ const safeAuthRpc = require('./dist/safeauth_rpc');
 safeAuthRpc(api.ffi.client);
 
 // load ffi library
-api.ffi.client.createUnregisteredClient()
-  .then(() => api.ffi.ffiLoader.loadLibrary())
+api.ffi.ffiLoader.loadLibrary()
+  .then(() => api.ffi.client.createUnregisteredClient())
   // TODO notify on browser
   .catch((err) => console.error(err));
 
