@@ -26,8 +26,31 @@ const _authReqListener = Symbol('authReqListener');
 const _containerReqListener = Symbol('containerReqListener');
 const _reqErrorListener = Symbol('reqErrorListener');
 const _authenticatorHandle = Symbol('clientHandle');
+const _unRegAuthenticatorHandle = Symbol('unRegisteredClientHandle');
 const _reqDecryptList = Symbol('reqDecryptList');
 const _callbackRegistry = Symbol('callbackRegistry');
+
+class AppListCallback {
+  constructor(cbPool, resolve, reject) {
+    const self = this;
+    this.id = Date.now();
+    this.cb = ffi.Callback(types.Void,
+      [types.voidPointer, types.FfiResult, types.RegisteredAppPointer, types.usize],
+      (userData, result, appList, len) => {
+        delete cbPool[self.id];
+        if (result.error_code !== 0) {
+          return reject(ERRORS[result.error_code]);
+        }
+        const apps = typeParser.parseRegisteredAppArray(appList, len);
+        resolve(apps);
+      });
+    cbPool[this.id] = this.cb;
+  }
+
+  getCallback() {
+    return this.cb;
+  }
+}
 
 class ClientManager extends FfiApi {
   constructor() {
@@ -41,12 +64,13 @@ class ClientManager extends FfiApi {
     this[_containerReqListener] = null;
     this[_reqErrorListener] = null;
     this[_authenticatorHandle] = null;
+    this[_unRegAuthenticatorHandle] = null;
     this[_reqDecryptList] = {};
     this[_callbackRegistry] = {};
   }
 
   get authenticatorHandle() {
-    return this[_authenticatorHandle];
+    return this[_authenticatorHandle] || this[_unRegAuthenticatorHandle];
   }
 
   get networkState() {
@@ -63,11 +87,12 @@ class ClientManager extends FfiApi {
     return {
       create_acc: [types.int32, [types.CString, types.CString, types.CString, types.AppHandlePointer, 'pointer', 'pointer']],
       login: [types.int32, [types.CString, types.CString, types.AppHandlePointer, 'pointer', 'pointer']],
-      auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer']],
+      auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [types.Void, [types.voidPointer, types.AuthReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       encode_containers_resp: [types.Void, [types.voidPointer, types.ContainersReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       authenticator_registered_apps: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
-      authenticator_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']]
+      authenticator_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']],
+      encode_unregistered_resp: [types.Void, [types.voidPointer, types.u32, types.bool, types.voidPointer, 'pointer']]
     };
   }
 
@@ -132,6 +157,13 @@ class ClientManager extends FfiApi {
    */
   setNetworkIpcListener(cb) {
     this[_networkStateChangeIpcListener] = cb;
+  }
+
+  createUnregisteredClient() {
+    return new Promise((resolve) => {
+      this[_unRegAuthenticatorHandle] = null; // FIXME update with API
+      resolve();
+    });
   }
 
   /**
@@ -384,20 +416,12 @@ class ClientManager extends FfiApi {
       if (!this.authenticatorHandle) {
         return reject(new Error(i18n.__('messages.unauthorised')));
       }
+      const cb = new AppListCallback(this[_callbackRegistry], resolve, reject);
       try {
-        this[_callbackRegistry].appListCb = ffi.Callback(types.Void,
-          [types.voidPointer, types.FfiResult, types.RegisteredAppPointer, types.usize],
-          (userData, result, appList, len) => {
-            if (result.error_code !== 0) {
-              return reject(ERRORS[result.error_code]);
-            }
-            const apps = typeParser.parseRegisteredAppArray(appList, len);
-            resolve(apps);
-          });
         this.safeLib.authenticator_registered_apps(
           this.authenticatorHandle,
           types.Null,
-          this[_callbackRegistry].appListCb
+          cb.getCallback()
         );
       } catch (e) {
         reject(e.message);
@@ -468,12 +492,21 @@ class ClientManager extends FfiApi {
           });
         });
 
+      this[_callbackRegistry].unregisteredCb = ffi.Callback(types.Void,
+        [types.voidPointer, types.u32], (userData, reqId) => {
+          if (!reqId) {
+            return reject(new Error('Invalid Response while decoding Unregisterd client request'));
+          }
+          return this._encodeUnRegisteredResp(reqId)
+            .then(resolve);
+        });
       try {
         this.safeLib.auth_decode_ipc_msg(
           this.authenticatorHandle,
           types.allocCString(msg),
           types.Null,
           this[_callbackRegistry].decryptReqAuthCb,
+          this[_callbackRegistry].unregisteredCb,
           this[_callbackRegistry].decryptReqContainerCb,
           this[_callbackRegistry].decryptReqErrorCb);
       } catch (e) {
@@ -507,6 +540,37 @@ class ClientManager extends FfiApi {
     } catch (e) {
       console.warn('Open URI error ', e);
     }
+  }
+
+  /**
+   * Encode unregistered client response
+   * @param reqId
+   * @return {Promise}
+   * @private
+   */
+  _encodeUnRegisteredResp(reqId) {
+    return new Promise((resolve, reject) => {
+      try {
+        this[_callbackRegistry].encodeUnAuthCb = ffi.Callback(types.Void,
+          [types.voidPointer, types.FfiResult, types.CString],
+          (userData, result, res) => {
+            const code = result.error_code;
+            if (code !== 0 && !res) {
+              return reject(ERRORS[code]);
+            }
+            resolve(res);
+          });
+        this.safeLib.encode_unregistered_resp(
+          this.authenticatorHandle,
+          reqId,
+          true,
+          types.Null,
+          this[_callbackRegistry].encodeUnAuthCb
+        );
+      } catch (e) {
+        reject(e.message);
+      }
+    });
   }
 
   _isAlreadyAuthorised(req) {

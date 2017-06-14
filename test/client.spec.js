@@ -12,6 +12,7 @@ describe('Client', () => {
     'hZmUuZXhhbXBsZXMudGVzdC1hcHAAEgAAAAAAAABOb2RlSlMgZXhhbXBsZSBBcHARAAAAA' +
     'AAAAE1haWRTYWZlLm5ldCBMdGQuAAEAAAAAAAAABwAAAAAAAABfcHVibGljBAAAAAAAAAAA' +
     'AAAAAQAAAAMAAAAEAAAA';
+  const encodedUnRegisterAuthUri = 'safe-auth:AAAAAKfmUZgCAAAA';
   const encodedContUri = 'safe-auth:AAAAACeJbVQBAAAAHgAAAAAAAABuZXQubWFpZHN' +
     'hZmUuZXhhbXBsZXMudGVzdC1hcHAAEgAAAAAAAABOb2RlSlMgZXhhbXBsZSBBcHARAAAAA' +
     'AAAAE1haWRTYWZlLm5ldCBMdGQuAQAAAAAAAAAHAAAAAAAAAF9wdWJsaWMEAAAAAAAAAAA' +
@@ -19,6 +20,23 @@ describe('Client', () => {
 
   const decodedReqForRandomClient = (uri) => helper.createRandomAccount()
     .then(() => client.decryptRequest(uri));
+
+  describe('Unregistered client', () => {
+    before(() => helper.createRandomAccount()); // TODO create unregistered client
+
+    after(() => helper.clearAccount());
+
+    it('gets back encoded response', () => (
+      new Promise((resolve) => {
+        client.decryptRequest(encodedUnRegisterAuthUri)
+          .then((res) => {
+            should(res).be.String();
+            should(res.indexOf('safe-')).be.not.equal(-1);
+            return resolve();
+          });
+      })
+    ));
+  });
 
   describe('create Account', () => {
     after(() => helper.clearAccount());

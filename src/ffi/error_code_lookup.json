@@ -32,6 +32,8 @@
   "-113": "Low balance",
   "-114": "Network full",
   "-115": "Network other",
+  "-116": "Invalid invitation",
+  "-117": "Invitation already claimed",
   "-200": "Auth denied",
   "-201": "Containers denied",
   "-202": "Invalid msg",
