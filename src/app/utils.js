@@ -25,3 +25,12 @@ export const getStrengthMsg = (strength) => {
     default:
   }
 };
+
+export const trimErrorMsg = (msg) => {
+  let errMsg = msg;
+  const cIndex = errMsg.indexOf(':');
+  errMsg = errMsg.slice(cIndex === -1 ? 0 : cIndex + 1);
+  const aIndex = errMsg.indexOf('->');
+  errMsg = errMsg.slice(aIndex === -1 ? 0 : aIndex + 2);
+  return errMsg.trim();
+};

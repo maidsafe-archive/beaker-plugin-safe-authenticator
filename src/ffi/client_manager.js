@@ -335,9 +335,8 @@ class ClientManager extends FfiApi {
         this[_callbackRegistry].loginCb = ffi.Callback(types.Void,
           [types.voidPointer, types.FfiResult, types.AppHandlePointer],
           (userData, result, authenticator) => {
-          console.log('resultresult', result, authenticator)
             const code = result.error_code;
-            if (code !== 0 && !authenticator) {
+            if (code !== 0 && authenticator.length === 0) {
               return reject(result.description);
             }
             this[_authenticatorHandle] = authenticator;
@@ -379,7 +378,7 @@ class ClientManager extends FfiApi {
           [types.voidPointer, types.FfiResult, types.AppHandlePointer],
           (userData, result, authenticator) => {
             const code = result.error_code;
-            if (code !== 0 && !authenticator) {
+            if (code !== 0 && authenticator.length === 0) {
               return reject(result.description);
             }
             this[_authenticatorHandle] = authenticator;
