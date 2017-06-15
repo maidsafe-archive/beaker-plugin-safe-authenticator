@@ -26,11 +26,26 @@ export const getStrengthMsg = (strength) => {
   }
 };
 
-export const trimErrorMsg = (msg) => {
-  let errMsg = msg;
-  const cIndex = errMsg.indexOf(':');
-  errMsg = errMsg.slice(cIndex === -1 ? 0 : cIndex + 1);
-  const aIndex = errMsg.indexOf('->');
-  errMsg = errMsg.slice(aIndex === -1 ? 0 : aIndex + 2);
-  return errMsg.trim();
+export const parseErrCode = (errStr) => {
+  const err = JSON.parse(errStr);
+  switch (parseInt(err.error_code, 10)) {
+    case -3: {
+      return 'Incorrect Password';
+    }
+    case -101: {
+      return 'Account does not exist';
+    }
+    case -102: {
+      return 'Account already exist';
+    }
+    case -116: {
+      return 'Invalid invitation';
+    }
+    case -117: {
+      return 'Invitation already claimed';
+    }
+    default: {
+      return err.description;
+    }
+  }
 };

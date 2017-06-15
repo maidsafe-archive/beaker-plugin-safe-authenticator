@@ -38,7 +38,7 @@ class AppListCallback {
       (userData, result, appList, len) => {
         delete cbPool[self.id];
         if (result.error_code !== 0) {
-          return reject(result.description);
+          return reject(JSON.stringify(result));
         }
         const apps = typeParser.parseRegisteredAppArray(appList, len);
         resolve(apps);
@@ -195,7 +195,7 @@ class ClientManager extends FfiApi {
           [types.voidPointer, types.FfiResult, types.CString], (userData, result, res) => {
             const code = result.error_code;
             if (code !== 0 && !res) {
-              return reject(result.description);
+              return reject(JSON.stringify(result));
             }
             if (isAllowed) {
               this._updateAppList();
@@ -245,7 +245,7 @@ class ClientManager extends FfiApi {
           [types.voidPointer, types.FfiResult, types.CString], (userData, result, res) => {
             const code = result.error_code;
             if (code !== 0 && !res) {
-              return reject(result.description);
+              return reject(JSON.stringify(result));
             }
             if (isAllowed) {
               this._updateAppList();
@@ -298,7 +298,7 @@ class ClientManager extends FfiApi {
           (userData, result, res) => {
             const code = result.error_code;
             if (code !== 0) {
-              return reject(result.description);
+              return reject(JSON.stringify(result));
             }
             this._updateAppList();
             resolve(res);
@@ -337,7 +337,7 @@ class ClientManager extends FfiApi {
           (userData, result, authenticator) => {
             const code = result.error_code;
             if (code !== 0 && authenticator.length === 0) {
-              return reject(result.description);
+              return reject(JSON.stringify(result));
             }
             this[_authenticatorHandle] = authenticator;
             this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
@@ -379,7 +379,7 @@ class ClientManager extends FfiApi {
           (userData, result, authenticator) => {
             const code = result.error_code;
             if (code !== 0 && authenticator.length === 0) {
-              return reject(result.description);
+              return reject(JSON.stringify(result));
             }
             this[_authenticatorHandle] = authenticator;
             this._pushNetworkState(CONST.NETWORK_STATUS.CONNECTED);
@@ -556,7 +556,7 @@ class ClientManager extends FfiApi {
           (userData, result, res) => {
             const code = result.error_code;
             if (code !== 0 && !res) {
-              return reject(result.description);
+              return reject(JSON.stringify(result));
             }
             resolve(res);
           });

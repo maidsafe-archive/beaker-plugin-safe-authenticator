@@ -19,7 +19,7 @@ import {
   LOGOUT
 } from '../actions/auth';
 import CONSTANTS from '../../constants.json';
-import { isUserAuthorised, trimErrorMsg } from '../utils';
+import { isUserAuthorised, parseErrCode } from '../utils';
 
 const initialState = {
   isAuthorised: !!isUserAuthorised(),
@@ -129,7 +129,7 @@ const auth = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        error: trimErrorMsg(action.payload.message),
+        error: parseErrCode(action.payload.message),
         createAccNavPos: CONSTANTS.CREATE_ACC_NAV.INVITE_CODE
       };
     }
@@ -149,7 +149,7 @@ const auth = (state = initialState, action) => {
       if (!state.loading) {
         return state;
       }
-      return { ...state, loading: false, error: trimErrorMsg(action.payload.message) };
+      return { ...state, loading: false, error: parseErrCode(action.payload.message) };
     }
 
     case `${LOGOUT}_FULFILLED`: {

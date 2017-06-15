@@ -3,7 +3,7 @@ import {
   REVOKE_APP,
   SET_APP_LIST
 } from '../actions/app';
-import { trimErrorMsg } from '../utils';
+import { parseErrCode } from '../utils';
 
 const initialState = {
   authorisedApps: [],
@@ -24,7 +24,7 @@ const app = (state = initialState, action) => {
       };
     }
     case `${GET_AUTHORISED_APPS}_REJECTED`: {
-      return { ...state, fetchingApps: false, error: trimErrorMsg(action.payload.message) };
+      return { ...state, fetchingApps: false, error: parseErrCode(action.payload.message) };
     }
     case `${REVOKE_APP}_PENDING`: {
       return { ...state, loading: true };
@@ -33,7 +33,7 @@ const app = (state = initialState, action) => {
       return { ...state, loading: false };
     }
     case `${REVOKE_APP}_REJECTED`: {
-      return { ...state, loading: false, error: trimErrorMsg(action.payload.message) };
+      return { ...state, loading: false, error: parseErrCode(action.payload.message) };
     }
     case SET_APP_LIST: {
       return { ...state, authorisedApps: action.apps };
