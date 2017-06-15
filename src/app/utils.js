@@ -25,3 +25,27 @@ export const getStrengthMsg = (strength) => {
     default:
   }
 };
+
+export const parseErrCode = (errStr) => {
+  const err = JSON.parse(errStr);
+  switch (parseInt(err.error_code, 10)) {
+    case -3: {
+      return 'Incorrect Password';
+    }
+    case -101: {
+      return 'Account does not exist';
+    }
+    case -102: {
+      return 'Account already exist';
+    }
+    case -116: {
+      return 'Invalid invitation';
+    }
+    case -117: {
+      return 'Invitation already claimed';
+    }
+    default: {
+      return err.description;
+    }
+  }
+};
