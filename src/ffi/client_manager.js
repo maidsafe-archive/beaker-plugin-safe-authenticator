@@ -454,7 +454,7 @@ class ClientManager extends FfiApi {
         return reject();
       }
 
-      const msg = url.replace('safe-auth://', '');
+      const msg = url.replace('safe-auth://', '').replace('safe-auth:', '').replace('/', '');
 
       if (!this.authenticatorHandle) {
         return reject(new Error(i18n.__('messages.unauthorised')));
