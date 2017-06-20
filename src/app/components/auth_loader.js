@@ -10,7 +10,7 @@ export default class AuthLoader extends Component {
     return (
       <div className="auth-loader">
         <h3 className="title">
-          {window.location.hash.slice(1) === '/create-account' ? 'Registering' : 'Logging'} you on the SAFE Network!
+          {window.location.hash.slice(1) === '/create-account' ? 'Registering you on the' : 'Authorising with'} SAFE Network!
         </h3>
         <span className="loader">{' '}</span>
         <div className="opt">

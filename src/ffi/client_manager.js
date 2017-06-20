@@ -84,8 +84,8 @@ class ClientManager extends FfiApi {
   getFunctionsToRegister() {
     /* eslint-enable no-unused-vars, class-methods-use-this */
     return {
-      create_acc: [types.Void, [types.CString, types.CString, types.CString, types.voidPointer, 'pointer', 'pointer']],
-      login: [types.Void, [types.CString, types.CString, types.voidPointer, 'pointer', 'pointer']],
+      create_acc: [types.Void, [types.CString, types.CString, types.CString, types.voidPointer, types.voidPointer, 'pointer', 'pointer']],
+      login: [types.Void, [types.CString, types.CString, types.voidPointer, types.voidPointer, 'pointer', 'pointer']],
       auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [types.Void, [types.voidPointer, types.AuthReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       encode_containers_resp: [types.Void, [types.voidPointer, types.ContainersReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
@@ -354,6 +354,7 @@ class ClientManager extends FfiApi {
           types.allocCString(locator),
           types.allocCString(secret),
           types.Null,
+          types.Null,
           this[_callbackRegistry].loginNwCb,
           this[_callbackRegistry].loginCb,
           onResult);
@@ -403,6 +404,7 @@ class ClientManager extends FfiApi {
           types.allocCString(locator),
           types.allocCString(secret),
           types.allocCString(invitation),
+          types.Null,
           types.Null,
           this[_callbackRegistry].CreateAccNwCb,
           this[_callbackRegistry].createAccCb,
