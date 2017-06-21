@@ -15,7 +15,7 @@
   "NETWORK_STATUS": {
     "CONNECTING": 0,
     "CONNECTED": 1,
-    "DISCONNECTED": 2
+    "DISCONNECTED": -1
   },
   "CREATE_ACC_NAV": {
     "WELCOME": 1,

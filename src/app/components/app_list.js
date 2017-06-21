@@ -8,6 +8,7 @@ export default class AppList extends Component {
     loading: PropTypes.bool,
     authorisedApps: PropTypes.shape,
     getAuthorisedApps: PropTypes.func,
+    clearAppError: PropTypes.func,
     revokeApp: PropTypes.func
   };
 
@@ -29,6 +30,14 @@ export default class AppList extends Component {
   componentWillUpdate(nextProps) {
     if (!nextProps.isAuthorised) {
       return this.context.router.push('/login');
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.error) {
+      console.log('this.props.error', this.props.error)
+      window.alert(`Error :: ${this.props.error}`);
+      this.props.clearAppError();
     }
   }
 
