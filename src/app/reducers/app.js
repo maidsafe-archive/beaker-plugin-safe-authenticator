@@ -2,7 +2,7 @@ import {
   GET_AUTHORISED_APPS,
   REVOKE_APP,
   SET_APP_LIST,
-  CLEAR_APP_LIST
+  CLEAR_APP_ERROR
 } from '../actions/app';
 
 const initialState = {
@@ -46,7 +46,7 @@ const app = (state = initialState, action) => {
     case SET_APP_LIST: {
       return { ...state, authorisedApps: action.apps };
     }
-    case CLEAR_APP_LIST: {
+    case CLEAR_APP_ERROR: {
       return { ...state, error: null };
     }
     default: {
