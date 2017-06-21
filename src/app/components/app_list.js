@@ -5,6 +5,7 @@ import ListItem from './app_list_item';
 export default class AppList extends Component {
   static propTypes = {
     fetchingApps: PropTypes.bool.isRequired,
+    error: PropTypes.string,
     loading: PropTypes.bool,
     authorisedApps: PropTypes.shape,
     getAuthorisedApps: PropTypes.func,
@@ -35,7 +36,6 @@ export default class AppList extends Component {
 
   componentDidUpdate() {
     if (this.props.error) {
-      console.log('this.props.error', this.props.error)
       window.alert(`Error :: ${this.props.error}`);
       this.props.clearAppError();
     }

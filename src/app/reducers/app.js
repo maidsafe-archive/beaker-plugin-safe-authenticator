@@ -4,7 +4,6 @@ import {
   SET_APP_LIST,
   CLEAR_APP_LIST
 } from '../actions/app';
-import { parseErrCode } from '../utils';
 
 const initialState = {
   authorisedApps: [],
@@ -25,7 +24,11 @@ const app = (state = initialState, action) => {
       };
     }
     case `${GET_AUTHORISED_APPS}_REJECTED`: {
-      return { ...state, fetchingApps: false, error: JSON.parse(action.payload.message).description };
+      return {
+        ...state,
+        fetchingApps: false,
+        error: JSON.parse(action.payload.message).description
+      };
     }
     case `${REVOKE_APP}_PENDING`: {
       return { ...state, loading: true };
@@ -34,7 +37,11 @@ const app = (state = initialState, action) => {
       return { ...state, loading: false };
     }
     case `${REVOKE_APP}_REJECTED`: {
-      return { ...state, loading: false, error: JSON.parse(action.payload.message).description };
+      return {
+        ...state,
+        loading: false,
+        error: JSON.parse(action.payload.message).description
+      };
     }
     case SET_APP_LIST: {
       return { ...state, authorisedApps: action.apps };
