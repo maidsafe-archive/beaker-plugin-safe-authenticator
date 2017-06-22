@@ -5,9 +5,11 @@ import ListItem from './app_list_item';
 export default class AppList extends Component {
   static propTypes = {
     fetchingApps: PropTypes.bool.isRequired,
+    error: PropTypes.string,
     loading: PropTypes.bool,
     authorisedApps: PropTypes.shape,
     getAuthorisedApps: PropTypes.func,
+    clearAppError: PropTypes.func,
     revokeApp: PropTypes.func
   };
 
@@ -29,6 +31,13 @@ export default class AppList extends Component {
   componentWillUpdate(nextProps) {
     if (!nextProps.isAuthorised) {
       return this.context.router.push('/login');
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.error) {
+      window.alert(`Error :: ${this.props.error}`);
+      this.props.clearAppError();
     }
   }
 
