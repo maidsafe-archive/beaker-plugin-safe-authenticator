@@ -4,6 +4,9 @@ import CardLoaderFull from './card_loader_full';
 
 export default class AppDetails extends Component {
   static propTypes = {
+    revoked: PropTypes.bool,
+    loading: PropTypes.bool,
+    revokeError: PropTypes.string,
     location: PropTypes.shape({
       query: PropTypes.shape({
         id: PropTypes.string,
@@ -21,8 +24,7 @@ export default class AppDetails extends Component {
       })
     })),
     getAuthorisedApps: PropTypes.func,
-    revokeApp: PropTypes.func,
-    loading: PropTypes.bool
+    revokeApp: PropTypes.func
   };
 
   static contextTypes = {
@@ -43,6 +45,12 @@ export default class AppDetails extends Component {
   componentWillUpdate(nextProps) {
     if (!nextProps.isAuthorised) {
       return this.context.router.push('/login');
+    }
+  }
+
+  componentDidUpdate() {
+    if(this.props.revoked || this.props.revokeError) {
+      this.props.router.push('/');
     }
   }
 
@@ -110,7 +118,6 @@ export default class AppDetails extends Component {
                   className="rgt btn flat danger"
                   onClick={() => {
                     revokeApp(appId);
-                    this.props.router.push('/');
                   }}
                 >Revoke Access</button>
               </div>
