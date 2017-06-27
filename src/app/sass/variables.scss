@@ -1,21 +1,41 @@
-$primary-blue: #5592d7;
-$primary-blue-hover: #6FAFEF;
-$primary-blue-action: #3575B5;
+// Colors
+$primary-blue: #5593D7;
+$primary-gray: #4d4d4d;
 $primary-red: #e26464;
-$primary-red-hover: #ff8a8a;
-$body-bg: #F4F4F4;
+$root-bg: #EEE;
 $header-bg: #FFF;
-$default-btn: $primary-blue;
-$primary-gray: #DDD;
-$tooltip-bg: #424242;
-$primary-text: #606060;
+$header-opt-clr: $primary-blue;
+$header-app-logo-bg: #FFF;
+$default-btn-bg: $primary-gray;
+$default-btn-clr: $primary-gray;
+$btn-primary-bg: $primary-blue;
+$btn-primary-clr: $primary-blue;
+$btn-primary-hover: #6FAFEF;
+$btn-primary-active: #3575B5;
+$btn-danger-bg: $primary-red;
+$btn-danger-clr: $primary-red;
+$a-clr: $primary-blue;
+$a-hover: $btn-primary-hover;
+$auth-nav-stock-clr: #A5A4A4;
 
-$safe-auth-logo-size: 60px;
-$safe-auth-logo-url: '../img/safe-auth-logo.svg';
-$generic-spinner-url: '../img/generic_spinner.svg';
+$card-main-head-bg: $primary-blue;
+$card-main-head-clr: #FFF;
+$card-main-cntr-bg: #FFF;
+$default-app-icon-bg: #EEE;
+$default-app-icon-clr: #FFF;
+$app-detail-key-clr: #4D4D4D;
+$app-detail-value-clr: $primary-blue;
+$app-detail-permission-bg: #deecf9;
+$app-detail-permission-title-bg: #d1e4f2;
+$auth-nav-filled-bg: $primary-blue;
+$tooltip-bg: #424242;
+
+$card-main-head-height: 70px;
+$card-main-cntr-height: 310px;
+$app-list-height: 380px;
+$card-main-cntr-max-height: 500px;
+
+$apps-colors-list: #90dddb #fccb95 #f9bbaf #91bfdb #d8b1f2 #a3cca3;
+
 $nw-connected-url: '../img/nw-connected.svg';
 $nw-connecting-url: '../img/nw-connecting.svg';
-$nw-error-url: '../img/nw-error.svg';
-
-$spinner-size: 50px;
-$alert-width: 400px;

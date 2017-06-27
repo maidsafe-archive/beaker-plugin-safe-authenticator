@@ -6,7 +6,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import { I18n } from 'react-redux-i18n';
 import configureStore from './store';
 import routes from './router';
-import CONSTANTS from '../constants.json';
+import CONSTANTS from '../constants';
 import './sass/main.scss';
 
 import {
@@ -41,7 +41,7 @@ const networkStateListenerCb = (err, state) => {
       return store.dispatch(setNetworkDisconnected());
     }
     default: {
-      throw Error(I18n.t('invalid_network_state'));
+      throw new Error(I18n.t('invalid_network_state'));
     }
   }
 };
@@ -57,7 +57,7 @@ const appListUpdateListenerCb = (err, apps) => {
   return store.dispatch(setAppList(apps));
 };
 
-networkStateListenerCb(null, window.safeAuthenticator.getNetworkState());
+networkStateListenerCb(null, window.safeAuthenticator.getNetworkState().state);
 appListUpdateListenerCb(null, []);
 
 window.addEventListener('message', (evt) => {

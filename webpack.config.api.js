@@ -9,7 +9,7 @@ const SAFE_CORE = {
 };
 
 const dependenciesToCopy = [
-    { context: 'src/ffi', from: SAFE_CORE[os.platform()], flatten: true }
+  { context: 'src/ffi', from: SAFE_CORE[os.platform()], flatten: true }
 ];
 
 if (os.platform() === 'win32') {
@@ -48,7 +48,8 @@ export default {
   },
   externals: {
     ffi: 'ffi',
-    ref: 'ref'
+    ref: 'ref',
+    electron: 'electron'
   },
   plugins: [
     new CopyWebpackPlugin(dependenciesToCopy)

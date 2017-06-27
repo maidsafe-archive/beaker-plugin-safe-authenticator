@@ -1,4 +1,5 @@
-import client from '../ffi/client_manager';
+import authenticator from '../ffi/authenticator';
+import CONSTANTS from '../constants';
 
 export const manifest = {
   setNetworkListener: 'async',
@@ -12,41 +13,31 @@ export const manifest = {
   revokeApp: 'promise'
 };
 
-export const getAuthenticatorHandle = () => (client.authenticatorHandle);
+export const setNetworkListener = (cb) =>
+  authenticator.setListener(CONSTANTS.LISTENER_TYPES.NW_STATE_CHANGE, cb);
 
-export const authDecision = (authData, isAllowed) =>
-  client.authDecision(authData, isAllowed);
+export const setAppListUpdateListener = (cb) =>
+  authenticator.setListener(CONSTANTS.LISTENER_TYPES.APP_LIST_UPDATE, cb);
 
-export const containerDecision = (contData, isAllowed) =>
-  client.containerDecision(contData, isAllowed);
+export const getNetworkState = () => ({ state: authenticator.networkState });
 
-export const setNetworkIpcListener = (cb) => client.setNetworkIpcListener(cb);
+export const getAuthenticatorHandle = () => (authenticator.registeredClientHandle);
 
-export const setNetworkListener = (cb) => client.setNetworkListener(cb);
+export const logout = () => authenticator.logout();
 
-export const getNetworkState = () => (client.networkState);
-
-export const setAppListUpdateListener = (cb) => client.setAppListUpdateListener(cb);
-
-export const logout = () => client.logout();
-
-export const createUnregisteredClient = () => client.createUnregisteredClient();
-
-export const login = (secret, password) => client.login(secret, password);
+export const login = (secret, password) => authenticator.login(secret, password);
 
 export const createAccount = (secret, password, invitation) =>
-  client.createAccount(secret, password, invitation);
+  authenticator.createAccount(secret, password, invitation);
 
-export const getAuthorisedApps = () => client.getAuthorisedApps();
+export const getAuthorisedApps = () => authenticator.getRegisteredApps();
 
-export const revokeApp = (appId) => client.revokeApp(appId);
+export const authDecision = (authData, isAllowed) =>
+  authenticator.encodeAuthResp(authData, isAllowed);
 
-export const decryptRequest = (msg) => client.decryptRequest(msg);
+export const revokeApp = (appId) => authenticator.revokeApp(appId);
 
-export const setAuthReqListener = (cb) => client.setAuthReqListener(cb);
+export const containerDecision = (contData, isAllowed) =>
+  authenticator.encodeContainersResp(contData, isAllowed);
 
-export const setContainerReqListener = (cb) => client.setContainerReqListener(cb);
-
-export const setReqErrorListener = (cb) => client.setReqErrorListener(cb);
-
-export const openUri = (uri) => client.openUri(uri);
+export const createUnregisteredClient = () => authenticator.createUnregisteredClient();

@@ -1,4 +1,5 @@
-import CONSTANTS from '../constants.json';
+import classNames from 'classnames';
+import CONSTANTS from '../constants';
 
 export const isUserAuthorised = () => window.safeAuthenticator.getAuthenticatorHandle();
 
@@ -48,4 +49,17 @@ export const parseErrCode = (errStr) => {
       return err.description;
     }
   }
+};
+
+export const parseAppName = (name) => (
+  name.split('_').map((i) => `${i[0].toUpperCase()}${i.slice(1)}`).join(' ')
+);
+
+export const getAppIconClassName = (i) => {
+  const index = (parseInt(i, 10) + 1) % 6;
+  return classNames(
+    'app-list-i-h',
+    'app-icon',
+    `app-icon-clr-${index || 6}`
+  );
 };

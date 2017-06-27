@@ -4,7 +4,7 @@ import url from 'url';
 /* eslint-disable import/extensions */
 import { protocol, app } from 'electron';
 /* eslint-enable import/extensions */
-import client from '../ffi/client_manager';
+import sysUri from '../ffi/sys_uri';
 
 const safeAuthScheme = 'safe-auth';
 
@@ -19,7 +19,7 @@ const appInfo = {
 };
 
 const registerSafeAuthProtocol = () => {
-  client.registerUriScheme(appInfo, safeAuthScheme);
+  sysUri.registerUriScheme(appInfo, safeAuthScheme);
 
   protocol.registerBufferProtocol(safeAuthScheme, (req, cb) => {
     const parsedUrl = url.parse(req.url);

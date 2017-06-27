@@ -4,7 +4,7 @@ import ffi from 'ffi';
 /* eslint-enable import/no-unresolved, import/extensions */
 import os from 'os';
 import path from 'path';
-import CONST from './../constants.json';
+import CONSTANTS from '../constants';
 import * as type from './refs/types';
 
 const _ffiFunctions = Symbol('ffiFunctions');
@@ -12,7 +12,7 @@ const _libPath = Symbol('libPath');
 
 class SystemUriLoader {
   constructor() {
-    this[_libPath] = CONST.DEFAULT_SYSTEM_URI_LIB_PATH[os.platform()];
+    this[_libPath] = CONSTANTS.LIB_PATH.SYSTEM_URI[os.platform()];
     this[_ffiFunctions] = {
       open: [type.int32, ['string']],
       install: [type.int32, ['string',
