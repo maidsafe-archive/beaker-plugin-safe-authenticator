@@ -13,6 +13,7 @@ const initialState = {
   fetchingApps: false,
   appListError: null,
   revokeError: null,
+  revoked: false,
   loading: false
 };
 const app = (state = initialState, action) => {
@@ -35,10 +36,10 @@ const app = (state = initialState, action) => {
       };
     }
     case `${REVOKE_APP}_PENDING`: {
-      return { ...state, loading: true };
+      return { ...state, loading: true, revoked: false };
     }
     case `${REVOKE_APP}_FULFILLED`: {
-      return { ...state, loading: false };
+      return { ...state, loading: false, revoked: true };
     }
     case `${REVOKE_APP}_REJECTED`: {
       return {
