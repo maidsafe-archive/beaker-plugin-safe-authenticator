@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import path from 'path';
 import i18n from 'i18n';
-import ffiLoader from '../src/ffi/ffi_loader';
+import ffiLoader from '../src/ffi/lib';
 
 i18n.configure({
   locales: ['en'],
@@ -12,7 +12,7 @@ i18n.configure({
 i18n.setLocale('en');
 
 const init = () => {
-  ffiLoader.loadLibrary()
+  ffiLoader.load()
     .catch(console.error);
 };
 

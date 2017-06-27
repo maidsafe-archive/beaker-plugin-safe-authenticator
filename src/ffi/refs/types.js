@@ -13,7 +13,7 @@ export const CString = ref.types.CString;
 
 // Pointer Types
 export const voidPointer = ref.refType(Void);
-export const AppHandlePointer = ref.refType(voidPointer);
+export const ClientHandlePointer = ref.refType(voidPointer);
 
 export const AppExchangeInfo = StructType({
   id: CString,
@@ -70,7 +70,7 @@ export const FfiResult = StructType({
 
 export const ContainersReqPointer = ref.refType(ContainersReq);
 
-export const allocAppHandlePointer = () => (ref.alloc(AppHandlePointer));
+export const allocAppHandlePointer = () => (ref.alloc(ClientHandlePointer));
 
 export const allocCString = (str) => (ref.allocCString(str));
 

@@ -1,8 +1,5 @@
 const api = require('./dist/api');
 const safeAuthProtocol = require('./dist/protocol');
-const safeAuthRpc = require('./dist/safeauth_rpc');
-
-safeAuthRpc(api.ffi.client);
 
 // load ffi library
 api.ffi.ffiLoader.loadLibrary()
