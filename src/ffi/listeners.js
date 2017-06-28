@@ -37,7 +37,10 @@ export default class Listener {
 
   broadcast(err, data) {
     Object.keys(this[_cbFunctions]).forEach((id) => {
-      this[_cbFunctions][id].call(this, err, data);
+      if (!this[_cbFunctions][id]) {
+        return;
+      }
+      this[_cbFunctions][id].call(this[_cbFunctions][id], err, data);
     });
   }
 }

@@ -20,12 +20,7 @@ header {
   .h-app-logo {
     width: 60px;
     height: 60px;
-    background: {
-      color: transparent;
-      image: url("../img/authenticator-logo.svg");
-      repeat: no-repeat;
-      size: contain;
-    };
+    background-color: #ffffff;
     border: 5px solid #FFF;
     border-radius: 50%;
     position: absolute;
@@ -48,7 +43,9 @@ header {
       border: 0;
       outline: none;
       cursor: pointer;
-      line-height: 40px;
+      &.logout {
+        color: $primary-red;
+      }
     }
   }
 }

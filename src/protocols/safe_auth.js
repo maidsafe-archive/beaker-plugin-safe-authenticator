@@ -36,6 +36,12 @@ const registerSafeAuthProtocol = () => {
           data: fs.readFileSync(path.resolve(__dirname, 'bundle.js.map'))
         });
         break;
+      case '/favicon.png':
+        cb({
+          mimeType: 'image/png',
+          data: fs.readFileSync(path.resolve(__dirname, 'favicon.png'))
+        });
+        break;
       default:
         cb({ mimeType: 'text/html', data: fs.readFileSync(path.resolve(__dirname, 'app.html')) });
         break;

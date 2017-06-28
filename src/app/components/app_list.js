@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 import classNames from 'classnames';
 import { parseAppName, getAppIconClassName } from '../utils';
 import Popup from './popup';
+import CardLoaderFull from './card_loader_full';
+import CONSTANTS from '../../constants';
 
 export default class AppList extends Component {
   static propTypes = {
@@ -38,6 +40,7 @@ export default class AppList extends Component {
     this.title = 'Authorised Apps';
     this.getSearchContainer = this.getSearchContainer.bind(this);
     this.getNoAppsContainer = this.getNoAppsContainer.bind(this);
+    this.getReAuthoriseState = this.getReAuthoriseState.bind(this);
     this.getApps = this.getApps.bind(this);
     this.resetPopup = this.resetPopup.bind(this);
     this.state = {
@@ -140,12 +143,10 @@ export default class AppList extends Component {
   }
 
   getApps() {
-    const { fetchingApps, authorisedApps, searchResult } = this.props;
+    const { authorisedApps, searchResult } = this.props;
     let apps = [];
 
-    if (fetchingApps) {
-      return (<span className="fetching">Fetching apps...</span>);
-    } else if (authorisedApps.length === 0) {
+    if (authorisedApps.length === 0) {
       return this.getNoAppsContainer();
     }
     const appList = (this.state.searchActive &&
@@ -166,6 +167,33 @@ export default class AppList extends Component {
     return apps;
   }
 
+  getReAuthoriseState() {
+    const { reAuthoriseState, setReAuthoriseState } = this.props;
+    const iconClassName = classNames(
+      'icn',
+      {
+        lock: reAuthoriseState === CONSTANTS.RE_AUTHORISE.STATE.LOCK,
+        unlock: reAuthoriseState === CONSTANTS.RE_AUTHORISE.STATE.UNLOCK
+      }
+    );
+    const message = (reAuthoriseState === CONSTANTS.RE_AUTHORISE.STATE.LOCK) ?
+      CONSTANTS.RE_AUTHORISE.LOCK_MSG : CONSTANTS.RE_AUTHORISE.UNLOCK_MSG;
+
+    return (
+      <div className="reauthorise-state">
+        <button
+          className={iconClassName}
+          onClick={() => {
+            const state = (reAuthoriseState === CONSTANTS.RE_AUTHORISE.STATE.LOCK) ?
+              CONSTANTS.RE_AUTHORISE.STATE.UNLOCK : CONSTANTS.RE_AUTHORISE.STATE.LOCK;
+            setReAuthoriseState(state);
+          }}
+        >{''}</button>
+        <span className="msg">{message}</span>
+      </div>
+    )
+  }
+
   resetPopup() {
     this.setState({
       showPopup: false,
@@ -175,11 +203,13 @@ export default class AppList extends Component {
   }
 
   render() {
-    const { authorisedApps } = this.props;
+    const { fetchingApps, authorisedApps } = this.props;
     return (
       <div className="card-main-b">
         <div className="card-main-h">{ this.title }</div>
         <div className="card-main-cntr">
+          { this.getReAuthoriseState() }
+          { fetchingApps ? <CardLoaderFull msg="Fetching registered apps">{''}</CardLoaderFull> : null }
           <Popup
             show={this.state.showPopup}
             error={this.props.appListError || this.props.revokeError}

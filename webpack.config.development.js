@@ -28,7 +28,8 @@ export default {
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: 'src/app/app.html', to: './' }
+      { from: 'src/app/app.html', to: './' },
+      { from: 'src/app/favicon.png', to: './' }
     ])
   ]
 };

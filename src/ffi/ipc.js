@@ -75,7 +75,7 @@ class ReqQueue {
 
   process() {
     const self = this;
-    if (this.preocessing || this.q.length === 0 || !authenticator.registeredClientHandle) {
+    if (this.preocessing || this.q.length === 0) {
       return;
     }
     this.preocessing = true;
@@ -89,6 +89,8 @@ class ReqQueue {
       }
       openExternal(res);
       self.next();
+    }).catch((err) => {
+      decodeEvent.sender.send('onAuthResError', new Response(reqQ.req, err.message).prepare());
     });
   }
 }
@@ -98,6 +100,7 @@ const reqQ = new ReqQueue();
 const registerNetworkListener = (e) => {
   authenticator.setListener(CONSTANTS.LISTENER_TYPES.NW_STATE_CHANGE, (err, state) => {
     if (state === CONSTANTS.NETWORK_STATUS.CONNECTED) {
+      reqQ.preocessing = false;
       reqQ.process();
     }
     e.sender.send('onNetworkStatus', state);
@@ -167,7 +170,7 @@ const onContainerDecision = (e, contData, isAllowed) => {
 
 const onReqError = (e) => {
   authenticator.setListener(CONSTANTS.LISTENER_TYPES.REQUEST_ERR, (err) => {
-    e.sender.send('onAuthResError', new Response(reqQ.req, err.msg).prepare());
+    e.sender.send('onAuthResError', new Response(reqQ.req, err).prepare());
     openExternal(err.msg);
     reqQ.next();
   });

@@ -23,21 +23,22 @@ export default class App extends Component {
       <div className="h-opt">
         <button
           type="button"
+          className="logout"
           onClick={() => {
             logout();
           }}
         >Logout</button>
-        <NetworkStatus status={this.props.networkState} />
       </div>
     );
   }
 
   render() {
+    const { networkState, isAuthorised } = this.props;
     return (
       <div className="root">
         <header>
           <div className="h-app-name">{''}</div>
-          <div className="h-app-logo">{''}</div>
+          <div className="h-app-logo"><NetworkStatus status={networkState} /></div>
           {this.getHeaderOptions()}
         </header>
         <div className="base">

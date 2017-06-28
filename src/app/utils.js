@@ -63,3 +63,12 @@ export const getAppIconClassName = (i) => {
     `app-icon-clr-${index || 6}`
   );
 };
+
+export const storeReAuthoriseState = (state) => (
+  localStorage.setItem(CONSTANTS.RE_AUTHORISE.KEY, JSON.stringify({state}))
+);
+
+export const fetchReAuthoriseState = () => {
+  const data = localStorage.getItem(CONSTANTS.RE_AUTHORISE.KEY);
+  return data ? JSON.parse(data).state : null;
+};

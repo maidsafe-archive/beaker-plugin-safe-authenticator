@@ -22,11 +22,7 @@ describe('Client', () => {
     .then(() => client.decodeRequest(uri));
 
   describe('Unregistered client', () => {
-    before(() => helper.createRandomAccount()); // TODO create unregistered client
-
-    after(() => helper.clearAccount());
-
-    it('gets back encoded response', () => (
+    it.skip('gets back encoded response', () => (
       new Promise((resolve) => {
         client.decodeRequest(encodedUnRegisterAuthUri)
           .then((res) => {

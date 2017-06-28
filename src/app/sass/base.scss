@@ -108,13 +108,10 @@ body {
 
 .nw-status {
   display: inline-block;
-  width: 40px;
-  height: 40px;
-  position: relative;
-  float: right;
-  margin-left: 16px;
+  width: 50px;
+  height: 50px;
   &-i {
-    width: 30px;
+    width: 50px;
     height: inherit;
     display: block;
     background: {
@@ -135,20 +132,25 @@ body {
   }
   &-tooltip {
     display: none;
+    width: 100px;
+    text-align: center;
+    font: {
+      size: 10px;
+      weight: normal;
+    }
+    line-height: 25px;
+    text-transform: uppercase;
     position: absolute;
-    font-size: 12px;
-    color: #ffffff;
-    line-height: 30px;
-    background-color: $tooltip-bg;
+    top: 100%;
+    left: 50%;
+    background-color: #424242;
+    color: #DDD;
+    margin-left: -50px;
+    margin-top: 12px;
     padding: 0 8px;
-    bottom: 4px;
-    right: 100%;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.26);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.26);
     border-radius: 3px;
     overflow: hidden;
-    margin-right: 8px;
-    font-weight: 600;
-    text-transform: uppercase;
   }
   &:hover {
     .nw-status-tooltip {
