@@ -31,18 +31,18 @@ cache:
   directories:
     - node_modules
 
-before_install:
-  - curl -s https://static.rust-lang.org/rustup.sh > rustup.sh && sh rustup.sh --prefix=~/rust --spec=1.17.0 -y --disable-sudo
-  - "[[ ${TRAVIS_OS_NAME} = linux ]] && export CXX=g++-4.8 || echo 'skipped'"
+# before_install:
+#   - curl -s https://static.rust-lang.org/rustup.sh > rustup.sh && sh rustup.sh --prefix=~/rust --spec=1.17.0 -y --disable-sudo
+#   - "[[ ${TRAVIS_OS_NAME} = linux ]] && export CXX=g++-4.8 || echo 'skipped'"
 
 install:
   - node --version
   - npm --version
-  - npm i
+  - NODE_ENV=dev && npm i
 
-before_script:
-  - travis_wait 30 npm run build-libs -- --features="mock-routing" --clean
-  - npm run grep-error-codes
+# before_script:
+#   - travis_wait 30 npm run build -- --features="mock-routing" --clean
+#   - npm run grep-error-codes
 
 script:
   - npm run lint

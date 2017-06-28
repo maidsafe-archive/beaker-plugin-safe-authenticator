@@ -41,3 +41,4 @@ dist
 src/ffi/*safe_authenticator*
 src/ffi/*system_uri*
 /src/ffi/libwinpthread-1.dll
+/.cache

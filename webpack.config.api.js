@@ -1,12 +1,6 @@
 import path from 'path';
 import os from 'os';
 
-const SAFE_CORE = {
-  win32: '*.dll',
-  darwin: '*.dylib',
-  linux: '*.so'
-};
-
 export default {
   devtool: 'cheap-module-source-map',
   entry: path.resolve(__dirname, 'src/api/index.js'),
