@@ -1,0 +1,16 @@
+native
+locales
+src
+system_uri
+test
+
+.bablerc
+.eslintignore
+.eslintrc
+.gtmodules
+.travis.yml
+appveyor.yml
+build_libs.js
+CHANGELOG.*
+CONTRIBUTOR.md
+webpack.*
