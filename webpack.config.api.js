@@ -1,5 +1,4 @@
 import path from 'path';
-import os from 'os';
 
 export default {
   devtool: 'cheap-module-source-map',
