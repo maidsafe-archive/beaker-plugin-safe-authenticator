@@ -8,6 +8,7 @@ import path from 'path';
 
 import SafeLib from './safe_lib';
 import authenticator from './authenticator';
+import * as types from './refs/types';
 import CONSTANTS from '../constants';
 
 const _mods = Symbol('_mods');
@@ -59,7 +60,17 @@ class LibLoader {
           }
           mod.safeLib = safeLib;
         });
-        resolve();
+
+        // init logging
+        safeLib.auth_init_logging(types.allocCString('authenticator.log'), types.Null, ffi.Callback(types.Void,
+          [types.voidPointer, types.FfiResult],
+          (userData, result) => {
+            const code = result.error_code;
+            if (code !== 0) {
+              return reject(JSON.stringify(result));
+            }
+            resolve();
+          }));
       } catch (err) {
         return reject(err);
       }

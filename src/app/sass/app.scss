@@ -239,3 +239,59 @@
   ;
   }
 }
+
+.reauthorise-state {
+  position: absolute;
+  top: 86px;
+  left: 16px;
+  .icn {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: {
+      size: contain;
+      color: transparent;
+      position: center;
+      repeat: no-repeat;
+    };
+    float: left;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+    &.lock {
+      background: {
+        image: url("../img/lock.svg");
+      };
+    }
+    &.unlock {
+      background: {
+        image: url("../img/unlock.svg");
+      };
+    }
+    &:hover {
+      &.lock {
+        background-image: url("../img/lock-hover.svg");
+      }
+      &.unlock {
+        background-image: url("../img/unlock-hover.svg");
+      }
+    }
+    &:hover + .msg {
+      display: inline-block;
+    }
+  }
+  > .msg {
+    display: none;
+    font: {
+      size: 12px;
+      weight: normal;
+    };
+    line-height: 20px;
+    float: left;
+    background-color: rgba(68, 68, 68, 0.76);
+    color: #EEE;
+    margin-left: 8px;
+    padding: 0 8px;
+    border-radius: 3px;
+  }
+}

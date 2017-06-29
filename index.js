@@ -3,7 +3,6 @@ const safeAuthProtocol = require('./dist/protocol');
 
 // load ffi library
 api.ffi.ffiLoader.loadLibrary()
-  .then(() => api.ffi.client.createUnregisteredClient())
   // TODO notify on browser
   .catch((err) => console.error(err));
 
