@@ -3,6 +3,7 @@ import Enum from 'enum';
 export default {
   NETWORK_STATUS: {
     CONNECTED: 0,
+    CONNECTING: 1,
     DISCONNECTED: -1
   },
   LIB_PATH: {

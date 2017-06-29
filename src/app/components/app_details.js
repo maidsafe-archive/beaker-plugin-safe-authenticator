@@ -49,7 +49,7 @@ export default class AppDetails extends Component {
   }
 
   componentDidUpdate() {
-    if(this.props.revoked || this.props.revokeError) {
+    if (this.props.revoked || this.props.revokeError) {
       this.props.router.push('/');
     }
   }

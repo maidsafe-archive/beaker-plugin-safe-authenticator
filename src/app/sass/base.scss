@@ -117,7 +117,10 @@ body {
     background: {
       position: center;
       repeat: no-repeat;
+      color: transparent;
     }
+    border-color: transparent;
+    outline: none;
     cursor: pointer;
     &.connecting {
       background-image: url($nw-connecting-url);
@@ -126,9 +129,9 @@ body {
     &.connected {
       background-image: url($nw-connected-url);
     }
-    //&.error {
-    //  background-image: url($nw-error-url);
-    //}
+    &.terminated {
+      background-image: url($nw-terminated-url);
+    }
   }
   &-tooltip {
     display: none;

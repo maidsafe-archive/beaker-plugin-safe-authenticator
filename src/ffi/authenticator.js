@@ -285,7 +285,7 @@ class Authenticator extends SafeLib {
         }));
 
       const decodeReqErrorCb = this._pushCb(ffi.Callback(types.Void,
-        [types.voidPointer, types.FfiResult, types.CString], (userData, result, error) => {
+        [types.voidPointer, types.FfiResult, types.CString], (userData, result) => {
           if (!(this[_reqErrListener] && this[_reqErrListener].len() !== 0)) {
             return;
           }
@@ -504,9 +504,7 @@ class Authenticator extends SafeLib {
           return reject(new Error('Invalid Response while decoding Unregisterd client request'));
         }
         return this._encodeUnRegisteredResp(reqId)
-          .then((res) => {
-            return resolve(res)
-          });
+          .then((res) => resolve(res));
       }));
 
     const decodeReqErrorCb = this._pushCb(ffi.Callback(types.Void,

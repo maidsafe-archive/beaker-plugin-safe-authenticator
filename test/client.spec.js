@@ -199,7 +199,7 @@ describe('Client', () => {
         });
 
         const errListener = client.setListener(CONST.LISTENER_TYPES.REQUEST_ERR, (err) => {
-          should(err).not.be.empty().and.be.Object();
+          should(err).not.be.empty().and.be.String();
           client.removeListener(CONST.LISTENER_TYPES.REQUEST_ERR, errListener);
           resolve(err);
         });

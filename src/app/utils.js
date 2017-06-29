@@ -65,7 +65,7 @@ export const getAppIconClassName = (i) => {
 };
 
 export const storeReAuthoriseState = (state) => (
-  localStorage.setItem(CONSTANTS.RE_AUTHORISE.KEY, JSON.stringify({state}))
+  localStorage.setItem(CONSTANTS.RE_AUTHORISE.KEY, JSON.stringify({ state }))
 );
 
 export const fetchReAuthoriseState = () => {

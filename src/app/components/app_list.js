@@ -29,6 +29,8 @@ export default class AppList extends Component {
     getAuthorisedApps: PropTypes.func,
     revokeError: PropTypes.string,
     appListError: PropTypes.string,
+    reAuthoriseState: PropTypes.number,
+    setReAuthoriseState: PropTypes.func,
   };
 
   static contextTypes = {
@@ -191,7 +193,7 @@ export default class AppList extends Component {
         >{''}</button>
         <span className="msg">{message}</span>
       </div>
-    )
+    );
   }
 
   resetPopup() {

@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
+
 import NetworkStatus from './network_status';
 
 export default class App extends Component {
@@ -6,7 +8,8 @@ export default class App extends Component {
     children: PropTypes.element.isRequired,
     networkState: PropTypes.number,
     isAuthorised: PropTypes.bool,
-    logout: PropTypes.func
+    logout: PropTypes.func,
+    setNetworkConnecting: PropTypes.func
   };
 
   constructor() {
@@ -33,12 +36,20 @@ export default class App extends Component {
   }
 
   render() {
-    const { networkState, isAuthorised } = this.props;
+    const { networkState, isAuthorised, setNetworkConnecting } = this.props;
+    const appLogoClassname = classNames(
+      'h-app-logo',
+      {
+        'safe-auth-icon': !isAuthorised
+      }
+    );
     return (
       <div className="root">
         <header>
           <div className="h-app-name">{''}</div>
-          <div className="h-app-logo"><NetworkStatus status={networkState} /></div>
+          <div className={appLogoClassname}>{ isAuthorised ?
+            <NetworkStatus status={networkState} reconnect={setNetworkConnecting} /> : null }
+          </div>
           {this.getHeaderOptions()}
         </header>
         <div className="base">

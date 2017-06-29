@@ -4,7 +4,8 @@ import CONSTANTS from '../../constants';
 
 export default class Spinner extends Component {
   static propTypes = {
-    status: PropTypes.number.isRequired
+    status: PropTypes.number.isRequired,
+    reconnect: PropTypes.func
   };
 
   render() {
@@ -15,25 +16,36 @@ export default class Spinner extends Component {
         break;
       }
       case CONSTANTS.NETWORK_STATUS.DISCONNECTED: {
+        message = 'Terminated';
+        break;
+      }
+      case CONSTANTS.NETWORK_STATUS.CONNECTING: {
         message = 'Connecting';
         break;
       }
       default: {
-        message = 'Terminated';
+        message = '';
         break;
       }
     }
     return (
       <div className="nw-status">
-        <span
+        <button
           className={classNames(
             'nw-status-i',
             {
-              connecting: this.props.status === CONSTANTS.NETWORK_STATUS.DISCONNECTED,
+              connecting: this.props.status === CONSTANTS.NETWORK_STATUS.CONNECTING,
+              terminated: this.props.status === CONSTANTS.NETWORK_STATUS.DISCONNECTED,
               connected: this.props.status === CONSTANTS.NETWORK_STATUS.CONNECTED
             }
           )}
-        >{' '}</span>
+          onClick={() => {
+            if (this.props.status !== CONSTANTS.NETWORK_STATUS.DISCONNECTED) {
+              return;
+            }
+            this.props.reconnect();
+          }}
+        >{' '}</button>
         <span className="nw-status-tooltip">{message}</span>
       </div>
     );
