@@ -79,7 +79,7 @@ class Authenticator extends SafeLib {
     return {
       create_acc: [types.Void, [types.CString, types.CString, types.CString, types.voidPointer, types.voidPointer, 'pointer', 'pointer']],
       login: [types.Void, [types.CString, types.CString, types.voidPointer, types.voidPointer, 'pointer', 'pointer']],
-      auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer']],
+      auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [types.Void, [types.voidPointer, types.AuthReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       encode_containers_resp: [types.Void, [types.voidPointer, types.ContainersReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       auth_unregistered_decode_ipc_msg: [types.Void, [types.CString, types.voidPointer, 'pointer', 'pointer']],
@@ -284,6 +284,8 @@ class Authenticator extends SafeLib {
           });
         }));
 
+      const unregisteredCb = this._getUnregisteredClientCb(resolve, reject);
+
       const decodeReqErrorCb = this._pushCb(ffi.Callback(types.Void,
         [types.voidPointer, types.FfiResult, types.CString], (userData, result) => {
           if (!(this[_reqErrListener] && this[_reqErrListener].len() !== 0)) {
@@ -291,7 +293,6 @@ class Authenticator extends SafeLib {
           }
           this[_reqErrListener].broadcast(JSON.stringify(result));
         }));
-
       try {
         this.safeLib.auth_decode_ipc_msg(
           this.registeredClientHandle,
@@ -299,6 +300,7 @@ class Authenticator extends SafeLib {
           types.Null,
           this._getCb(decodeReqAuthCb),
           this._getCb(decodeReqContainerCb),
+          this._getCb(unregisteredCb),
           this._getCb(decodeReqErrorCb));
       } catch (e) {
         reject(e);
@@ -498,14 +500,7 @@ class Authenticator extends SafeLib {
       return reject(new Error('Invalid URI'));
     }
 
-    const unregisteredCb = this._pushCb(ffi.Callback(types.Void,
-      [types.voidPointer, types.u32], (userData, reqId) => {
-        if (!reqId) {
-          return reject(new Error('Invalid Response while decoding Unregisterd client request'));
-        }
-        return this._encodeUnRegisteredResp(reqId)
-          .then((res) => resolve(res));
-      }));
+    const unregisteredCb = this._getUnregisteredClientCb(resolve, reject);
 
     const decodeReqErrorCb = this._pushCb(ffi.Callback(types.Void,
       [types.voidPointer, types.FfiResult, types.CString], () => {
@@ -546,6 +541,17 @@ class Authenticator extends SafeLib {
         reject(e.message);
       }
     });
+  }
+
+  _getUnregisteredClientCb(resolve, reject) {
+    return this._pushCb(ffi.Callback(types.Void,
+      [types.voidPointer, types.u32], (userData, reqId) => {
+        if (!reqId) {
+          return reject(new Error('Invalid Response while decoding Unregisterd client request'));
+        }
+        return this._encodeUnRegisteredResp(reqId)
+          .then((res) => resolve(res));
+      }));
   }
 
   _isAlreadyAuthorised(req) {
