@@ -38,7 +38,7 @@ cache:
 install:
   - node --version
   - npm --version
-  - NODE_ENV=dev && npm i
+  - NODE_ENV=dev npm i
 
 # before_script:
 #   - travis_wait 30 npm run build -- --features="mock-routing" --clean
