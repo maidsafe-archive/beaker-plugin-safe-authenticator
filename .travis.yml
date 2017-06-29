@@ -31,9 +31,9 @@ cache:
   directories:
     - node_modules
 
-# before_install:
+ before_install:
 #   - curl -s https://static.rust-lang.org/rustup.sh > rustup.sh && sh rustup.sh --prefix=~/rust --spec=1.17.0 -y --disable-sudo
-#   - "[[ ${TRAVIS_OS_NAME} = linux ]] && export CXX=g++-4.8 || echo 'skipped'"
+   - "[[ ${TRAVIS_OS_NAME} = linux ]] && export CXX=g++-4.8 || echo 'skipped'"
 
 install:
   - node --version
