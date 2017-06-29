@@ -41,7 +41,7 @@ install:
   - npm i
 
 before_script:
-  - travis_wait 30 npm run build-libs -- --features="mock-routing" --clean
+  - travis_wait 40 npm run build-libs -- --features="mock-routing" --clean
   - npm run grep-error-codes
 
 script:
