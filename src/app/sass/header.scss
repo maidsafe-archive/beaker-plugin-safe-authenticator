@@ -53,4 +53,32 @@ header {
       }
     }
   }
+  .nw-state-alert {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    left: 0;
+    text-align: center;
+    margin-top: 24px;
+    .nw-status-alert-b {
+      background-color: $nw-alert-bg;
+      display: inline-block;
+      padding: 0 16px;
+      border-radius: 5px;
+      color: #FFF;
+      line-height: 28px;
+      button {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        outline: 0;
+        background-color: transparent;
+        text-decoration: underline;
+        font-size: inherit;
+        color: inherit;
+        line-height: inherit;
+        cursor: pointer;
+      }
+    }
+  }
 }

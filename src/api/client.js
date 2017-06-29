@@ -11,7 +11,8 @@ export const manifest = {
   login: 'promise',
   createAccount: 'promise',
   getAuthorisedApps: 'promise',
-  revokeApp: 'promise'
+  revokeApp: 'promise',
+  reconnect: 'promise'
 };
 
 export const setNetworkListener = (cb) =>
@@ -23,6 +24,8 @@ export const setAppListUpdateListener = (cb) =>
 export const getNetworkState = () => ({ state: authenticator.networkState });
 
 export const getAuthenticatorHandle = () => (authenticator.registeredClientHandle);
+
+export const reconnect = () => authenticator.reconnect();
 
 export const logout = () => authenticator.logout();
 
