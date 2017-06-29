@@ -284,7 +284,7 @@ class Authenticator extends SafeLib {
           });
         }));
 
-      const unregisteredCb = this._getUnregisteredClientCb();
+      const unregisteredCb = this._getUnregisteredClientCb(resolve, reject);
 
       const decodeReqErrorCb = this._pushCb(ffi.Callback(types.Void,
         [types.voidPointer, types.FfiResult, types.CString], (userData, result) => {
@@ -500,7 +500,7 @@ class Authenticator extends SafeLib {
       return reject(new Error('Invalid URI'));
     }
 
-    const unregisteredCb = this._getUnregisteredClientCb();
+    const unregisteredCb = this._getUnregisteredClientCb(resolve, reject);
 
     const decodeReqErrorCb = this._pushCb(ffi.Callback(types.Void,
       [types.voidPointer, types.FfiResult, types.CString], () => {
@@ -543,7 +543,7 @@ class Authenticator extends SafeLib {
     });
   }
 
-  _getUnregisteredClientCb() {
+  _getUnregisteredClientCb(resolve, reject) {
     return this._pushCb(ffi.Callback(types.Void,
       [types.voidPointer, types.u32], (userData, reqId) => {
         if (!reqId) {
