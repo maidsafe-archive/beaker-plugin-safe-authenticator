@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
+import CONSTANTS from '../../constants';
 import NetworkStatus from './network_status';
 
 export default class App extends Component {
@@ -48,9 +49,22 @@ export default class App extends Component {
         <header>
           <div className="h-app-name">{''}</div>
           <div className={appLogoClassname}>{ isAuthorised ?
-            <NetworkStatus status={networkState} reconnect={setNetworkConnecting} /> : null }
+            <NetworkStatus status={networkState} /> : null }
           </div>
           {this.getHeaderOptions()}
+          { (networkState === CONSTANTS.NETWORK_STATUS.DISCONNECTED) && isAuthorised ? (
+            <div className="nw-state-alert">
+              <div className="nw-status-alert-b">
+                You have been disconnected from the network.
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNetworkConnecting();
+                  }}
+                >Reconnect now</button>.
+              </div>
+            </div>
+            ) : null }
         </header>
         <div className="base">
           <div className="card-main">

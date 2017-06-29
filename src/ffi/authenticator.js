@@ -87,7 +87,8 @@ class Authenticator extends SafeLib {
       authenticator_registered_apps: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
       authenticator_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']],
       authenticator_free: [types.Void, [types.voidPointer]],
-      auth_init_logging: [types.Void, [types.CString, types.voidPointer, 'pointer']]
+      auth_init_logging: [types.Void, [types.CString, types.voidPointer, 'pointer']],
+      auth_reconnect: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']]
     };
   }
 
@@ -140,6 +141,33 @@ class Authenticator extends SafeLib {
 
   setReAuthoriseState(state) {
     this[_reAuthoriseState] = state;
+  }
+
+  reconnect() {
+    return new Promise((resolve, reject) => {
+      if (!this.registeredClientHandle) {
+        return reject(new Error(i18n.__('messages.unauthorised')));
+      }
+      try {
+        const cb = this._pushCb(ffi.Callback(types.Void,
+          [types.voidPointer, types.FfiResult],
+          (userData, result) => {
+            const code = result.error_code;
+            if (code !== 0) {
+              return reject(JSON.stringify(result));
+            }
+            resolve();
+          }));
+
+        this.safeLib.auth_reconnect(
+          this.registeredClientHandle,
+          types.Null,
+          this._getCb(cb)
+        );
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 
   createAccount(locator, secret, invitation) {

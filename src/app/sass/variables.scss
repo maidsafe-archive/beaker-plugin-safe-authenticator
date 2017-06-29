@@ -29,6 +29,7 @@ $app-detail-permission-bg: #deecf9;
 $app-detail-permission-title-bg: #d1e4f2;
 $auth-nav-filled-bg: $primary-blue;
 $tooltip-bg: #424242;
+$nw-alert-bg: #f9a832;
 
 $card-main-head-height: 70px;
 $card-main-cntr-height: 310px;
@@ -37,6 +38,6 @@ $card-main-cntr-max-height: 500px;
 
 $apps-colors-list: #90dddb #fccb95 #f9bbaf #91bfdb #d8b1f2 #a3cca3;
 
-$nw-connected-url: '../img/nw-connected.svg';
-$nw-connecting-url: '../img/nw-connecting.svg';
-$nw-terminated-url: '../img/nw-terminated.svg';
+$nw-connected-url: '../img/authenticator-logo.svg';
+$nw-reconnect-url: '../img/reconnect_bg.png';
+$nw-reconnect-arrow-url: '../img/reconnect_arrows.svg';
