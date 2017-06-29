@@ -6,6 +6,7 @@ export const manifest = {
   setAppListUpdateListener: 'async',
   getNetworkState: 'sync',
   getAuthenticatorHandle: 'sync',
+  setReAuthoriseState: 'sync',
   logout: 'sync',
   login: 'promise',
   createAccount: 'promise',
@@ -40,4 +41,4 @@ export const revokeApp = (appId) => authenticator.revokeApp(appId);
 export const containerDecision = (contData, isAllowed) =>
   authenticator.encodeContainersResp(contData, isAllowed);
 
-export const createUnregisteredClient = () => authenticator.createUnregisteredClient();
+export const setReAuthoriseState = (state) => authenticator.setReAuthoriseState(state);

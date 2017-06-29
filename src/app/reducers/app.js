@@ -4,7 +4,8 @@ import {
   SET_APP_LIST,
   CLEAR_APP_ERROR,
   SEARCH_APP,
-  CLEAR_SEARCH
+  CLEAR_SEARCH,
+  SET_RE_AUTHORISE_STATE
 } from '../actions/app';
 import { parseAppName } from '../utils';
 
@@ -14,12 +15,13 @@ const initialState = {
   appListError: null,
   revokeError: null,
   revoked: false,
-  loading: false
+  loading: false,
+  reAuthoriseState: false
 };
 const app = (state = initialState, action) => {
   switch (action.type) {
     case `${GET_AUTHORISED_APPS}_PENDING`: {
-      return { ...state, fetchingApps: true };
+      return { ...state, fetchingApps: true, revoked: false };
     }
     case `${GET_AUTHORISED_APPS}_FULFILLED`: {
       return {
@@ -66,6 +68,9 @@ const app = (state = initialState, action) => {
     }
     case CLEAR_SEARCH: {
       return { ...state, searchResult: [] };
+    }
+    case SET_RE_AUTHORISE_STATE: {
+      return { ...state, reAuthoriseState: action.state };
     }
     default: {
       return state;

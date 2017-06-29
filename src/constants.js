@@ -3,6 +3,7 @@ import Enum from 'enum';
 export default {
   NETWORK_STATUS: {
     CONNECTED: 0,
+    CONNECTING: 1,
     DISCONNECTED: -1
   },
   LIB_PATH: {
@@ -46,5 +47,14 @@ export default {
     WEAK: 'Weak',
     SOMEWHAT_SECURE: 'Somewhat secure',
     SECURE: 'Secure'
+  },
+  RE_AUTHORISE: {
+    KEY: 'SAFE_LOCAL_RE_AUTHORISE_STATE',
+    LOCK_MSG: 'Apps cannot re-authenticate automatically',
+    UNLOCK_MSG: 'Apps can re-authenticate automatically',
+    STATE: {
+      LOCK: 0,
+      UNLOCK: 1
+    }
   }
 };

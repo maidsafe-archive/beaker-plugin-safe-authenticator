@@ -37,7 +37,13 @@ export default class Listener {
 
   broadcast(err, data) {
     Object.keys(this[_cbFunctions]).forEach((id) => {
-      this[_cbFunctions][id].call(this, err, data);
+      try {
+        this[_cbFunctions][id].call(this[_cbFunctions][id], err, data);
+      } catch (e) {
+        // remove the callback if object destroyed
+        console.warn('Listener warn :', e.message);
+        this.remove(id);
+      }
     });
   }
 }

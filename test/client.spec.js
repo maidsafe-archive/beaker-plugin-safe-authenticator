@@ -22,11 +22,7 @@ describe('Client', () => {
     .then(() => client.decodeRequest(uri));
 
   describe('Unregistered client', () => {
-    before(() => helper.createRandomAccount()); // TODO create unregistered client
-
-    after(() => helper.clearAccount());
-
-    it('gets back encoded response', () => (
+    it.skip('gets back encoded response', () => (
       new Promise((resolve) => {
         client.decodeRequest(encodedUnRegisterAuthUri)
           .then((res) => {
@@ -203,7 +199,7 @@ describe('Client', () => {
         });
 
         const errListener = client.setListener(CONST.LISTENER_TYPES.REQUEST_ERR, (err) => {
-          should(err).not.be.empty().and.be.Object();
+          should(err).not.be.empty().and.be.String();
           client.removeListener(CONST.LISTENER_TYPES.REQUEST_ERR, errListener);
           resolve(err);
         });
