@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
+import classNames from 'classnames';
+
 import CardLoaderFull from './card_loader_full';
 
 export default class Login extends Component {
@@ -124,7 +126,16 @@ export default class Login extends Component {
           </div>
         </div>
         <div className="card-f">
-          Don&lsquo;t have an account? <Link to="create-account">CREATE ACCOUNT</Link>
+          Don&lsquo;t have an account? <Link
+            className={classNames({ disabled: this.props.loading })}
+            onClick={(e) => {
+              e.preventDefault();
+              if (this.props.loading) {
+                return;
+              }
+              return this.context.router.push('create-account');
+            }}
+          >CREATE ACCOUNT</Link>
         </div>
       </div>
     );

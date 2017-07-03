@@ -42,8 +42,15 @@
       };
       color: $a-clr;
       text-decoration: none;
+      cursor: pointer;
+      &.disabled {
+        color: $primary-gray;
+      }
       &:hover {
         color: $a-hover;
+        &.disabled {
+          color: $primary-gray;
+        }
       }
     }
   }

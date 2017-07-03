@@ -11,6 +11,11 @@
     size: 15px;
     weight: bold;
   };
+  &:disabled {
+    background-color: $primary-gray !important;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
   &.primary {
     background-color: $btn-primary-bg;
     color: white;
@@ -31,11 +36,17 @@
     color: $default-btn-clr;
     padding-left: 0;
     padding-right: 0;
+    &:hover {
+      color: $default-btn-hover-clr;
+    }
     &.danger {
       color: $btn-danger-clr;
     }
     &.primary {
       color: $btn-primary-clr;
+      &:hover {
+        color: $btn-primary-hover;
+      }
     }
   }
 }

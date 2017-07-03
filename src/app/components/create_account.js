@@ -39,6 +39,13 @@ export default class CreateAccount extends Component {
 
   constructor() {
     super();
+    this.state = {
+      inviteError: null,
+      accSecError: null,
+      confirmAccSecError: null,
+      accPassErr: null,
+      confirmAccPassErr: null,
+    };
     this.lastNavPos = 0;
     this.secretEle = null;
     this.confirmSecretEle = null;
@@ -140,7 +147,8 @@ export default class CreateAccount extends Component {
                   onClick={() => {
                     setCreateAccNavPos(navPos + 1);
                   }}
-                >Continue</button>
+                >Continue
+                </button>
               </div>
             </div>
           </div>
@@ -153,7 +161,7 @@ export default class CreateAccount extends Component {
     const { navPos, error, setCreateAccNavPos } = this.props;
     const msgClassNames = classNames(
       'msg',
-      { error });
+      { error: error || this.state.inviteError });
 
     return (
       <div className="card-main-cntr">
@@ -163,7 +171,7 @@ export default class CreateAccount extends Component {
               Enter an invitation token or claim an invitation below.
             </p>
             <div className="auth-form">
-              <form id="invitationForm" onSubmit={this.handleInvitation}>
+              <form id="invitationForm">
                 <div className="inp-grp">
                   <input
                     type="text"
@@ -176,11 +184,11 @@ export default class CreateAccount extends Component {
                     required
                   />
                   <label htmlFor="invitation-code">Invitation Token</label>
-                  <span className={msgClassNames}>{ error }</span>
+                  <span className={msgClassNames}>{ error || this.state.inviteError }</span>
                 </div>
                 <div className="invitation">
                   <span className="separator">or</span>
-                  <button type="button" className="btn primary long">Claim an Invitation</button>
+                  <button type="button" className="btn primary long" disabled="disabled">Claim an Invitation</button>
                 </div>
               </form>
             </div>
@@ -192,9 +200,17 @@ export default class CreateAccount extends Component {
                   onClick={() => {
                     setCreateAccNavPos(navPos - 1);
                   }}
-                >Back</button>
+                >Back
+                </button>
                 { this.getNav() }
-                <button type="submit" form="invitationForm" className="rgt flat btn primary">Continue</button>
+                <button
+                  type="button"
+                  form="invitationForm"
+                  className="rgt flat btn primary"
+                  onClick={(e) => {
+                    this.handleInvitation(e);
+                  }}
+                >Continue</button>
               </div>
             </div>
           </div>
@@ -207,7 +223,7 @@ export default class CreateAccount extends Component {
     const { navPos, error, secretStrength, setCreateAccNavPos } = this.props;
     const msgClassNames = classNames(
       'msg',
-      { error });
+      { error: error || this.state.accSecError });
     return (
       <div className="card-main-cntr">
         <div className="auth">
@@ -217,7 +233,7 @@ export default class CreateAccount extends Component {
               shared with anyone.
             </p>
             <div className="auth-form bottom-pad">
-              <form id="secretForm" onSubmit={this.handleSecret}>
+              <form id="secretForm">
                 <div className="inp-grp">
                   <input
                     type="password"
@@ -233,7 +249,7 @@ export default class CreateAccount extends Component {
                   <label htmlFor="acc-secret">Account Secret</label>
                   { this.getStrength(secretStrength) }
                   <span className="limit short">{''}</span>
-                  <span className={msgClassNames}>{ error || getStrengthMsg(secretStrength) }</span>
+                  <span className={msgClassNames}>{ error || getStrengthMsg(secretStrength) || this.state.accSecError }</span>
                   <button
                     type="button"
                     tabIndex="-1"
@@ -253,12 +269,7 @@ export default class CreateAccount extends Component {
                     required
                   />
                   <label htmlFor="cacc-secret">Confirm Account Secret</label>
-                  <span
-                    className="msg error"
-                    ref={(c) => {
-                      this.confirmSecretMsgEle = c;
-                    }}
-                  >{''}</span>
+                  <span className="msg error" >{this.state.confirmAccSecError}</span>
                   <button
                     type="button"
                     tabIndex="-1"
@@ -276,9 +287,17 @@ export default class CreateAccount extends Component {
                   onClick={() => {
                     setCreateAccNavPos(navPos - 1);
                   }}
-                >Back</button>
+                >Back
+                </button>
                 { this.getNav() }
-                <button type="submit" form="secretForm" className="rgt flat btn primary">Continue</button>
+                <button
+                  type="button"
+                  form="secretForm"
+                  className="rgt flat btn primary"
+                  onClick={(e) => {
+                    this.handleSecret(e);
+                  }}
+                >Continue</button>
               </div>
             </div>
           </div>
@@ -291,7 +310,7 @@ export default class CreateAccount extends Component {
     const { navPos, error, passwordStrength, setCreateAccNavPos } = this.props;
     const msgClassNames = classNames(
       'msg',
-      { error });
+      { error: error || this.state.accPassErr });
     return (
       <div className="card-main-cntr">
         <div className="auth">
@@ -301,7 +320,7 @@ export default class CreateAccount extends Component {
               transmitted, it will not leave your computer.
             </p>
             <div className="auth-form bottom-pad">
-              <form id="passwordForm" onSubmit={this.handlePassword}>
+              <form id="passwordForm">
                 <div className="inp-grp">
                   <input
                     type="password"
@@ -318,7 +337,7 @@ export default class CreateAccount extends Component {
                   { this.getStrength(passwordStrength) }
                   <span className="limit long">{''}</span>
                   <span className={msgClassNames}>
-                    { error || getStrengthMsg(passwordStrength) }
+                    { error || getStrengthMsg(passwordStrength) || this.state.accPassErr }
                   </span>
                   <button
                     type="button"
@@ -340,11 +359,7 @@ export default class CreateAccount extends Component {
                   />
                   <label htmlFor="cacc-password">Confirm Account Password</label>
                   <span
-                    className="msg error"
-                    ref={(c) => {
-                      this.confirmPasswordMsgEle = c;
-                    }}
-                  >{''}</span>
+                    className="msg error">{ this.state.confirmAccPassErr }</span>
                   <button
                     type="button"
                     tabIndex="-1"
@@ -362,9 +377,17 @@ export default class CreateAccount extends Component {
                   onClick={() => {
                     setCreateAccNavPos(navPos - 1);
                   }}
-                >Back</button>
+                >Back
+                </button>
                 { this.getNav() }
-                <button type="submit" form="passwordForm" className="rgt flat btn primary">Continue</button>
+                <button
+                  type="button"
+                  form="passwordForm"
+                  className="rgt flat btn primary"
+                  onClick={(e) => {
+                    this.handlePassword(e);
+                  }}
+                >Continue</button>
               </div>
             </div>
           </div>
@@ -419,7 +442,11 @@ export default class CreateAccount extends Component {
 
     const inviteCode = this.inviteCode.value.trim();
     if (!inviteCode) {
+      this.setState({ inviteError: "Invite token required" });
       return;
+    }
+    if (this.state.inviteError) {
+      this.setState({ inviteError: null });
     }
     this.props.setInviteCode(inviteCode);
     this.props.setCreateAccNavPos(this.props.navPos + 1);
@@ -431,16 +458,30 @@ export default class CreateAccount extends Component {
 
     const secret = this.secretEle.value.trim();
     const confirmSecret = this.confirmSecretEle.value.trim();
-    if (!secret || !confirmSecret) {
+    if (!secret) {
+      this.setState({ accSecError: 'Account Secret required' });
       return;
+    }
+    if (this.state.accSecError) {
+      this.setState({ accSecError: null });
+    }
+    if (!confirmSecret) {
+      this.setState({ confirmAccSecError: I18n.t('entries_mismatch') });
+      return;
+    }
+    if (this.state.confirmAccSecError) {
+      this.setState({ confirmAccSecError: null });
     }
     if (this.props.secretStrength < CONSTANTS.PASSPHRASE_STRENGTH.WEAK) {
       this.props.setError(I18n.t('messages.need_to_be_stronger', { name: I18n.t('Account Secret') }));
       return;
     }
     if (secret !== confirmSecret) {
-      this.confirmSecretMsgEle.textContent = I18n.t('entries_mismatch');
+      this.setState({ confirmAccSecError: I18n.t('entries_mismatch') });
       return;
+    }
+    if (this.state.confirmAccSecError) {
+      this.setState({ confirmAccSecError: null });
     }
     this.props.setAccSecret(secret);
     this.props.setCreateAccNavPos(this.props.navPos + 1);
@@ -452,16 +493,30 @@ export default class CreateAccount extends Component {
 
     const password = this.passwordEle.value.trim();
     const confirmPassword = this.confirmPasswordEle.value.trim();
-    if (!password || !confirmPassword) {
+    if (!password) {
+      this.setState({ accPassErr: 'Account Password required' });
       return;
+    }
+    if (this.state.accPassErr) {
+      this.setState({ accPassErr: null });
+    }
+    if (!confirmPassword) {
+      this.setState({ confirmAccPassErr: I18n.t('entries_mismatch') });
+      return;
+    }
+    if (this.state.confirmAccPassErr) {
+      this.setState({ confirmAccPassErr: null });
     }
     if (this.props.passwordStrength < CONSTANTS.PASSPHRASE_STRENGTH.SOMEWHAT_SECURE) {
       this.props.setError(I18n.t('messages.need_to_be_stronger', { name: I18n.t('Account Password') }));
       return;
     }
     if (password !== confirmPassword) {
-      this.confirmPasswordMsgEle.textContent = I18n.t('entries_mismatch');
+      this.setState({ confirmAccPassErr: I18n.t('entries_mismatch') });
       return;
+    }
+    if (this.state.confirmAccPassErr) {
+      this.setState({ confirmAccPassErr: null });
     }
     this.props.setAccPassword(password);
 
@@ -493,11 +548,17 @@ export default class CreateAccount extends Component {
   }
 
   clearFieldMsg() {
-    if (this.confirmSecretMsgEle && this.confirmSecretMsgEle.textContent) {
-      this.confirmSecretMsgEle.textContent = '';
+    if (this.state.confirmAccSecError) {
+      this.setState({ confirmAccSecError: null });
     }
-    if (this.confirmPasswordMsgEle && this.confirmPasswordMsgEle.textContent) {
-      this.confirmPasswordMsgEle.textContent = '';
+    if (this.state.accSecError) {
+      this.setState({ accSecError: null });
+    }
+    if (this.state.confirmAccPassErr) {
+      this.setState({ confirmAccPassErr: null });
+    }
+    if (this.state.accPassErr) {
+      this.setState({ accPassErr: null });
     }
     if (this.props.error) {
       this.props.clearError();
@@ -523,7 +584,16 @@ export default class CreateAccount extends Component {
           { this.getContainer() }
         </div>
         <div className="card-f">
-          Already have an account? <Link to="/">LOG IN</Link>
+          Already have an account? <Link
+            className={classNames({ disabled: this.props.loading })}
+            onClick={(e) => {
+              e.preventDefault();
+              if (this.props.loading) {
+                return;
+              }
+              return this.context.router.push('/');
+            }}
+          >LOG IN</Link>
         </div>
       </div>
     );
