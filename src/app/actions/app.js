@@ -1,7 +1,12 @@
+import { storeReAuthoriseState } from '../utils';
+
 export const GET_AUTHORISED_APPS = 'GET_AUTHORISED_APPS';
 export const REVOKE_APP = 'REVOKE_APP';
 export const SET_APP_LIST = 'SET_APP_LIST';
 export const CLEAR_APP_ERROR = 'CLEAR_APP_LIST';
+export const SEARCH_APP = 'SEARCH_APP';
+export const CLEAR_SEARCH = 'CLEAR_SEARCH';
+export const SET_RE_AUTHORISE_STATE = 'SET_RE_AUTHORISE_STATE';
 
 export const getAuthorisedApps = () => ({
   type: GET_AUTHORISED_APPS,
@@ -21,3 +26,21 @@ export const setAppList = (appList) => ({
 export const clearAppError = () => ({
   type: CLEAR_APP_ERROR
 });
+
+export const searchApp = (value) => ({
+  type: SEARCH_APP,
+  value
+});
+
+export const clearSearch = () => ({
+  type: CLEAR_SEARCH
+});
+
+export const setReAuthoriseState = (state) => {
+  storeReAuthoriseState(state);
+  window.safeAuthenticator.setReAuthoriseState(state);
+  return {
+    type: SET_RE_AUTHORISE_STATE,
+    state
+  };
+};

@@ -19,7 +19,7 @@ export default {
         test: /\.scss$/,
         loaders: ['style-loader', 'css-loader?sourceMap', 'resolve-url', 'sass-loader?sourceMap']
       },
-      { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=500000' },
+      { test: /\.(png|woff|woff2|eot|ttf|svg|gif)$/, loader: 'url-loader?limit=500000' },
       {
         test: /\.json$/,
         loader: 'json-loader'
@@ -28,7 +28,8 @@ export default {
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: 'src/app/app.html', to: './' }
+      { from: 'src/app/app.html', to: './' },
+      { from: 'src/app/favicon.png', to: './' }
     ])
   ]
 };

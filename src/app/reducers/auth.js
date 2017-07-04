@@ -18,7 +18,7 @@ import {
   LOGIN,
   LOGOUT
 } from '../actions/auth';
-import CONSTANTS from '../../constants.json';
+import CONSTANTS from '../../constants';
 import { isUserAuthorised, parseErrCode } from '../utils';
 
 const initialState = {

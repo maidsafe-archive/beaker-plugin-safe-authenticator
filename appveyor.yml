@@ -24,25 +24,26 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - node --version
   - npm --version
-  - ps: |
-          $url = "https://github.com/maidsafe/QA/raw/master/appveyor/install_rustup.ps1"
-          Invoke-WebRequest $url -OutFile "install_rustup.ps1"
-          . ".\install_rustup.ps1"
+  # - ps: |
+  #         $url = "https://github.com/maidsafe/QA/raw/master/appveyor/install_rustup.ps1"
+  #         Invoke-WebRequest $url -OutFile "install_rustup.ps1"
+  #         . ".\install_rustup.ps1"
   - ps: cd $env:APPVEYOR_BUILD_FOLDER
   - git submodule update --init --recursive
+  - set NODE_ENV=dev
   - npm i
 
 build: off
 
-before_test:
-  - npm run build-libs -- --features="mock-routing" --clean
-  - npm run grep-error-codes
-  - ps: |
-          if($env:platform -eq "x86") {
-            Copy-Item C:\MinGW\bin\pthreadGC*.dll $env:APPVEYOR_BUILD_FOLDER\src\ffi\libwinpthread-1.dll -Force
-          } Else {
-            Copy-Item C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin\libwinpthread-1.dll $env:APPVEYOR_BUILD_FOLDER\src\ffi -Force
-          }
+# before_test:
+#   - npm run build-libs -- --features="mock-routing" --clean
+#   - npm run grep-error-codes
+#   - ps: |
+#           if($env:platform -eq "x86") {
+#             Copy-Item C:\MinGW\bin\pthreadGC*.dll $env:APPVEYOR_BUILD_FOLDER\src\ffi\libwinpthread-1.dll -Force
+#           } Else {
+#             Copy-Item C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin\libwinpthread-1.dll $env:APPVEYOR_BUILD_FOLDER\src\ffi -Force
+#           }/
 
 test_script:
   - npm run lint

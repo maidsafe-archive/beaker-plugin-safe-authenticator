@@ -4,7 +4,8 @@ export const NETWORK_DISCONNECTED = 'NETWORK_DISCONNECTED';
 
 export const setNetworkConnecting = () => (
   {
-    type: NETWORK_CONNECTING
+    type: NETWORK_CONNECTING,
+    payload: window.safeAuthenticator.reconnect()
   }
 );
 

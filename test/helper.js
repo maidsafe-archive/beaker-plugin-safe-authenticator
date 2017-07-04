@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import client from '../src/ffi/client_manager';
+import client from '../src/ffi/authenticator';
 
 /* eslint-disable import/prefer-default-export */
 export const getRandomCredentials = () => (
@@ -21,7 +21,4 @@ export const createRandomAccount = () => {
     .then(() => randomCredentials);
 };
 
-export const clearAccount = () => {
-  client.setNetworkListener(() => {});
-  client.logout();
-};
+export const clearAccount = () => (client.logout());
