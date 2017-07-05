@@ -249,7 +249,9 @@ export default class CreateAccount extends Component {
                   <label htmlFor="acc-secret">Account Secret</label>
                   { this.getStrength(secretStrength) }
                   <span className="limit short">{''}</span>
-                  <span className={msgClassNames}>{ error || getStrengthMsg(secretStrength) || this.state.accSecError }</span>
+                  <span className={msgClassNames}>
+                    { error || getStrengthMsg(secretStrength) || this.state.accSecError }
+                  </span>
                   <button
                     type="button"
                     tabIndex="-1"
@@ -358,8 +360,7 @@ export default class CreateAccount extends Component {
                     required
                   />
                   <label htmlFor="cacc-password">Confirm Account Password</label>
-                  <span
-                    className="msg error">{ this.state.confirmAccPassErr }</span>
+                  <span className="msg error">{ this.state.confirmAccPassErr }</span>
                   <button
                     type="button"
                     tabIndex="-1"
@@ -442,7 +443,7 @@ export default class CreateAccount extends Component {
 
     const inviteCode = this.inviteCode.value.trim();
     if (!inviteCode) {
-      this.setState({ inviteError: "Invite token required" });
+      this.setState({ inviteError: 'Invite token required' });
       return;
     }
     if (this.state.inviteError) {
