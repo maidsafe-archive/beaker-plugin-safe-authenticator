@@ -188,7 +188,13 @@ export default class CreateAccount extends Component {
                 </div>
                 <div className="invitation">
                   <span className="separator">or</span>
-                  <button type="button" className="btn primary long" disabled="disabled">Claim an Invitation</button>
+                  <button
+                    type="button"
+                    className="btn primary long"
+                    onClick={() => {
+                      window.open('https://invite.maidsafe.net/');
+                    }}
+                  >Claim an Invitation</button>
                 </div>
               </form>
             </div>
