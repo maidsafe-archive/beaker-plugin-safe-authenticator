@@ -176,6 +176,10 @@ const onReqError = (e) => {
   });
 };
 
+const skipAuthReq = () => {
+  reqQ.next();
+};
+
 const init = () => {
   if (!ipcMain) {
     return;
@@ -187,6 +191,7 @@ const init = () => {
   ipcMain.on('registerAuthDecision', onAuthDecision);
   ipcMain.on('registerContainerDecision', onContainerDecision);
   ipcMain.on('registerOnReqError', onReqError);
+  ipcMain.on('skipAuthRequest', skipAuthReq);
 };
 
 export default init;
