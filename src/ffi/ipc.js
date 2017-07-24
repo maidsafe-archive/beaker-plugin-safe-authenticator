@@ -5,7 +5,7 @@ import i18n from 'i18n';
 import authenticator from './authenticator';
 import CONSTANTS from '../constants';
 import config from '../config';
-import winston from './winston-config';
+import winston from '../winston-config';
 
 config.i18n();
 
