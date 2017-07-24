@@ -5,6 +5,7 @@ import i18n from 'i18n';
 import authenticator from './authenticator';
 import CONSTANTS from '../constants';
 import config from '../config';
+import winston from './winston-config';
 
 config.i18n();
 
@@ -180,17 +181,8 @@ const skipAuthReq = () => {
   reqQ.next();
 };
 
-const requestMainResource = (e) => {
-  e.sender.send('getWinstonLogger');
-}
-
-const winstonLogger = (e, data) => {
-  console.log(data); // data appears to be expected winston object
-  console.log(data.info); // data.info is undefined here
-  data.info('calling winston singleton in authenticator plugin');
-}
-
 const init = () => {
+  winston.info('beaker-plugin-safe-authenticator initialised...');
   if (!ipcMain) {
     return;
   }
@@ -202,8 +194,6 @@ const init = () => {
   ipcMain.on('registerContainerDecision', onContainerDecision);
   ipcMain.on('registerOnReqError', onReqError);
   ipcMain.on('skipAuthRequest', skipAuthReq);
-  ipcMain.on('sendRenderer', requestMainResource);
-  ipcMain.on('winstonLogger', winstonLogger);
 };
 
 export default init;
