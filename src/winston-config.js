@@ -9,7 +9,7 @@
 
 const winstonModule = require('winston');
 const fs = require('fs');
-const dailyRotate = require('winston-daily-rotate-file');
+const DailyRotateFile = require('winston-daily-rotate-file');
 
 const env = process.env.NODE_ENV || 'development';
 const logDir = 'winston-logs';
@@ -30,7 +30,7 @@ const winston = new (winstonModule.Logger)({
       timestamp: timeStampFormat,
       level: env === 'dev' ? 'silly' : 'info'
     }),
-    new (dailyRotate)({
+    new (DailyRotateFile)({
       filename: `${logDir}/-safe-authenticator-plugin.log`,
       timestamp: timeStampFormat,
       // The most specific part of the date pattern determines the frequency of file creationg
