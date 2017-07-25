@@ -99,6 +99,8 @@
     "ref-array": "^1.2.0",
     "ref-struct": "^1.1.0",
     "url": "^0.11.0",
+    "winston": "^2.3.1",
+    "winston-daily-rotate-file": "^1.4.6",
     "zxcvbn": "^4.4.1"
   },
   "optionalDependencies": {
