@@ -12,8 +12,7 @@ const mapStateToProps = (state) => (
     searchResult: state.app.searchResult,
     revokeError: state.app.revokeError,
     appListError: state.app.appListError,
-    reAuthoriseState: state.app.reAuthoriseState,
-    accountInfo: state.app.accountInfo
+    reAuthoriseState: state.app.reAuthoriseState
   }
 );
 

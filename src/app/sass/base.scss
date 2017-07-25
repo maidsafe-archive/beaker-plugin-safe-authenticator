@@ -19,6 +19,10 @@ body {
   width: 100%;
 }
 
+.base {
+  position: relative;
+}
+
 @mixin clearfix {
   &:after {
     content: ".";
@@ -189,21 +193,105 @@ body {
 
 .acc-info {
   display: block;
-  padding: 16px;
-  .acc-info-val {
-    display: inline-block;
-    font-size: 14px;
-    span {
-      display: inline-block;
-    }
-    button {
-      cursor: pointer;
-      margin-left: 16px;
-    }
-  }
-  .acc-info-tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  .acc-info-b {
+    width: 100%;
+    text-align: right;
+    padding: 16px;
     display: block;
-    font-size: 12px;
+    .acc-info-status {
+      display: inline-block;
+      font-size: 12px;
+      position: relative;
+      min-width: 400px;
+      .label {
+        cursor: default;
+        line-height: 20px;
+      }
+      .val {
+        min-width: 56px;
+        display: inline-block;
+        text-align: center;
+        border: 2px solid $acc-info-default;
+        border-radius: 9px;
+        line-height: 16px;
+        padding: 0 8px;
+        font-weight: 600;
+        margin-left: 8px;
+        color: $acc-info-default;
+        cursor: default;
+      }
+      .refresh {
+        width: 20px;
+        height: 20px;
+        float: right;
+        margin-left: 8px;
+        border: 0;
+        outline: 0;
+        cursor: pointer;
+        border-radius: 50%;
+        background-color: transparent;
+        background-image: url($acc-info-refresh-url);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        &:hover {
+          background-image: url($acc-info-refresh-hover-url);
+        }
+        &:disabled {
+          background-image: url($acc-info-refresh-disabled-url);
+          cursor: not-allowed !important;
+        }
+      }
+      .tooltip {
+        display: none;
+        position: absolute;
+        width: auto;
+        top: 100%;
+        right: 0;
+        text-align: left;
+        background-color: $tooltip-bg;
+        color: #DDD;
+        padding: 0 8px;
+        line-height: 25px;
+        font-size: 10px;
+        white-space: normal;
+        border-radius: 3px;
+        margin-top: 8px;
+      }
+      .val:hover ~ .tooltip {
+        display: block !important;
+      }
+      &.safer {
+        .val {
+          color: $acc-info-safer;
+          border-color: $acc-info-safer;
+        }
+      }
+      &.okay {
+        .val {
+          color: $acc-info-okay;
+          border-color: $acc-info-okay;
+        }
+      }
+      &.danger {
+        .val {
+          color: $acc-info-danger;
+          border-color: $acc-info-danger;
+        }
+      }
+    }
+    .timer {
+      display: none;
+      .val {
+        font-size: 12px;
+        color: #a0a0a0;
+      }
+    }
   }
 }
 

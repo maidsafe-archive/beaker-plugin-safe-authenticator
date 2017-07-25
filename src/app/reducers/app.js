@@ -21,7 +21,8 @@ const initialState = {
   accountInfo: {
     done: 0,
     available: 0
-  }
+  },
+  fetchingAccountInfo: false
 };
 const app = (state = initialState, action) => {
   switch (action.type) {
@@ -77,9 +78,17 @@ const app = (state = initialState, action) => {
     case SET_RE_AUTHORISE_STATE: {
       return { ...state, reAuthoriseState: action.state };
     }
+    case `${GET_ACCOUNT_INFO}_PENDING`: {
+      return {
+        ...state,
+        fetchingAccountInfo: true
+      };
+    }
+
     case `${GET_ACCOUNT_INFO}_FULFILLED`: {
       return {
         ...state,
+        fetchingAccountInfo: false,
         accountInfo: {
           ...state.accountInfo,
           done: action.payload.done,
@@ -90,11 +99,7 @@ const app = (state = initialState, action) => {
     case `${GET_ACCOUNT_INFO}_REJECTED`: {
       return {
         ...state,
-        accountInfo: {
-          ...state.accountInfo,
-          done: 0,
-          available: 0
-        }
+        fetchingAccountInfo: false
       };
     }
     default: {

@@ -23,10 +23,6 @@ export default class AppList extends Component {
         vendor: PropTypes.string,
       })
     })),
-    accountInfo: PropTypes.objectOf(PropTypes.shape({
-      done: PropTypes.number.isRequired,
-      available: PropTypes.number.isRequired
-    })),
     searchApp: PropTypes.func,
     clearSearch: PropTypes.func,
     clearAppError: PropTypes.func,
@@ -35,7 +31,7 @@ export default class AppList extends Component {
     appListError: PropTypes.string,
     reAuthoriseState: PropTypes.number,
     setReAuthoriseState: PropTypes.func,
-    getAccountInfo: PropTypes.func,
+    getAccountInfo: PropTypes.func
   };
 
   static contextTypes = {
@@ -211,7 +207,7 @@ export default class AppList extends Component {
   }
 
   render() {
-    const { fetchingApps, authorisedApps, accountInfo, getAccountInfo } = this.props;
+    const { fetchingApps, authorisedApps } = this.props;
     return (
       <div className="card-main-b">
         <div className="card-main-h">{ this.title }</div>
@@ -231,19 +227,6 @@ export default class AppList extends Component {
           <div className="app-list">
             { authorisedApps.length === 0 ? null : this.getSearchContainer() }
             { this.getApps() }
-          </div>
-          <div className="acc-info">
-            <div className="acc-info-val">
-              <span>
-                Account Status: {accountInfo.done}/{accountInfo.done + accountInfo.available}
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  getAccountInfo();
-                }}
-              >Update</button></div>
-            <span className="acc-info-tooltip">Account is limited to the number of mutations permitted for an account</span>
           </div>
         </div>
       </div>

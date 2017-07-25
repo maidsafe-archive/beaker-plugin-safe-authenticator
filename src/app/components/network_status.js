@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import CONSTANTS from '../../constants';
 
-export default class Spinner extends Component {
+export default class NetworkStatus extends Component {
   static propTypes = {
     status: PropTypes.number.isRequired
   };

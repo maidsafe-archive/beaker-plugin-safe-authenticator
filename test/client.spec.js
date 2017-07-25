@@ -657,12 +657,12 @@ describe('Client', () => {
   describe('account information', () => {
     before(() => new Promise(
       (resolve, reject) => {
-        const authL = client.setListener(CONST.LISTENER_TYPES.AUTH_REQ, (err, req) => {
-          return client.encodeAuthResp(req, true).then(() => {
+        const authL = client.setListener(CONST.LISTENER_TYPES.AUTH_REQ, (err, req) => (
+          client.encodeAuthResp(req, true).then(() => {
             client.removeListener(CONST.LISTENER_TYPES.AUTH_REQ, authL);
             resolve();
-          });
-        });
+          })
+        ));
 
         const errL = client.setListener(CONST.LISTENER_TYPES.REQUEST_ERR, () => {
           client.removeListener(CONST.LISTENER_TYPES.REQUEST_ERR, errL);
