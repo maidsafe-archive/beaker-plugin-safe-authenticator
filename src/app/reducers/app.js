@@ -5,7 +5,8 @@ import {
   CLEAR_APP_ERROR,
   SEARCH_APP,
   CLEAR_SEARCH,
-  SET_RE_AUTHORISE_STATE
+  SET_RE_AUTHORISE_STATE,
+  GET_ACCOUNT_INFO
 } from '../actions/app';
 import { parseAppName } from '../utils';
 
@@ -16,7 +17,11 @@ const initialState = {
   revokeError: null,
   revoked: false,
   loading: false,
-  reAuthoriseState: false
+  reAuthoriseState: false,
+  accountInfo: {
+    done: 0,
+    available: 0
+  }
 };
 const app = (state = initialState, action) => {
   switch (action.type) {
@@ -71,6 +76,26 @@ const app = (state = initialState, action) => {
     }
     case SET_RE_AUTHORISE_STATE: {
       return { ...state, reAuthoriseState: action.state };
+    }
+    case `${GET_ACCOUNT_INFO}_FULFILLED`: {
+      return {
+        ...state,
+        accountInfo: {
+          ...state.accountInfo,
+          done: action.payload.done,
+          available: action.payload.available
+        }
+      };
+    }
+    case `${GET_ACCOUNT_INFO}_REJECTED`: {
+      return {
+        ...state,
+        accountInfo: {
+          ...state.accountInfo,
+          done: 0,
+          available: 0
+        }
+      };
     }
     default: {
       return state;

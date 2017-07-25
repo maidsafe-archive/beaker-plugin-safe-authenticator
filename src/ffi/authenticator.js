@@ -84,11 +84,12 @@ class Authenticator extends SafeLib {
       encode_containers_resp: [types.Void, [types.voidPointer, types.ContainersReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       auth_unregistered_decode_ipc_msg: [types.Void, [types.CString, types.voidPointer, 'pointer', 'pointer']],
       encode_unregistered_resp: [types.Void, [types.u32, types.bool, types.voidPointer, 'pointer']],
-      authenticator_registered_apps: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
-      authenticator_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']],
-      authenticator_free: [types.Void, [types.voidPointer]],
+      auth_registered_apps: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
+      auth_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']],
+      auth_free: [types.Void, [types.voidPointer]],
       auth_init_logging: [types.Void, [types.CString, types.voidPointer, 'pointer']],
-      auth_reconnect: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']]
+      auth_reconnect: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
+      auth_account_info: [types.Void, [types.voidPointer, 'pointer', 'pointer']]
     };
   }
 
@@ -257,7 +258,7 @@ class Authenticator extends SafeLib {
 
   logout() {
     this._pushNetworkState(CONSTANTS.NETWORK_STATUS.DISCONNECTED);
-    this.safeLib.authenticator_free(this.registeredClientHandle);
+    this.safeLib.auth_free(this.registeredClientHandle);
     this.registeredClientHandle = null;
   }
 
@@ -456,7 +457,7 @@ class Authenticator extends SafeLib {
             resolve(res);
           }));
 
-        this.safeLib.authenticator_revoke_app(
+        this.safeLib.auth_revoke_app(
           this.registeredClientHandle,
           types.allocCString(appId),
           types.Null,
@@ -486,7 +487,38 @@ class Authenticator extends SafeLib {
         }));
 
       try {
-        this.safeLib.authenticator_registered_apps(
+        this.safeLib.auth_registered_apps(
+          this.registeredClientHandle,
+          types.Null,
+          this._getCb(cb)
+        );
+      } catch (e) {
+        reject(e.message);
+      }
+    });
+  }
+
+  getAccountInfo() {
+    return new Promise((resolve, reject) => {
+      if (!this.registeredClientHandle) {
+        return reject(new Error(i18n.__('messages.unauthorised')));
+      }
+      const cb = this._pushCb(ffi.Callback(types.Void,
+        [types.voidPointer, types.FfiResult, types.AccountInfoPointer],
+        (userData, result, accInfo) => {
+          const code = result.error_code;
+          if (code !== 0) {
+            return reject(JSON.stringify(result));
+          }
+          const info = accInfo.deref();
+          resolve({
+            done: info.mutations_done,
+            available: info.mutations_available
+          });
+        }));
+
+      try {
+        this.safeLib.auth_account_info(
           this.registeredClientHandle,
           types.Null,
           this._getCb(cb)
