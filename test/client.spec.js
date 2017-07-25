@@ -653,4 +653,37 @@ describe('Client', () => {
       })
     ));
   });
+
+  describe('account information', () => {
+    before(() => new Promise(
+      (resolve, reject) => {
+        const authL = client.setListener(CONST.LISTENER_TYPES.AUTH_REQ, (err, req) => {
+          return client.encodeAuthResp(req, true).then(() => {
+            client.removeListener(CONST.LISTENER_TYPES.AUTH_REQ, authL);
+            resolve();
+          });
+        });
+
+        const errL = client.setListener(CONST.LISTENER_TYPES.REQUEST_ERR, () => {
+          client.removeListener(CONST.LISTENER_TYPES.REQUEST_ERR, errL);
+          reject();
+        });
+
+        decodedReqForRandomClient(encodedAuthUri);
+      })
+    );
+
+    after(() => helper.clearAccount());
+
+    it('are retrievable', () => client.getAccountInfo()
+      .should.be.fulfilled()
+      .then((res) => {
+        should(res).be.Object().and.not.empty().and.have.properties([
+          'done',
+          'available']);
+        should(res.done).not.be.undefined().and.be.Number();
+        should(res.available).not.be.undefined().and.be.Number();
+      })
+    );
+  });
 });
