@@ -115,7 +115,7 @@
     },
     "safe_authenticator": {
       "mirror": "https://github.com/krishnaIndia/safe_core/releases/download/v",
-      "version": "0.1.0-pre43",
+      "version": "0.1.0-pre44",
       "targetDir": "dist",
       "filename": "safe_authenticator",
       "filePattern": "^.*\\.(dll|so|dylib)$",

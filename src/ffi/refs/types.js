@@ -4,6 +4,7 @@ import Enum from 'enum';
 
 export const u8 = ref.types.uint8;
 export const u32 = ref.types.uint32;
+export const u64 = ref.types.uint64;
 export const usize = ref.types.size_t;
 export const bool = ref.types.bool;
 export const int32 = ref.types.int32;
@@ -67,6 +68,13 @@ export const FfiResult = StructType({
   error_code: int32,
   description: CString
 });
+
+export const AccountInfo = StructType({
+  mutations_done: u64,
+  mutations_available: u64
+});
+
+export const AccountInfoPointer = ref.refType(AccountInfo);
 
 export const ContainersReqPointer = ref.refType(ContainersReq);
 

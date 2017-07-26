@@ -7,6 +7,7 @@ export const CLEAR_APP_ERROR = 'CLEAR_APP_LIST';
 export const SEARCH_APP = 'SEARCH_APP';
 export const CLEAR_SEARCH = 'CLEAR_SEARCH';
 export const SET_RE_AUTHORISE_STATE = 'SET_RE_AUTHORISE_STATE';
+export const GET_ACCOUNT_INFO = 'GET_ACCOUNT_INFO';
 
 export const getAuthorisedApps = () => ({
   type: GET_AUTHORISED_APPS,
@@ -44,3 +45,8 @@ export const setReAuthoriseState = (state) => {
     state
   };
 };
+
+export const getAccountInfo = () => ({
+  type: GET_ACCOUNT_INFO,
+  payload: window.safeAuthenticator.getAccountInfo()
+});

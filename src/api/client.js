@@ -11,6 +11,7 @@ export const manifest = {
   login: 'promise',
   createAccount: 'promise',
   getAuthorisedApps: 'promise',
+  getAccountInfo: 'promise',
   revokeApp: 'promise',
   reconnect: 'promise'
 };
@@ -35,6 +36,8 @@ export const createAccount = (secret, password, invitation) =>
   authenticator.createAccount(secret, password, invitation);
 
 export const getAuthorisedApps = () => authenticator.getRegisteredApps();
+
+export const getAccountInfo = () => authenticator.getAccountInfo();
 
 export const authDecision = (authData, isAllowed) =>
   authenticator.encodeAuthResp(authData, isAllowed);
