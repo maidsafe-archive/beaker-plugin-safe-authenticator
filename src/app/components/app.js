@@ -3,13 +3,20 @@ import classNames from 'classnames';
 
 import CONSTANTS from '../../constants';
 import NetworkStatus from './network_status';
+import AccountInfo from './account_info';
 
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
     networkState: PropTypes.number,
     isAuthorised: PropTypes.bool,
+    fetchingAccountInfo: PropTypes.bool,
+    accountInfo: PropTypes.objectOf(PropTypes.shape({
+      done: PropTypes.number.isRequired,
+      available: PropTypes.number.isRequired
+    })),
     logout: PropTypes.func,
+    getAccountInfo: PropTypes.func,
     setNetworkConnecting: PropTypes.func
   };
 
@@ -37,7 +44,14 @@ export default class App extends Component {
   }
 
   render() {
-    const { networkState, isAuthorised, setNetworkConnecting } = this.props;
+    const {
+      networkState,
+      isAuthorised,
+      accountInfo,
+      fetchingAccountInfo,
+      setNetworkConnecting,
+      getAccountInfo } = this.props;
+
     const appLogoClassname = classNames(
       'h-app-logo',
       {
@@ -70,6 +84,13 @@ export default class App extends Component {
           <div className="card-main">
             {this.props.children}
           </div>
+          {isAuthorised ?
+            <AccountInfo
+              isLoading={fetchingAccountInfo}
+              done={accountInfo.done}
+              available={accountInfo.available}
+              refresh={() => { getAccountInfo(); }}
+            /> : null}
         </div>
       </div>
     );

@@ -31,6 +31,7 @@ export default class AppList extends Component {
     appListError: PropTypes.string,
     reAuthoriseState: PropTypes.number,
     setReAuthoriseState: PropTypes.func,
+    getAccountInfo: PropTypes.func
   };
 
   static contextTypes = {
@@ -55,6 +56,7 @@ export default class AppList extends Component {
 
   componentDidMount() {
     this.props.getAuthorisedApps();
+    this.props.getAccountInfo();
   }
 
   componentWillUpdate(nextProps) {
