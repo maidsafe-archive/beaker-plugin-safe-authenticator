@@ -69,8 +69,7 @@ export default class AppList extends Component {
         popupTitle: 'Unable to revoke app. Please try again.',
         popupDesc: this.props.revokeError
       });
-    }
-    if (this.props.appListError) {
+    } else if (this.props.appListError) {
       this.setState({
         showPopup: true,
         popupTitle: 'Unable to fetch registered apps. Please try again.',
@@ -158,7 +157,11 @@ export default class AppList extends Component {
     if (appList.length === 0) {
       return this.getNoMatchingAppsContainer();
     }
-    apps = appList.map((app, i) => (
+    apps = appList.sort((a, b) => {
+      if(a.app_info.name < b.app_info.name) return -1;
+      if(a.app_info.name > b.app_info.name) return 1;
+      return 0;
+    }).map((app, i) => (
       <Link key={i} to={`/app_details?id=${app.app_info.id}&index=${i}`}>
         <div className="app-list-i">
           <div className="app-list-i-b">
