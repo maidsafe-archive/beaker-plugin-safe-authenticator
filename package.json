@@ -123,6 +123,11 @@
     },
     "ENV": {
       "dev": {
+        "safe_authenticator": {
+          "filename": "safe_authenticator-dev"
+        }
+      },
+      "test": {
         "system_uri": {
           "targetDir": "src/ffi"
         },
@@ -139,7 +144,7 @@
           "filePattern": "^libwinpthread-1.dll$"
         },
         "ENV": {
-          "dev": {
+          "test": {
             "libwinpthread-1": {
               "targetDir": "src/ffi"
             }

@@ -35,7 +35,7 @@ install:
   - node --version
   - npm --version
   # also downloads the build for release version
-  - NODE_ENV=dev npm install
+  - NODE_ENV=test npm install
 
 script:
   - npm run lint
