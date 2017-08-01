@@ -60,6 +60,7 @@ header {
     left: 0;
     text-align: center;
     margin-top: 24px;
+    z-index: 999;
     .nw-status-alert-b {
       background-color: $nw-alert-bg;
       display: inline-block;
