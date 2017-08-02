@@ -50,7 +50,8 @@ export default class AppList extends Component {
       searchActive: false,
       showPopup: false,
       popupTitle: null,
-      popupDesc: null
+      popupDesc: null,
+      isError: false
     };
   }
 
@@ -63,17 +64,22 @@ export default class AppList extends Component {
     if (!nextProps.isAuthorised) {
       return this.context.router.push('/login');
     }
+    if (this.state.showPopup) {
+      return;
+    }
     if (this.props.revokeError) {
       this.setState({
         showPopup: true,
         popupTitle: 'Unable to revoke app. Please try again.',
-        popupDesc: this.props.revokeError
+        popupDesc: this.props.revokeError,
+        isError: true
       });
     } else if (this.props.appListError) {
       this.setState({
         showPopup: true,
         popupTitle: 'Unable to fetch registered apps. Please try again.',
-        popupDesc: this.props.appListError
+        popupDesc: this.props.appListError,
+        isError: true
       });
     }
   }
@@ -210,7 +216,9 @@ export default class AppList extends Component {
   }
 
   render() {
-    const { fetchingApps, authorisedApps } = this.props;
+    const { fetchingApps, authorisedApps, clearAppError } = this.props;
+    const { showPopup, isError, popupDesc, popupTitle } = this.state;
+
     return (
       <div className="card-main-b">
         <div className="card-main-h">{ this.title }</div>
@@ -218,14 +226,14 @@ export default class AppList extends Component {
           { this.getReAuthoriseState() }
           { fetchingApps ? <CardLoaderFull msg="Fetching registered apps">{''}</CardLoaderFull> : null }
           <Popup
-            show={this.state.showPopup}
-            error={this.props.appListError || this.props.revokeError}
+            show={showPopup}
+            error={isError}
             callback={() => {
-              this.props.clearAppError();
+              clearAppError();
               this.resetPopup();
             }}
-            title={this.state.popupTitle}
-            desc={this.state.popupDesc}
+            title={popupTitle}
+            desc={popupDesc}
           />
           <div className="app-list">
             { authorisedApps.length === 0 ? null : this.getSearchContainer() }
