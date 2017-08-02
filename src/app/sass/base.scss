@@ -126,7 +126,7 @@ body {
     }
     border-color: transparent;
     outline: none;
-    cursor: pointer;
+    cursor: default;
     &.connecting {
       background-image: url($nw-reconnect-url);
       &:after {

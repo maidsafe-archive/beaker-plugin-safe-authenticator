@@ -34,7 +34,7 @@ export default class AccountInfo extends Component {
                 refresh();
               }}
             >{''}</button>
-            <div className="tooltip">Account is limited to the number of mutations permitted for an account</div>
+            <div className="tooltip">The number of store and modify operations completed on this account</div>
           </div>
           <div className="timer"><span className="val">02:00</span></div>
         </div>

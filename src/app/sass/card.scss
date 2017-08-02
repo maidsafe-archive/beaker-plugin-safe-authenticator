@@ -45,6 +45,7 @@
       cursor: pointer;
       &.disabled {
         color: $primary-gray;
+        cursor: default;
       }
       &:hover {
         color: $a-hover;
