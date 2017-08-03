@@ -5,13 +5,13 @@ export default class AccountInfo extends Component {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
     done: PropTypes.number.isRequired,
-    available: PropTypes.number.isRequired,
+    available: PropTypes.number,
     refresh: PropTypes.func.isRequired
   };
 
   render() {
     const { done, available, isLoading, refresh } = this.props;
-    const total = done + available;
+    const total = (typeof available !== 'string') ? '\u221e' : (done + available);
     const statusClassName = classNames(
       'acc-info-status',
       {
