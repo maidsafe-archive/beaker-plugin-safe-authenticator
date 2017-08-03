@@ -11,7 +11,7 @@ export default class AccountInfo extends Component {
 
   render() {
     const { done, available, isLoading, refresh } = this.props;
-    const total = (typeof available !== 'string') ? '\u221e' : (done + available);
+    const total = (typeof available === 'string') ? '' : `/${(done + available)}`;
     const statusClassName = classNames(
       'acc-info-status',
       {
@@ -25,7 +25,7 @@ export default class AccountInfo extends Component {
         <div className="acc-info-b">
           <div className={statusClassName}>
             <span className="label">Account Status:</span>
-            <span className="val">{done || 0}/{total || 0}</span>
+            <span className="val">{done || 0}{total}</span>
             <button
               type="button"
               className="refresh"
