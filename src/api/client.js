@@ -1,4 +1,5 @@
 import authenticator from '../ffi/authenticator';
+import sysUri from '../ffi/sys_uri';
 import CONSTANTS from '../constants';
 
 export const manifest = {
@@ -7,6 +8,7 @@ export const manifest = {
   getNetworkState: 'sync',
   getAuthenticatorHandle: 'sync',
   setReAuthoriseState: 'sync',
+  getLibStatus: 'sync',
   logout: 'sync',
   login: 'promise',
   createAccount: 'promise',
@@ -48,3 +50,5 @@ export const containerDecision = (contData, isAllowed) =>
   authenticator.encodeContainersResp(contData, isAllowed);
 
 export const setReAuthoriseState = (state) => authenticator.setReAuthoriseState(state);
+
+export const getLibStatus = () => ((authenticator.getLibStatus() && sysUri.isLibLoaded));

@@ -16,6 +16,7 @@ export const CREATE_ACC = 'CREATE_ACC';
 export const TOGGLE_INVITE_POPUP = 'TOGGLE_INVITE_POPUP';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
+export const SHOW_LIB_ERR_POPUP = 'SHOW_LIB_ERR_POPUP';
 
 export const setCreateAccNavPos = (pos) => (
   {
@@ -105,4 +106,9 @@ export const login = (secret, password) => ({
 export const logout = () => ({
   type: LOGOUT,
   payload: Promise.resolve(window.safeAuthenticator.logout())
+});
+
+
+export const showLibErrPopup = () => ({
+  type: SHOW_LIB_ERR_POPUP
 });

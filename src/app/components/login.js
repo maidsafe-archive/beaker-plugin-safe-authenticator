@@ -1,12 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
+import { I18n } from 'react-redux-i18n';
 import classNames from 'classnames';
 
 import CardLoaderFull from './card_loader_full';
+import Popup from './popup';
 
 export default class Login extends Component {
   static propTypes = {
     isAuthorised: PropTypes.bool,
+    libErrPopup: PropTypes.bool,
     loading: PropTypes.bool,
     error: PropTypes.string,
     login: PropTypes.func,
@@ -21,6 +24,10 @@ export default class Login extends Component {
     super();
     this.title = 'Sign in to manage your apps';
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.state = {
+      libErrPopup: false,
+      libErr: true
+    };
   }
 
   componentWillMount() {
@@ -30,6 +37,7 @@ export default class Login extends Component {
     if (this.props.error) {
       this.props.clearError();
     }
+    this.setState({ libErrPopup: this.props.libErrPopup });
   }
 
   componentDidMount() {
@@ -76,6 +84,15 @@ export default class Login extends Component {
         <div className="card-main-b">
           <div className="card-main-h">{this.title}</div>
           <div className="card-main-cntr">
+            <Popup
+              show={this.state.libErrPopup}
+              error={this.state.libErr}
+              callback={() => {
+                this.setState({ libErrPopup: false });
+              }}
+              title={I18n.t('messages.failed_to_load_lib_title')}
+              desc={I18n.t('messages.failed_to_load_lib')}
+            />
             {this.props.loading &&
             <CardLoaderFull msg="Signing in, please wait!">{''}</CardLoaderFull>
             }
@@ -117,7 +134,11 @@ export default class Login extends Component {
                       >{' '}</button>
                     </div>
                     <div className="btn-grp">
-                      <button type="submit" className="btn primary long">Log in</button>
+                      <button
+                        type="submit"
+                        className="btn primary long"
+                        disabled={this.props.libErrPopup}
+                      >Log in</button>
                     </div>
                   </form>
                 </div>
@@ -127,10 +148,10 @@ export default class Login extends Component {
         </div>
         <div className="card-f">
           Don&lsquo;t have an account? <Link
-            className={classNames({ disabled: this.props.loading })}
+            className={classNames({ disabled: this.props.loading || this.props.libErrPopup })}
             onClick={(e) => {
               e.preventDefault();
-              if (this.props.loading) {
+              if (this.props.loading || this.props.libErrPopup) {
                 return;
               }
               return this.context.router.push('create-account');

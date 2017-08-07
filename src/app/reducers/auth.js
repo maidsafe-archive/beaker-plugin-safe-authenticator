@@ -16,7 +16,8 @@ import {
   CREATE_ACC,
   TOGGLE_INVITE_POPUP,
   LOGIN,
-  LOGOUT
+  LOGOUT,
+  SHOW_LIB_ERR_POPUP
 } from '../actions/auth';
 import CONSTANTS from '../../constants';
 import { isUserAuthorised, parseErrCode } from '../utils';
@@ -31,7 +32,8 @@ const initialState = {
   passwordStrength: 0,
   error: null,
   loading: false,
-  showPopupWindow: false
+  showPopupWindow: false,
+  libErrPopup: false
 };
 
 const auth = (state = initialState, action) => {
@@ -158,6 +160,10 @@ const auth = (state = initialState, action) => {
 
     case TOGGLE_INVITE_POPUP: {
       return { ...state, showPopupWindow: !state.showPopupWindow };
+    }
+
+    case SHOW_LIB_ERR_POPUP: {
+      return { ...state, libErrPopup: true };
     }
 
     default: {

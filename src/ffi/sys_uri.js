@@ -9,6 +9,7 @@ import * as type from './refs/types';
 
 const _ffiFunctions = Symbol('ffiFunctions');
 const _libPath = Symbol('libPath');
+const _isLibLoaded = Symbol('isLibLoaded');
 
 class SystemUriLoader {
   constructor() {
@@ -23,7 +24,21 @@ class SystemUriLoader {
         'string',
       ]],
     };
-    this.lib = ffi.Library(path.resolve(__dirname, this[_libPath]), this[_ffiFunctions]);
+    this[_isLibLoaded] = false;
+    this.lib = null;
+  }
+
+  get isLibLoaded() {
+    return this[_isLibLoaded];
+  }
+
+  load() {
+    try {
+      this.lib = ffi.Library(path.resolve(__dirname, this[_libPath]), this[_ffiFunctions]);
+      this[_isLibLoaded] = true;
+    } catch (err) {
+      this[_isLibLoaded] = false;
+    }
   }
 
   registerUriScheme(appInfo, schemes) {
@@ -34,6 +49,10 @@ class SystemUriLoader {
     const icon = appInfo.icon;
     const joinedSchemes = schemes.join ? schemes.join(',') : schemes;
 
+    if (!this.lib) {
+      return;
+    }
+
     const ret = this.lib.install(bundle, vendor, name, exec, icon, joinedSchemes);
     if (ret === -1) {
       throw new Error(`Error occured installing: ${ret}`);
@@ -41,6 +60,9 @@ class SystemUriLoader {
   }
 
   openUri(str) {
+    if (!this.lib) {
+      return;
+    }
     const ret = this.lib.open(str);
     if (ret === -1) {
       throw new Error(`Error occured opening ${str} : ${ret}`);
@@ -49,4 +71,5 @@ class SystemUriLoader {
 }
 
 const loader = new SystemUriLoader();
+loader.load();
 export default loader;
