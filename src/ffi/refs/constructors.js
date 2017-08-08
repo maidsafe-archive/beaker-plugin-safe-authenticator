@@ -57,3 +57,29 @@ export const constructContainerReq = (contReq) => (
     containers_cap: contReq.containers_cap
   })
 );
+
+const constructPermissionSet = (perms) => (
+  new types.PermissionSet({
+    insert: types.Permission.get(perms.insert),
+    update: types.Permission.get(perms.update),
+    delete: types.Permission.get(perms.delete),
+    manage_permissions: types.Permission.get(perms.manage_permissions)
+  })
+);
+
+const constructShareMData = (mdata) => (
+  new types.ShareMData({
+    type_tag: mdata.type_tag,
+    name: mdata.name,
+    metadata_key: mdata.metadata_key,
+    perms: constructPermissionSet(mdata.perms)
+  })
+);
+
+export const constructSharedMdataReq = (sharedMdataReq) => (
+  new types.ShareMDataReq({
+    app: constructAppExchangeInfo(sharedMdataReq.app),
+    mdata: constructShareMData(sharedMdataReq.mdata),
+    mdata_len: sharedMdataReq.mdata_len
+  })
+);

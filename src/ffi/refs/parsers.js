@@ -103,3 +103,43 @@ export const parseContainerReq = (containersReq) => {
     containers_cap: containersReq.containers_cap
   };
 };
+
+const parseXorName = (name) => (
+  types.XorName(ref.reinterpret(name[0], 32))
+);
+
+const parsePermissionSet = (permissionSet) => {
+  if (!(permissionSet instanceof types.PermissionSet)) {
+    return;
+  }
+  return {
+    insert: types.PermissionModifier[permissionSet.insert].key,
+    update: types.PermissionModifier[permissionSet.update].key,
+    delete: types.PermissionModifier[permissionSet.delete].key,
+    manage_permissions: types.PermissionModifier[permissionSet.manage_permissions].key
+  };
+};
+
+const parseShareMData = (shareMData) => {
+  if (!(shareMData instanceof types.ShareMData)) {
+    return;
+  }
+  return {
+    type_tag: shareMData.type_tag,
+    name: parseXorName(shareMData.name),
+    metadata_key: shareMData.metadata_key,
+    perms: parsePermissionSet(shareMData.perms)
+  };
+};
+
+
+export const parseShareMDataReq = (shareMDataReq) => {
+  if (!(shareMDataReq instanceof types.ShareMDataReq)) {
+    return;
+  }
+  return {
+    app: parseAppExchangeInfo(shareMDataReq.app),
+    mdata: parseShareMData(shareMDataReq.mdata),
+    mdata_len: shareMDataReq.mdata_len
+  };
+};
