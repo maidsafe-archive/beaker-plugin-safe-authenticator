@@ -4,10 +4,12 @@
 /* eslint-disable no-underscore-dangle */
 // Private variables
 const _safeLib = Symbol('safeLib');
+const _isLibraryLoaded = Symbol('isLibraryLoaded');
 
 export default class SafeLib {
   constructor() {
     this[_safeLib] = null;
+    this[_isLibraryLoaded] = false;
   }
 
   set safeLib(lib) {
@@ -16,6 +18,14 @@ export default class SafeLib {
 
   get safeLib() {
     return this[_safeLib];
+  }
+
+  set isLibLoaded(status) {
+    this[_isLibraryLoaded] = !!status;
+  }
+
+  get isLibLoaded() {
+    return this[_isLibraryLoaded];
   }
 
   // Abstract methods
