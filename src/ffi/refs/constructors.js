@@ -60,17 +60,17 @@ export const constructContainerReq = (contReq) => (
 
 const constructPermissionSet = (perm) => (
   new types.PermissionSet({
-    insert: types.Permission.get(perm.insert),
-    update: types.Permission.get(perm.update),
-    delete: types.Permission.get(perm.delete),
-    manage_permissions: types.Permission.get(perms.manage_permissions)
+    // insert: types.Permission.get(perm.insert),
+    // update: types.Permission.get(perm.update),
+    // delete: types.Permission.get(perm.delete),
+    // manage_permissions: types.Permission.get(perms.manage_permissions)
   })
 );
 
 const constructShareMData = (mdata) => (
   new types.ShareMData({
     type_tag: mdata.type_tag,
-    name: mdata.name,
+    name: types.XorName(Buffer(mdata.name)),
     metadata_key: mdata.metadata_key,
     perms: constructPermissionSet(mdata.perms)
   })
@@ -89,7 +89,7 @@ const constructShareMDataArray = (mdatas) => {
 export const constructSharedMdataReq = (sharedMdataReq) => (
   new types.ShareMDataReq({
     app: constructAppExchangeInfo(sharedMdataReq.app),
-    mdata: constructShareMDataArray(sharedMdataReq.mdata),
+    mdata: constructShareMDataArray(sharedMdataReq.mdata).buffer,
     mdata_len: sharedMdataReq.mdata_len
   })
 );

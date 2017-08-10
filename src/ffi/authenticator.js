@@ -321,12 +321,13 @@ class Authenticator extends SafeLib {
       const shareMdataCb = this._pushCb(ffi.Callback(types.Void,
         [types.voidPointer, types.u32, types.ShareMDataReqPointer, types.MDataMetaPointer],
         (userData, reqId, req, meta) => {
-          // FIXME send meta info
+          const metaData = meta.deref();
           const mDataReq = typeParser.parseShareMDataReq(req.deref());
           this[_decodeReqPool][reqId] = mDataReq;
           this[_mDataReqListener].broadcast(null, {
             reqId,
-            mDataReq
+            mDataReq,
+            metaData: (metaData.len === 0) ? null : typeParser.parseMDataMeta(metaData)
           });
         }));
 
@@ -476,6 +477,7 @@ class Authenticator extends SafeLib {
             if (isAllowed) {
               this._updateAppList();
             }
+            console.warn('MData response', res);
             resolve(res);
           }));
 

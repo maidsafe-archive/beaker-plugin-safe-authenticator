@@ -12,9 +12,6 @@ export const parseArray = (type, arrayBuf, len) => {
 };
 
 export const parseAppExchangeInfo = (appExchangeInfo) => {
-  // if (!(appExchangeInfo instanceof types.AppExchangeInfo)) {
-  //   return;
-  // }
   return {
     id: appExchangeInfo.id,
     scope: appExchangeInfo.scope,
@@ -34,9 +31,6 @@ export const parsePermissionArray = (permissionArray, len) => {
 };
 
 export const parseContainerPermissions = (containerPermissions) => {
-  // if (!(containerPermissions instanceof types.ContainerPermissions)) {
-  //   return;
-  // }
   return {
     cont_name: containerPermissions.cont_name,
     access: parsePermissionArray(containerPermissions.access, containerPermissions.access_len),
@@ -56,9 +50,6 @@ export const parseContainerPermissionsArray = (containerPermissionsArray, len) =
 };
 
 export const parseRegisteredApp = (registeredApp) => {
-  // if (!(registeredApp instanceof types.RegisteredApp)) {
-  //   return;
-  // }
   return {
     app_info: parseAppExchangeInfo(registeredApp.app_info),
     containers: parseContainerPermissionsArray(registeredApp.containers,
@@ -79,9 +70,6 @@ export const parseRegisteredAppArray = (registeredAppArray, len) => {
 };
 
 export const parseAuthReq = (authReq) => {
-  // if (!(authReq instanceof types.AuthReq)) {
-  //   return;
-  // }
   return {
     app: parseAppExchangeInfo(authReq.app),
     app_container: authReq.app_container,
@@ -92,9 +80,6 @@ export const parseAuthReq = (authReq) => {
 };
 
 export const parseContainerReq = (containersReq) => {
-  // if (!(containersReq instanceof types.ContainersReq)) {
-  //   return;
-  // }
   return {
     app: parseAppExchangeInfo(containersReq.app),
     containers: parseContainerPermissionsArray(containersReq.containers,
@@ -105,20 +90,14 @@ export const parseContainerReq = (containersReq) => {
 };
 
 const parseXorName = (str) => {
-  let name = str;
-  // if (!Buffer.isBuffer(str)) {
   const b = new Buffer(str);
-  if (b.length != 32) throw Error("XOR Names _must be_ 32 bytes long.")
-  name = types.XorName(b).ref().readPointer(0);
-  // }
-  return name;
+  if (b.length != 32) throw Error("XOR Names _must be_ 32 bytes long.");
+  const name = types.XorName(b);
+  return new Buffer(name).toString();
 };
 
 
 const parsePermissionSet = (permissionSet) => {
-  // if (!(permissionSet instanceof types.PermissionSet)) {
-  //   return;
-  // }
   return {
     insert: 'SET', // types.PermissionModifier[permissionSet.insert].key,
     update: 'SET', // types.PermissionModifier[permissionSet.update].key,
@@ -128,9 +107,6 @@ const parsePermissionSet = (permissionSet) => {
 };
 
 const parseShareMData = (shareMData) => {
-  // if (!(shareMData instanceof types.ShareMData)) {
-  //   return;
-  // }
   return {
     type_tag: shareMData.type_tag,
     name: parseXorName(shareMData.name),
@@ -157,3 +133,7 @@ export const parseShareMDataReq = (shareMDataReq) => {
     mdata_len: shareMDataReq.mdata_len
   };
 };
+
+export const parseMDataMeta = (meta) => (
+  ref.reinterpret(meta.data, meta.len)
+);
