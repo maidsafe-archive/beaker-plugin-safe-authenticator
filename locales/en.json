@@ -48,6 +48,8 @@
     "plugin_not_found": "%{name} plugin not found",
     "invalid_params": "Invalid params",
     "invalid_req": "Invalid Request",
-    "invalid_invite_code": "Invalid Invite code"
+    "invalid_invite_code": "Invalid Invite code",
+    "failed_to_load_lib": "Authenticator initialisation failed. Native libraries are not loaded as expected.",
+    "failed_to_load_lib_title": "Failed to load library"
   }
 }

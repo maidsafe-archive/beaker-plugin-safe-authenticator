@@ -17,7 +17,6 @@ This project depends on [safe_client_libs](https://github.com/maidsafe/safe_clie
 ### Prerequisites
 
   * Node.js 6.5.0 (we recommend installing it via [nvm](https://github.com/creationix/nvm))
-  * Rust stable (we recommend installing it from [rust-lang.org](https://www.rust-lang.org/en-US/))
   * [Git](https://git-scm.com/)
 
 1. Clone the project

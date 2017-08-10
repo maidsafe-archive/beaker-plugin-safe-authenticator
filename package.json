@@ -1,6 +1,6 @@
 {
   "name": "beaker-plugin-safe-authenticator",
-  "version": "0.1.0-dev.0",
+  "version": "0.1.0-dev.1",
   "description": "SAFE Browser add-on for authenticating user to access SAFE Network",
   "main": "index.js",
   "scripts": {
@@ -115,7 +115,7 @@
     },
     "safe_authenticator": {
       "mirror": "https://github.com/krishnaIndia/safe_core/releases/download/v",
-      "version": "0.1.0-pre44",
+      "version": "0.1.0-pre45",
       "targetDir": "dist",
       "filename": "safe_authenticator",
       "filePattern": "^.*\\.(dll|so|dylib)$",
@@ -123,6 +123,11 @@
     },
     "ENV": {
       "dev": {
+        "safe_authenticator": {
+          "filename": "safe_authenticator-dev"
+        }
+      },
+      "test": {
         "system_uri": {
           "targetDir": "src/ffi"
         },
@@ -139,7 +144,7 @@
           "filePattern": "^libwinpthread-1.dll$"
         },
         "ENV": {
-          "dev": {
+          "test": {
             "libwinpthread-1": {
               "targetDir": "src/ffi"
             }

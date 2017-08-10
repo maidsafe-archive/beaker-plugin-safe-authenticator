@@ -50,7 +50,8 @@ export default class AppList extends Component {
       searchActive: false,
       showPopup: false,
       popupTitle: null,
-      popupDesc: null
+      popupDesc: null,
+      isError: false
     };
   }
 
@@ -63,18 +64,22 @@ export default class AppList extends Component {
     if (!nextProps.isAuthorised) {
       return this.context.router.push('/login');
     }
+    if (this.state.showPopup) {
+      return;
+    }
     if (this.props.revokeError) {
       this.setState({
         showPopup: true,
         popupTitle: 'Unable to revoke app. Please try again.',
-        popupDesc: this.props.revokeError
+        popupDesc: this.props.revokeError,
+        isError: true
       });
-    }
-    if (this.props.appListError) {
+    } else if (this.props.appListError) {
       this.setState({
         showPopup: true,
         popupTitle: 'Unable to fetch registered apps. Please try again.',
-        popupDesc: this.props.appListError
+        popupDesc: this.props.appListError,
+        isError: true
       });
     }
   }
@@ -158,7 +163,11 @@ export default class AppList extends Component {
     if (appList.length === 0) {
       return this.getNoMatchingAppsContainer();
     }
-    apps = appList.map((app, i) => (
+    apps = appList.sort((a, b) => {
+      if (a.app_info.name < b.app_info.name) return -1;
+      if (a.app_info.name > b.app_info.name) return 1;
+      return 0;
+    }).map((app, i) => (
       <Link key={i} to={`/app_details?id=${app.app_info.id}&index=${i}`}>
         <div className="app-list-i">
           <div className="app-list-i-b">
@@ -207,7 +216,9 @@ export default class AppList extends Component {
   }
 
   render() {
-    const { fetchingApps, authorisedApps } = this.props;
+    const { fetchingApps, authorisedApps, clearAppError } = this.props;
+    const { showPopup, isError, popupDesc, popupTitle } = this.state;
+
     return (
       <div className="card-main-b">
         <div className="card-main-h">{ this.title }</div>
@@ -215,14 +226,14 @@ export default class AppList extends Component {
           { this.getReAuthoriseState() }
           { fetchingApps ? <CardLoaderFull msg="Fetching registered apps">{''}</CardLoaderFull> : null }
           <Popup
-            show={this.state.showPopup}
-            error={this.props.appListError || this.props.revokeError}
+            show={showPopup}
+            error={isError}
             callback={() => {
-              this.props.clearAppError();
+              clearAppError();
               this.resetPopup();
             }}
-            title={this.state.popupTitle}
-            desc={this.state.popupDesc}
+            title={popupTitle}
+            desc={popupDesc}
           />
           <div className="app-list">
             { authorisedApps.length === 0 ? null : this.getSearchContainer() }

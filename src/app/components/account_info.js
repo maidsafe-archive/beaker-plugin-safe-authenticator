@@ -5,13 +5,13 @@ export default class AccountInfo extends Component {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
     done: PropTypes.number.isRequired,
-    available: PropTypes.number.isRequired,
+    available: PropTypes.number,
     refresh: PropTypes.func.isRequired
   };
 
   render() {
     const { done, available, isLoading, refresh } = this.props;
-    const total = done + available;
+    const total = (typeof available === 'string') ? '' : `/${(done + available)}`;
     const statusClassName = classNames(
       'acc-info-status',
       {
@@ -25,7 +25,7 @@ export default class AccountInfo extends Component {
         <div className="acc-info-b">
           <div className={statusClassName}>
             <span className="label">Account Status:</span>
-            <span className="val">{done || 0}/{total || 0}</span>
+            <span className="val">{done || 0}{total}</span>
             <button
               type="button"
               className="refresh"
@@ -34,7 +34,7 @@ export default class AccountInfo extends Component {
                 refresh();
               }}
             >{''}</button>
-            <div className="tooltip">Account is limited to the number of mutations permitted for an account</div>
+            <div className="tooltip">The number of store and modify operations completed on this account</div>
           </div>
           <div className="timer"><span className="val">02:00</span></div>
         </div>

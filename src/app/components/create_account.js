@@ -171,7 +171,7 @@ export default class CreateAccount extends Component {
               Enter an invitation token or claim an invitation below.
             </p>
             <div className="auth-form">
-              <form id="invitationForm">
+              <form id="invitationForm" onSubmit={(e) => { e.preventDefault(); }}>
                 <div className="inp-grp">
                   <input
                     type="text"
@@ -211,7 +211,6 @@ export default class CreateAccount extends Component {
                 { this.getNav() }
                 <button
                   type="button"
-                  form="invitationForm"
                   className="rgt flat btn primary"
                   onClick={(e) => {
                     this.handleInvitation(e);

@@ -19,7 +19,7 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - node --version
   - npm --version
-  - set NODE_ENV=dev
+  - set NODE_ENV=test
   - npm i
 
 build: off

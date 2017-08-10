@@ -1,7 +1,7 @@
 .card-main {
   padding-top: 85px;
   width: 625px;
-  margin: 0 auto;
+  margin: 0 auto 80px;
   .card-main-b {
     border-radius: 10px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.26);
@@ -45,6 +45,7 @@
       cursor: pointer;
       &.disabled {
         color: $primary-gray;
+        cursor: default;
       }
       &:hover {
         color: $a-hover;

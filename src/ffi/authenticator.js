@@ -75,6 +75,10 @@ class Authenticator extends SafeLib {
     return this[_nwStateCb];
   }
 
+  getLibStatus() {
+    return this.isLibLoaded;
+  }
+
   fnsToRegister() {
     return {
       create_acc: [types.Void, [types.CString, types.CString, types.CString, types.voidPointer, types.voidPointer, 'pointer', 'pointer']],

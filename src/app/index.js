@@ -17,10 +17,14 @@ import {
 } from './actions/network_state';
 
 import { setAppList, setReAuthoriseState } from './actions/app';
-import { setInviteCode, toggleInvitePopup } from './actions/auth';
+import { setInviteCode, toggleInvitePopup, showLibErrPopup } from './actions/auth';
 
 const store = configureStore();
 const history = syncHistoryWithStore(hashHistory, store);
+
+if (!window.safeAuthenticator.getLibStatus()) {
+  store.dispatch(showLibErrPopup());
+}
 
 const registerNetworkStateListener = (cb) => {
   // set network listener

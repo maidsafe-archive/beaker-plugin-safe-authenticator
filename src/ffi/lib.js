@@ -58,6 +58,7 @@ class LibLoader {
           if (!(mod instanceof SafeLib)) {
             return;
           }
+          mod.isLibLoaded = true;
           mod.safeLib = safeLib;
         });
 
@@ -72,6 +73,12 @@ class LibLoader {
             resolve();
           }));
       } catch (err) {
+        this[_mods].forEach((mod) => {
+          if (!(mod instanceof SafeLib)) {
+            return;
+          }
+          mod.isLibLoaded = false;
+        });
         return reject(err);
       }
     });
