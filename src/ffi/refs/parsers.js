@@ -93,7 +93,7 @@ const parseXorName = (str) => {
   const b = new Buffer(str);
   if (b.length != 32) throw Error("XOR Names _must be_ 32 bytes long.");
   const name = types.XorName(b);
-  return new Buffer(name).toString();
+  return new Buffer(name).toString('hex');
 };
 
 
