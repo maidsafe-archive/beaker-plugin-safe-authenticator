@@ -84,10 +84,10 @@ export const PermissionModifier = new Enum({
 });
 
 export const PermissionSet = StructType({
-  insert: PermissionModifier,
-  update: PermissionModifier,
-  delete: PermissionModifier,
-  manage_permissions: PermissionModifier
+  insert: ref.refType(PermissionModifier),
+  update: ref.refType(PermissionModifier),
+  delete: ref.refType(PermissionModifier),
+  manage_permissions: ref.refType(PermissionModifier)
 });
 
 export const ShareMData = StructType({

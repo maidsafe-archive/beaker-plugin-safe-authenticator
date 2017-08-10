@@ -12,9 +12,9 @@ export const parseArray = (type, arrayBuf, len) => {
 };
 
 export const parseAppExchangeInfo = (appExchangeInfo) => {
-  if (!(appExchangeInfo instanceof types.AppExchangeInfo)) {
-    return;
-  }
+  // if (!(appExchangeInfo instanceof types.AppExchangeInfo)) {
+  //   return;
+  // }
   return {
     id: appExchangeInfo.id,
     scope: appExchangeInfo.scope,
@@ -34,9 +34,9 @@ export const parsePermissionArray = (permissionArray, len) => {
 };
 
 export const parseContainerPermissions = (containerPermissions) => {
-  if (!(containerPermissions instanceof types.ContainerPermissions)) {
-    return;
-  }
+  // if (!(containerPermissions instanceof types.ContainerPermissions)) {
+  //   return;
+  // }
   return {
     cont_name: containerPermissions.cont_name,
     access: parsePermissionArray(containerPermissions.access, containerPermissions.access_len),
@@ -56,9 +56,9 @@ export const parseContainerPermissionsArray = (containerPermissionsArray, len) =
 };
 
 export const parseRegisteredApp = (registeredApp) => {
-  if (!(registeredApp instanceof types.RegisteredApp)) {
-    return;
-  }
+  // if (!(registeredApp instanceof types.RegisteredApp)) {
+  //   return;
+  // }
   return {
     app_info: parseAppExchangeInfo(registeredApp.app_info),
     containers: parseContainerPermissionsArray(registeredApp.containers,
@@ -79,9 +79,9 @@ export const parseRegisteredAppArray = (registeredAppArray, len) => {
 };
 
 export const parseAuthReq = (authReq) => {
-  if (!(authReq instanceof types.AuthReq)) {
-    return;
-  }
+  // if (!(authReq instanceof types.AuthReq)) {
+  //   return;
+  // }
   return {
     app: parseAppExchangeInfo(authReq.app),
     app_container: authReq.app_container,
@@ -92,9 +92,9 @@ export const parseAuthReq = (authReq) => {
 };
 
 export const parseContainerReq = (containersReq) => {
-  if (!(containersReq instanceof types.ContainersReq)) {
-    return;
-  }
+  // if (!(containersReq instanceof types.ContainersReq)) {
+  //   return;
+  // }
   return {
     app: parseAppExchangeInfo(containersReq.app),
     containers: parseContainerPermissionsArray(containersReq.containers,
@@ -104,26 +104,33 @@ export const parseContainerReq = (containersReq) => {
   };
 };
 
-const parseXorName = (name) => (
-  types.XorName(ref.reinterpret(name[0], 32))
-);
+const parseXorName = (str) => {
+  let name = str;
+  // if (!Buffer.isBuffer(str)) {
+  const b = new Buffer(str);
+  if (b.length != 32) throw Error("XOR Names _must be_ 32 bytes long.")
+  name = types.XorName(b).ref().readPointer(0);
+  // }
+  return name;
+};
+
 
 const parsePermissionSet = (permissionSet) => {
-  if (!(permissionSet instanceof types.PermissionSet)) {
-    return;
-  }
+  // if (!(permissionSet instanceof types.PermissionSet)) {
+  //   return;
+  // }
   return {
-    insert: types.PermissionModifier[permissionSet.insert].key,
-    update: types.PermissionModifier[permissionSet.update].key,
-    delete: types.PermissionModifier[permissionSet.delete].key,
-    manage_permissions: types.PermissionModifier[permissionSet.manage_permissions].key
+    insert: 'SET', // types.PermissionModifier[permissionSet.insert].key,
+    update: 'SET', // types.PermissionModifier[permissionSet.update].key,
+    delete: 'SET', // types.PermissionModifier[permissionSet.delete].key,
+    manage_permissions: 'SET', // types.PermissionModifier[permissionSet.manage_permissions].key
   };
 };
 
 const parseShareMData = (shareMData) => {
-  if (!(shareMData instanceof types.ShareMData)) {
-    return;
-  }
+  // if (!(shareMData instanceof types.ShareMData)) {
+  //   return;
+  // }
   return {
     type_tag: shareMData.type_tag,
     name: parseXorName(shareMData.name),
@@ -132,14 +139,21 @@ const parseShareMData = (shareMData) => {
   };
 };
 
+const parseSharedMDataArray = (shareMData, len) => {
+  const res = [];
+  let i = 0;
+  const mdatas = parseArray(types.ShareMData, shareMData, len);
+  for (i = 0; i < mdatas.length; i++) {
+    res.push(parseShareMData(mdatas[i]));
+  }
+  return res;
+};
+
 
 export const parseShareMDataReq = (shareMDataReq) => {
-  if (!(shareMDataReq instanceof types.ShareMDataReq)) {
-    return;
-  }
   return {
     app: parseAppExchangeInfo(shareMDataReq.app),
-    mdata: parseShareMData(shareMDataReq.mdata),
+    mdata: parseSharedMDataArray(shareMDataReq.mdata, shareMDataReq.mdata_len),
     mdata_len: shareMDataReq.mdata_len
   };
 };

@@ -73,6 +73,7 @@ class ReqQueue {
     }
     this.preocessing = true;
     this.req = this.q[0];
+    console.log('process req q', this.req.uri);
     authenticator.decodeRequest(this.req.uri).then((res) => {
       if (!res) {
         return;
@@ -101,6 +102,7 @@ const registerNetworkListener = (e) => {
 };
 
 const decodeRequest = (e, data) => {
+  console.log('decodeRequest', data);
   const req = new Request(data);
   decodeEvent = e;
   reqQ.add(req);
@@ -120,6 +122,7 @@ const onContainerReq = (e) => {
 
 const onSharedMDataReq = (e) => {
   authenticator.setListener(CONSTANTS.LISTENER_TYPES.MDATA_REQ, (err, req) => {
+    console.log('onSharedMDataReq', req)
     e.sender.send('onSharedMDataReq', req);
   });
 };
