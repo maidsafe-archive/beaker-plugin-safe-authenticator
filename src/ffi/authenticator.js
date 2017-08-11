@@ -270,7 +270,6 @@ class Authenticator extends SafeLib {
 
   decodeRequest(uri) {
     return new Promise((resolve, reject) => {
-      console.log('decode uri', uri);
       if (!uri) {
         return reject(new Error('Invalid URI'));
       }
@@ -319,15 +318,15 @@ class Authenticator extends SafeLib {
         }));
 
       const shareMdataCb = this._pushCb(ffi.Callback(types.Void,
-        [types.voidPointer, types.u32, types.ShareMDataReqPointer, types.MDataMetaPointer],
+        [types.voidPointer, types.u32, types.ShareMDataReqPointer, 'pointer'],
         (userData, reqId, req, meta) => {
-          const metaData = meta.deref();
           const mDataReq = typeParser.parseShareMDataReq(req.deref());
+          const metaData = typeParser.parseUserMetaDataArray(meta, mDataReq.mdata_len);
           this[_decodeReqPool][reqId] = mDataReq;
           this[_mDataReqListener].broadcast(null, {
             reqId,
             mDataReq,
-            metaData: (metaData.len === 0) ? null : typeParser.parseMDataMeta(metaData)
+            metaData
           });
         }));
 
@@ -335,8 +334,6 @@ class Authenticator extends SafeLib {
 
       const decodeReqErrorCb = this._pushCb(ffi.Callback(types.Void,
         [types.voidPointer, types.FfiResult, types.CString], (userData, result) => {
-          console.log('decode error', result);
-
           if (!(this[_reqErrListener] && this[_reqErrListener].len() !== 0)) {
             return;
           }

@@ -58,20 +58,19 @@ export const constructContainerReq = (contReq) => (
   })
 );
 
-const constructPermissionSet = (perm) => (
+const constructPermissionSet = (perms) => (
   new types.PermissionSet({
-    // insert: types.Permission.get(perm.insert),
-    // update: types.Permission.get(perm.update),
-    // delete: types.Permission.get(perm.delete),
-    // manage_permissions: types.Permission.get(perms.manage_permissions)
+    insert: perms.insert,
+    update: perms.update,
+    delete: perms.delete,
+    manage_permissions: perms.manage_permissions
   })
 );
 
 const constructShareMData = (mdata) => (
   new types.ShareMData({
     type_tag: mdata.type_tag,
-    name: types.XorName(Buffer(mdata.name)),
-    metadata_key: mdata.metadata_key,
+    name: types.XorName(Buffer.from(mdata.name, 'hex')),
     perms: constructPermissionSet(mdata.perms)
   })
 );

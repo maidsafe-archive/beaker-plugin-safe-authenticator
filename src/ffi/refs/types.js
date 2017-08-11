@@ -17,7 +17,6 @@ export const XorName = ArrayType(u8, 32);
 // Pointer Types
 export const voidPointer = ref.refType(Void);
 export const ClientHandlePointer = ref.refType(voidPointer);
-export const u8Pointer = ref.refType(u8);
 
 export const AppExchangeInfo = StructType({
   id: CString,
@@ -77,23 +76,16 @@ export const AccountInfo = StructType({
   mutations_available: u64
 });
 
-export const PermissionModifier = new Enum({
-  NO_CHANGE: 0,
-  SET: 1,
-  UNSET: 2
-});
-
 export const PermissionSet = StructType({
-  insert: ref.refType(PermissionModifier),
-  update: ref.refType(PermissionModifier),
-  delete: ref.refType(PermissionModifier),
-  manage_permissions: ref.refType(PermissionModifier)
+  insert: bool,
+  update: bool,
+  delete: bool,
+  manage_permissions: bool
 });
 
 export const ShareMData = StructType({
   type_tag: u64,
   name: XorName,
-  metadata_key: CString,
   perms: PermissionSet
 });
 
@@ -103,9 +95,9 @@ export const ShareMDataReq = StructType({
   mdata_len: usize
 });
 
-export const MDataMeta = StructType({
-  data: u8Pointer,
-  len: usize
+export const UserMetadata = StructType({
+  name: CString,
+  description: CString
 });
 
 export const AccountInfoPointer = ref.refType(AccountInfo);
@@ -113,8 +105,6 @@ export const AccountInfoPointer = ref.refType(AccountInfo);
 export const ContainersReqPointer = ref.refType(ContainersReq);
 
 export const ShareMDataReqPointer = ref.refType(ShareMDataReq);
-
-export const MDataMetaPointer = ref.refType(MDataMeta);
 
 export const allocAppHandlePointer = () => (ref.alloc(ClientHandlePointer));
 
