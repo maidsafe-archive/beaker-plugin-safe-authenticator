@@ -118,6 +118,12 @@ const onContainerReq = (e) => {
   });
 };
 
+const onSharedMDataReq = (e) => {
+  authenticator.setListener(CONSTANTS.LISTENER_TYPES.MDATA_REQ, (err, req) => {
+    e.sender.send('onSharedMDataReq', req);
+  });
+};
+
 const onAuthDecision = (e, authData, isAllowed) => {
   if (!authData) {
     return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('URL'))));
@@ -161,6 +167,27 @@ const onContainerDecision = (e, contData, isAllowed) => {
     });
 };
 
+const onSharedMDataDecision = (e, data, isAllowed) => {
+  if (!data) {
+    return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('URL'))));
+  }
+
+  if (typeof isAllowed !== 'boolean') {
+    return Promise.reject(new Error(i18n.__('messages.should_not_be_empty', i18n.__('IsAllowed'))));
+  }
+
+  authenticator.encodeMDataResp(data, isAllowed)
+    .then((res) => {
+      e.sender.send('onSharedMDataRes', new Response(reqQ.req, res));
+      openExternal(res);
+      reqQ.next();
+    })
+    .catch((err) => {
+      e.sender.send('onSharedMDataRes', new Response(reqQ.req, err));
+      reqQ.next();
+    });
+};
+
 const onReqError = (e) => {
   authenticator.setListener(CONSTANTS.LISTENER_TYPES.REQUEST_ERR, (err) => {
     e.sender.send('onAuthResError', new Response(reqQ.req, err));
@@ -181,8 +208,10 @@ const init = () => {
   ipcMain.on('decryptRequest', decodeRequest);
   ipcMain.on('registerOnAuthReq', onAuthReq);
   ipcMain.on('registerOnContainerReq', onContainerReq);
+  ipcMain.on('registerOnSharedMDataReq', onSharedMDataReq);
   ipcMain.on('registerAuthDecision', onAuthDecision);
   ipcMain.on('registerContainerDecision', onContainerDecision);
+  ipcMain.on('registerSharedMDataDecision', onSharedMDataDecision);
   ipcMain.on('registerOnReqError', onReqError);
   ipcMain.on('skipAuthRequest', skipAuthReq);
 };
