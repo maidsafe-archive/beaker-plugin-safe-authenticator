@@ -129,12 +129,17 @@ export const parseShareMDataReq = (shareMDataReq) => (
   }
 );
 
+const parseUserMetaData = (meta) => ({
+  name: meta.name,
+  description: meta.description
+})
+
 export const parseUserMetaDataArray = (metaArr, len) => {
   const res = [];
   let i = 0;
   const metaData = parseArray(types.UserMetadata, metaArr, len);
   for (i = 0; i < metaData.length; i++) {
-    res.push(metaData[i]);
+    res.push(parseUserMetaData(metaData[i]));
   }
   return res;
 };
