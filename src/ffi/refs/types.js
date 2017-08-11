@@ -1,4 +1,5 @@
 import ref from 'ref';
+import ArrayType from 'ref-array';
 import StructType from 'ref-struct';
 import Enum from 'enum';
 
@@ -11,6 +12,7 @@ export const int32 = ref.types.int32;
 export const Void = ref.types.void;
 export const Null = ref.NULL;
 export const CString = ref.types.CString;
+export const XorName = ArrayType(u8, 32);
 
 // Pointer Types
 export const voidPointer = ref.refType(Void);
@@ -74,9 +76,35 @@ export const AccountInfo = StructType({
   mutations_available: u64
 });
 
+export const PermissionSet = StructType({
+  insert: bool,
+  update: bool,
+  delete: bool,
+  manage_permissions: bool
+});
+
+export const ShareMData = StructType({
+  type_tag: u64,
+  name: XorName,
+  perms: PermissionSet
+});
+
+export const ShareMDataReq = StructType({
+  app: AppExchangeInfo,
+  mdata: ref.refType(ShareMData),
+  mdata_len: usize
+});
+
+export const UserMetadata = StructType({
+  name: CString,
+  description: CString
+});
+
 export const AccountInfoPointer = ref.refType(AccountInfo);
 
 export const ContainersReqPointer = ref.refType(ContainersReq);
+
+export const ShareMDataReqPointer = ref.refType(ShareMDataReq);
 
 export const allocAppHandlePointer = () => (ref.alloc(ClientHandlePointer));
 
@@ -85,3 +113,5 @@ export const allocCString = (str) => (ref.allocCString(str));
 export const allocAuthReq = (req) => (ref.alloc(AuthReq, req));
 
 export const allocContainerReq = (req) => (ref.alloc(ContainersReq, req));
+
+export const allocSharedMdataReq = (req) => (ref.alloc(ShareMDataReq, req));
