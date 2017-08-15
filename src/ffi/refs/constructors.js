@@ -57,3 +57,38 @@ export const constructContainerReq = (contReq) => (
     containers_cap: contReq.containers_cap
   })
 );
+
+const constructPermissionSet = (perms) => (
+  new types.PermissionSet({
+    insert: perms.insert,
+    update: perms.update,
+    delete: perms.delete,
+    manage_permissions: perms.manage_permissions
+  })
+);
+
+const constructShareMData = (mdata) => (
+  new types.ShareMData({
+    type_tag: mdata.type_tag,
+    name: types.XorName(Buffer.from(mdata.name, 'hex')),
+    perms: constructPermissionSet(mdata.perms)
+  })
+);
+
+const constructShareMDataArray = (mdatas) => {
+  const MDataArray = ArrayType(types.ShareMData);
+  const mdataArray = new MDataArray(mdatas.length);
+
+  mdatas.forEach((mdata, i) => {
+    mdataArray[i] = constructShareMData(mdata);
+  });
+  return mdataArray;
+};
+
+export const constructSharedMdataReq = (sharedMdataReq) => (
+  new types.ShareMDataReq({
+    app: constructAppExchangeInfo(sharedMdataReq.app),
+    mdata: constructShareMDataArray(sharedMdataReq.mdata).buffer,
+    mdata_len: sharedMdataReq.mdata_len
+  })
+);

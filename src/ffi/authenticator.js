@@ -25,6 +25,7 @@ const _reAuthoriseState = Symbol('reAuthoriseState');
 const _appListUpdateListener = Symbol('appListUpdate');
 const _authReqListener = Symbol('authReq');
 const _containerReqListener = Symbol('containerReq');
+const _mDataReqListener = Symbol('mDataReq');
 const _nwStateChangeListener = Symbol('nwStateChangeListener');
 const _reqErrListener = Symbol('reqErrListener');
 const _cbRegistry = Symbol('cbRegistry');
@@ -42,6 +43,7 @@ class Authenticator extends SafeLib {
     this[_appListUpdateListener] = new Listener();
     this[_authReqListener] = new Listener();
     this[_containerReqListener] = new Listener();
+    this[_mDataReqListener] = new Listener();
     this[_nwStateChangeListener] = new Listener();
     this[_reqErrListener] = new Listener();
     this[_cbRegistry] = {};
@@ -83,10 +85,11 @@ class Authenticator extends SafeLib {
     return {
       create_acc: [types.Void, [types.CString, types.CString, types.CString, types.voidPointer, types.voidPointer, 'pointer', 'pointer']],
       login: [types.Void, [types.CString, types.CString, types.voidPointer, types.voidPointer, 'pointer', 'pointer']],
-      auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer', 'pointer']],
+      auth_decode_ipc_msg: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer', 'pointer', 'pointer', 'pointer', 'pointer']],
       encode_auth_resp: [types.Void, [types.voidPointer, types.AuthReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       encode_containers_resp: [types.Void, [types.voidPointer, types.ContainersReqPointer, types.u32, types.bool, types.voidPointer, 'pointer']],
       auth_unregistered_decode_ipc_msg: [types.Void, [types.CString, types.voidPointer, 'pointer', 'pointer']],
+      encode_share_mdata_resp: [types.Void, [types.voidPointer, types.ShareMDataReqPointer, types.u32, types.bool, 'pointer', 'pointer']],
       encode_unregistered_resp: [types.Void, [types.u32, types.bool, types.voidPointer, 'pointer']],
       auth_registered_apps: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
       auth_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']],
@@ -108,6 +111,9 @@ class Authenticator extends SafeLib {
       }
       case CONSTANTS.LISTENER_TYPES.CONTAINER_REQ.key: {
         return this[_containerReqListener].add(cb);
+      }
+      case CONSTANTS.LISTENER_TYPES.MDATA_REQ.key: {
+        return this[_mDataReqListener].add(cb);
       }
       case CONSTANTS.LISTENER_TYPES.NW_STATE_CHANGE.key: {
         return this[_nwStateChangeListener].add(cb);
@@ -274,8 +280,6 @@ class Authenticator extends SafeLib {
       const parsedURI = uri.replace('safe-auth://', '').replace('safe-auth:', '').replace('/', '');
 
       if (!this.registeredClientHandle) {
-        // return reject(new Error(i18n.__('messages.unauthorised')));
-        /* decode as unregistered client */
         return this._decodeUnRegisteredRequest(parsedURI, resolve, reject);
       }
       const decodeReqAuthCb = this._pushCb(ffi.Callback(types.Void,
@@ -317,6 +321,19 @@ class Authenticator extends SafeLib {
           });
         }));
 
+      const shareMdataCb = this._pushCb(ffi.Callback(types.Void,
+        [types.voidPointer, types.u32, types.ShareMDataReqPointer, 'pointer'],
+        (userData, reqId, req, meta) => {
+          const mDataReq = typeParser.parseShareMDataReq(req.deref());
+          const metaData = typeParser.parseUserMetaDataArray(meta, mDataReq.mdata_len);
+          this[_decodeReqPool][reqId] = mDataReq;
+          this[_mDataReqListener].broadcast(null, {
+            reqId,
+            mDataReq,
+            metaData
+          });
+        }));
+
       const unregisteredCb = this._getUnregisteredClientCb(resolve, reject);
 
       const decodeReqErrorCb = this._pushCb(ffi.Callback(types.Void,
@@ -334,6 +351,7 @@ class Authenticator extends SafeLib {
           this._getCb(decodeReqAuthCb),
           this._getCb(decodeReqContainerCb),
           this._getCb(unregisteredCb),
+          this._getCb(shareMdataCb),
           this._getCb(decodeReqErrorCb));
       } catch (e) {
         reject(e);
@@ -424,6 +442,53 @@ class Authenticator extends SafeLib {
           isAllowed,
           types.Null,
           this._getCb(contDecisionCb)
+        );
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  encodeMDataResp(req, isAllowed) {
+    return new Promise((resolve, reject) => {
+      if (!this.registeredClientHandle) {
+        return reject(new Error(i18n.__('messages.unauthorised')));
+      }
+
+      if (!req || typeof isAllowed !== 'boolean') {
+        return reject(new Error(i18n.__('messages.invalid_params')));
+      }
+
+      if (!req.reqId || !this[_decodeReqPool][req.reqId]) {
+        return reject(new Error(i18n.__('messages.invalid_req')));
+      }
+
+      const mDataReq = types.allocSharedMdataReq(typeConstructor.constructSharedMdataReq(
+        this[_decodeReqPool][req.reqId]));
+
+      delete this[_decodeReqPool][req.reqId];
+
+      try {
+        const mDataDecisionCb = this._pushCb(ffi.Callback(types.Void,
+          [types.voidPointer, types.FfiResult, types.CString], (userData, result, res) => {
+            const code = result.error_code;
+            if (code !== 0 && !res) {
+              return reject(JSON.stringify(result));
+            }
+            if (isAllowed) {
+              this._updateAppList();
+            }
+            console.warn('MData response', res);
+            resolve(res);
+          }));
+
+        this.safeLib.encode_share_mdata_resp(
+          this.registeredClientHandle,
+          mDataReq,
+          req.reqId,
+          isAllowed,
+          types.Null,
+          this._getCb(mDataDecisionCb)
         );
       } catch (e) {
         reject(e);

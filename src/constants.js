@@ -23,6 +23,7 @@ export default {
     'APP_LIST_UPDATE',
     'AUTH_REQ',
     'CONTAINER_REQ',
+    'MDATA_REQ',
     'NW_STATE_CHANGE',
     'REQUEST_ERR'
   ]),
