@@ -17,6 +17,7 @@ import * as types from './refs/types';
 import * as typeParser from './refs/parsers';
 import * as typeConstructor from './refs/constructors';
 import CONSTANTS from '../constants';
+import { isArrayEqual } from '../common';
 
 // private variables
 const _registeredClientHandle = Symbol('registeredClientHandle');
@@ -315,10 +316,23 @@ class Authenticator extends SafeLib {
           }
           const contReq = typeParser.parseContainerReq(req.deref());
           this[_decodeReqPool][reqId] = contReq;
-          this[_containerReqListener].broadcast(null, {
+          const result = {
             reqId,
             contReq
-          });
+          };
+          if (this[_reAuthoriseState] !== CONSTANTS.RE_AUTHORISE.STATE.UNLOCK) {
+            this[_containerReqListener].broadcast(null, result);
+            return resolve();
+          }
+          return this._isAlreadyAuthorisedContainer(contReq)
+            .then((isAuthorised) => {
+              if (isAuthorised) {
+                return this.encodeContainersResp(result, true)
+                  .then(resolve);
+              }
+              this[_containerReqListener].broadcast(null, result);
+              resolve();
+            });
         }));
 
       const shareMdataCb = this._pushCb(ffi.Callback(types.Void,
@@ -684,10 +698,52 @@ class Authenticator extends SafeLib {
   }
 
   _isAlreadyAuthorised(req) {
-    return this.getRegisteredApps()
-      .then((authorisedApps) =>
-        ((authorisedApps.filter((apps) =>
-          (lodash.isEqual(apps.app_info, req.app)))).length !== 0));
+    let containerLen = req.containers.length;
+    if (req.app_container) {
+      containerLen += 1;
+    }
+    let app = null;
+    return new Promise((resolve) => {
+      this.getRegisteredApps().then((authorisedApps) => {
+        app = authorisedApps.filter((apps) => lodash.isEqual(apps.app_info, req.app));
+        // Return false if no apps found match with requested app
+        if (app.length === 0) {
+          return resolve(false);
+        }
+        app = app[0];
+        // Return false if container length of requested app is different from the filtered one
+        if (containerLen !== app.containers.length) {
+          return resolve(false);
+        }
+        // Return false if container and its permissions doesn't match with filtered one
+        if (!isArrayEqual(req.containers, app.containers)) {
+          return resolve(false);
+        }
+        return resolve(true);
+      });
+    });
+  }
+
+  _isAlreadyAuthorisedContainer(req) {
+    let app = null;
+    return new Promise((resolve) => {
+      this.getRegisteredApps().then((authorisedApps) => {
+        app = authorisedApps.filter((apps) => lodash.isEqual(apps.app_info, req.app));
+        // Return false if no apps found match with requested app
+        if (app.length === 0) {
+          return resolve(false);
+        }
+        app = app[0];
+        let i;
+        for (i = 0; i < req.containers.length; i++) {
+          if (lodash.findIndex(app.containers, req.containers[i]) === -1) {
+            resolve(false);
+            break;
+          }
+        }
+        return resolve(true);
+      });
+    });
   }
 
   /**
