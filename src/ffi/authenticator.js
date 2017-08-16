@@ -732,7 +732,7 @@ class Authenticator extends SafeLib {
           }
           return resolve(true);
         });
-      } catch(err) {
+      } catch (err) {
         return reject(err);
       }
     });
@@ -759,7 +759,7 @@ class Authenticator extends SafeLib {
           }
           return resolve(true);
         });
-      } catch(err) {
+      } catch (err) {
         return reject(err);
       }
     });
