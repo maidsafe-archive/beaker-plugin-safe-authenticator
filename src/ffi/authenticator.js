@@ -697,52 +697,71 @@ class Authenticator extends SafeLib {
       }));
   }
 
-  _isAlreadyAuthorised(req) {
+  _isAlreadyAuthorised(request) {
+    const req = lodash.cloneDeep(request);
     let containerLen = req.containers.length;
-    if (req.app_container) {
-      containerLen += 1;
-    }
     let app = null;
-    return new Promise((resolve) => {
-      this.getRegisteredApps().then((authorisedApps) => {
-        app = authorisedApps.filter((apps) => lodash.isEqual(apps.app_info, req.app));
-        // Return false if no apps found match with requested app
-        if (app.length === 0) {
-          return resolve(false);
-        }
-        app = app[0];
-        // Return false if container length of requested app is different from the filtered one
-        if (containerLen !== app.containers.length) {
-          return resolve(false);
-        }
-        // Return false if container and its permissions doesn't match with filtered one
-        if (!isArrayEqual(req.containers, app.containers)) {
-          return resolve(false);
-        }
-        return resolve(true);
-      });
+    const prepareOwnContainer = (appInfo) => ({
+      cont_name: `apps/${appInfo.id}`,
+      access: ['Read', 'Insert', 'Delete', 'Update', 'ManagePermissions'],
+      access_len: 5,
+      access_cap: 5
+    });
+
+    return new Promise((resolve, reject) => {
+      try {
+        this.getRegisteredApps().then((authorisedApps) => {
+          app = authorisedApps.filter((apps) => lodash.isEqual(apps.app_info, req.app));
+          // Return false if no apps found match with requested app
+          if (app.length === 0) {
+            return resolve(false);
+          }
+          app = app[0];
+          if (req.app_container) {
+            containerLen += 1;
+            // add app own container to the req container if newly requested
+            req.containers.push(prepareOwnContainer(req.app));
+          }
+          // Return false if container length of requested app is different from the filtered one
+          if (containerLen !== app.containers.length) {
+            return resolve(false);
+          }
+          // Return false if container and its permissions doesn't match with filtered one
+          if (!isArrayEqual(req.containers, app.containers)) {
+            return resolve(false);
+          }
+          return resolve(true);
+        });
+      } catch(err) {
+        return reject(err);
+      }
     });
   }
 
-  _isAlreadyAuthorisedContainer(req) {
+  _isAlreadyAuthorisedContainer(request) {
+    const req = lodash.cloneDeep(request);
     let app = null;
-    return new Promise((resolve) => {
-      this.getRegisteredApps().then((authorisedApps) => {
-        app = authorisedApps.filter((apps) => lodash.isEqual(apps.app_info, req.app));
-        // Return false if no apps found match with requested app
-        if (app.length === 0) {
-          return resolve(false);
-        }
-        app = app[0];
-        let i;
-        for (i = 0; i < req.containers.length; i++) {
-          if (lodash.findIndex(app.containers, req.containers[i]) === -1) {
-            resolve(false);
-            break;
+    return new Promise((resolve, reject) => {
+      try {
+        this.getRegisteredApps().then((authorisedApps) => {
+          app = authorisedApps.filter((apps) => lodash.isEqual(apps.app_info, req.app));
+          // Return false if no apps found match with requested app
+          if (app.length === 0) {
+            return resolve(false);
           }
-        }
-        return resolve(true);
-      });
+          app = app[0];
+          let i;
+          for (i = 0; i < req.containers.length; i++) {
+            if (lodash.findIndex(app.containers, req.containers[i]) === -1) {
+              resolve(false);
+              break;
+            }
+          }
+          return resolve(true);
+        });
+      } catch(err) {
+        return reject(err);
+      }
     });
   }
 
