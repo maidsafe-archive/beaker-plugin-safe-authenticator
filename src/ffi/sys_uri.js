@@ -15,13 +15,15 @@ class SystemUriLoader {
   constructor() {
     this[_libPath] = CONSTANTS.LIB_PATH.SYSTEM_URI[os.platform()];
     this[_ffiFunctions] = {
-      open: [type.int32, ['string']],
+      open: [type.int32, ['string', 'pointer', 'pointer']],
       install: [type.int32, ['string',
         'string',
         'string',
         'string',
         'string',
         'string',
+        'pointer',
+        'pointer'
       ]],
     };
     this[_isLibLoaded] = false;
@@ -53,9 +55,11 @@ class SystemUriLoader {
       return;
     }
 
-    const ret = this.lib.install(bundle, vendor, name, exec, icon, joinedSchemes);
-    if (ret === -1) {
-      throw new Error(`Error occured installing: ${ret}`);
+    try {
+      const cb = this._handleError();
+      this.lib.install(bundle, vendor, name, exec, icon, joinedSchemes, type.Null, cb);
+    } catch (err) {
+      console.error(`Error while installing :: ${err}`);
     }
   }
 
@@ -63,10 +67,22 @@ class SystemUriLoader {
     if (!this.lib) {
       return;
     }
-    const ret = this.lib.open(str);
-    if (ret === -1) {
-      throw new Error(`Error occured opening ${str} : ${ret}`);
+    try {
+      const cb = this._handleError();
+      this.lib.open(str, type.Null, cb);
+    } catch (err) {
+      console.error(`Error while opening URI :: ${err}`);
     }
+  }
+
+  _handleError() {
+    return ffi.Callback(type.Void, [type.voidPointer, type.FfiResult],
+      (userData, result) => {
+        if (result.error_code !== 0) {
+          throw new Error(result.description);
+        }
+      }
+    );
   }
 }
 
