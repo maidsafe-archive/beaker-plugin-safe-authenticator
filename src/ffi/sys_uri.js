@@ -15,8 +15,8 @@ class SystemUriLoader {
   constructor() {
     this[_libPath] = CONSTANTS.LIB_PATH.SYSTEM_URI[os.platform()];
     this[_ffiFunctions] = {
-      open: [type.int32, ['string', 'pointer', 'pointer']],
-      install: [type.int32, ['string',
+      open: [type.Void, ['string', 'pointer', 'pointer']],
+      install: [type.Void, ['string',
         'string',
         'string',
         'string',
