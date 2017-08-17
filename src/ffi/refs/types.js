@@ -1,7 +1,6 @@
 import ref from 'ref';
 import ArrayType from 'ref-array';
 import StructType from 'ref-struct';
-import Enum from 'enum';
 
 export const u8 = ref.types.uint8;
 export const u32 = ref.types.uint32;
