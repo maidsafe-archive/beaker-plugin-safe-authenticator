@@ -1,6 +1,7 @@
 /* eslint-disable import/extensions */
 import { shell } from 'electron';
 /* eslint-enable import/extensions */
+import lodash from 'lodash';
 
 export const parseResUrl = (url) => {
   const split = url.split(':');
@@ -18,3 +19,7 @@ export const openExternal = (uri) => {
     console.error(err.message);
   }
 };
+
+export const isArrayEqual = (x, y) => (
+  lodash(x).differenceWith(y, lodash.isEqual).isEmpty()
+);
