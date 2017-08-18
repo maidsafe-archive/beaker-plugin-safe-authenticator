@@ -55,32 +55,37 @@ class SystemUriLoader {
       return;
     }
 
-    try {
-      const cb = this._handleError();
-      this.lib.install(bundle, vendor, name, exec, icon, joinedSchemes, type.Null, cb);
-    } catch (err) {
-      console.error(`Error while installing :: ${err}`);
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        const cb = this._handleError(resolve, reject);
+        this.lib.install(bundle, vendor, name, exec, icon, joinedSchemes, type.Null, cb);
+      } catch (err) {
+        return reject(err);
+      }
+    });
   }
 
   openUri(str) {
     if (!this.lib) {
       return;
     }
-    try {
-      const cb = this._handleError();
-      this.lib.open(str, type.Null, cb);
-    } catch (err) {
-      console.error(`Error while opening URI :: ${err}`);
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        const cb = this._handleError(resolve, reject);
+        this.lib.open(str, type.Null, cb);
+      } catch (err) {
+        return reject(err);
+      }
+    });
   }
 
-  _handleError() {
+  _handleError(resolve, reject) {
     return ffi.Callback(type.Void, [type.voidPointer, type.FfiResult],
       (userData, result) => {
         if (result.error_code !== 0) {
-          throw new Error(result.description);
+          return reject(new Error(result.description));
         }
+        return resolve();
       }
     );
   }
