@@ -10,22 +10,20 @@ export const constructAppExchangeInfo = (appInfo) => (
   })
 );
 
-export const constructPermissionArray = (permissions) => {
-  const PermArray = ArrayType(types.Permission);
-  const permArray = new PermArray(permissions.length);
-
-  permissions.forEach((perm, i) => {
-    permArray[i] = types.Permission.get(perm);
-  });
-  return permArray;
-};
+const constructPermissionSet = (perms) => (
+  new types.PermissionSet({
+    read: perms.read,
+    insert: perms.insert,
+    update: perms.update,
+    delete: perms.delete,
+    manage_permissions: perms.manage_permissions
+  })
+);
 
 export const constructContainerPermission = (contPerm) => (
   new types.ContainerPermissions({
     cont_name: contPerm.cont_name,
-    access: constructPermissionArray(contPerm.access).buffer,
-    access_len: contPerm.access_len,
-    access_cap: contPerm.access_len
+    access: constructPermissionSet(contPerm.access)
   })
 );
 
@@ -55,15 +53,6 @@ export const constructContainerReq = (contReq) => (
     containers: constructContainerArray(contReq.containers).buffer,
     containers_len: contReq.containers_len,
     containers_cap: contReq.containers_cap
-  })
-);
-
-const constructPermissionSet = (perms) => (
-  new types.PermissionSet({
-    insert: perms.insert,
-    update: perms.update,
-    delete: perms.delete,
-    manage_permissions: perms.manage_permissions
   })
 );
 
