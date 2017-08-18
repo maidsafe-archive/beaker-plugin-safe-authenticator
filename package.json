@@ -108,14 +108,14 @@
   },
   "download_deps": {
     "system_uri": {
-      "mirror": "https://github.com/gnunicorn/system_uri/releases/download/v",
-      "version": "1.0.0-pre",
+      "mirror": "https://s3.eu-west-2.amazonaws.com/system-uri",
+      "version": "031c3de",
       "targetDir": "dist",
       "filePattern": "^.*\\.(dll|so|dylib)$"
     },
     "safe_authenticator": {
-      "mirror": "https://github.com/krishnaIndia/safe_core/releases/download/v",
-      "version": "0.1.0-pre46",
+      "mirror": "https://s3.eu-west-2.amazonaws.com/safe-client-libs",
+      "version": "f576719",
       "targetDir": "dist",
       "filename": "safe_authenticator",
       "filePattern": "^.*\\.(dll|so|dylib)$",
@@ -124,7 +124,7 @@
     "ENV": {
       "dev": {
         "safe_authenticator": {
-          "filename": "safe_authenticator-dev"
+          "filename": "safe_authenticator-mock"
         }
       },
       "test": {
@@ -132,14 +132,14 @@
           "targetDir": "src/ffi"
         },
         "safe_authenticator": {
-          "filename": "safe_authenticator-dev",
+          "filename": "safe_authenticator-mock",
           "targetDir": "src/ffi"
         }
       },
       "win32": {
         "libwinpthread-1": {
-          "mirror": "https://github.com/gnunicorn/safe_core/releases/download/v",
-          "version": "0.1.0-pre3",
+          "mirror": "https://s3.eu-west-2.amazonaws.com/libwinpthread",
+          "version": "v0.1.0",
           "targetDir": "dist",
           "filePattern": "^libwinpthread-1.dll$"
         },
