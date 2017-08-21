@@ -8,15 +8,15 @@ import CONST from '../src/constants';
 
 describe('Client', () => {
   let randomCredentials = null;
-  const encodedAuthUri = 'safe-auth:AAAAABq3ESUAAAAAHgAAAAAAAABuZXQubWFpZHN' +
-    'hZmUuZXhhbXBsZXMudGVzdC1hcHAAEgAAAAAAAABOb2RlSlMgZXhhbXBsZSBBcHARAAAAA' +
-    'AAAAE1haWRTYWZlLm5ldCBMdGQuAAEAAAAAAAAABwAAAAAAAABfcHVibGljBAAAAAAAAAAA' +
-    'AAAAAQAAAAMAAAAEAAAA';
+  const encodedAuthUri = 'safe-auth:AAAAAAgMpeUAAAAAHgAAAAAAAABuZXQubWFpZHNhZmUuZXhh' +
+  'bXBsZXMudGVzdC1hcHAAEAAAAAAAAABTQUZFIGV4YW1wbGUgQXBwEQAAAAAAAABNYWlkU2FmZS5uZXQgTHR' +
+  'kLgEDAAAAAAAAAAoAAAAAAAAAX2Rvd25sb2FkcwUAAAAAAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAHAAAAAA' +
+  'AAAF9wdWJsaWMFAAAAAAAAAAAAAAABAAAAAgAAAAMAAAAEAAAACgAAAAAAAABfZG9jdW1lbnRzBQAAAAAAA' +
+  'AAAAAAAAQAAAAIAAAADAAAABAAAAA==';
   const encodedUnRegisterAuthUri = 'safe-auth:AAAAAKfmUZgCAAAA';
-  const encodedContUri = 'safe-auth:AAAAACeJbVQBAAAAHgAAAAAAAABuZXQubWFpZHN' +
-    'hZmUuZXhhbXBsZXMudGVzdC1hcHAAEgAAAAAAAABOb2RlSlMgZXhhbXBsZSBBcHARAAAAA' +
-    'AAAAE1haWRTYWZlLm5ldCBMdGQuAQAAAAAAAAAHAAAAAAAAAF9wdWJsaWMEAAAAAAAAAAA' +
-    'AAAABAAAAAwAAAAQAAAA=';
+  const encodedContUri = 'safe-auth:AAAAAGGCe2cBAAAAHgAAAAAAAABuZXQubWFpZHNhZmUuZXhhbX' +
+  'BsZXMudGVzdC1hcHAAEAAAAAAAAABTQUZFIGV4YW1wbGUgQXBwEQAAAAAAAABNYWlkU2FmZS5uZXQgTHRkLg' +
+  'EAAAAAAAAADAAAAAAAAABfcHVibGljTmFtZXMFAAAAAAAAAAAAAAABAAAAAgAAAAMAAAAEAAAA';
 
   const decodedReqForRandomClient = (uri) => helper.createRandomAccount()
     .then(() => client.decodeRequest(uri));
@@ -240,7 +240,6 @@ describe('Client', () => {
             'name',
             'vendor']);
           should(res.authReq.app.id).not.be.undefined().and.not.be.empty().and.be.String();
-          // should(res.authReq.app.scope).not.be.undefined().and.be.String();
           should(res.authReq.app.name).not.be.undefined().and.not.be.empty().and.be.String();
           should(res.authReq.app.vendor).not.be.undefined().and.not.be.empty().and.be.String();
           should(res.authReq.app_container).not.be.undefined().and.be.Boolean();
@@ -252,14 +251,10 @@ describe('Client', () => {
             const container0 = res.authReq.containers[0];
             should(container0).be.Object().and.not.empty().and.have.properties([
               'cont_name',
-              'access',
-              'access_len',
-              'access_cap'
+              'access'
             ]);
             should(container0.cont_name).not.be.undefined().and.not.be.empty().and.be.String();
-            should(container0.access).not.be.undefined().and.not.be.empty().and.be.Array();
-            should(container0.access_len).not.be.undefined().and.be.Number();
-            should(container0.access_cap).not.be.undefined().and.be.Number();
+            should(container0.access).not.be.undefined().and.not.be.empty().and.be.Object();
           }
           client.removeListener(CONST.LISTENER_TYPES.AUTH_REQ, authListener);
           return resolve();
@@ -318,14 +313,10 @@ describe('Client', () => {
             const container0 = res.contReq.containers[0];
             should(container0).be.Object().and.not.empty().and.have.properties([
               'cont_name',
-              'access',
-              'access_len',
-              'access_cap'
+              'access'
             ]);
             should(container0.cont_name).not.be.undefined().and.not.be.empty().and.be.String();
-            should(container0.access).not.be.undefined().and.not.be.empty().and.be.Array();
-            should(container0.access_len).not.be.undefined().and.be.Number();
-            should(container0.access_cap).not.be.undefined().and.be.Number();
+            should(container0.access).not.be.undefined().and.not.be.empty().and.be.Object();
           }
           client.removeListener(CONST.LISTENER_TYPES.CONTAINER_REQ, contListener);
           return resolve();
