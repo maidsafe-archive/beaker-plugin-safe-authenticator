@@ -18,21 +18,19 @@ export const parseAppExchangeInfo = (appExchangeInfo) => ({
   vendor: appExchangeInfo.vendor
 });
 
-export const parsePermissionArray = (permissionArray, len) => {
-  const res = [];
-  let i = 0;
-  const permissions = parseArray(types.Permission, permissionArray, len);
-  for (i = 0; i < permissions.length; i++) {
-    res.push(permissions[i].key);
+const parsePermissionSet = (perms) => (
+  {
+    read: perms.read,
+    insert: perms.insert,
+    update: perms.update,
+    delete: perms.delete,
+    manage_permissions: perms.manage_permissions
   }
-  return res;
-};
+);
 
 export const parseContainerPermissions = (containerPermissions) => ({
   cont_name: containerPermissions.cont_name,
-  access: parsePermissionArray(containerPermissions.access, containerPermissions.access_len),
-  access_len: containerPermissions.access_len,
-  access_cap: containerPermissions.access_cap
+  access: parsePermissionSet(containerPermissions.access)
 });
 
 export const parseContainerPermissionsArray = (containerPermissionsArray, len) => {
@@ -91,16 +89,6 @@ const parseXorName = (str) => {
   const name = types.XorName(b);
   return new Buffer(name).toString('hex');
 };
-
-
-const parsePermissionSet = (perms) => (
-  {
-    insert: perms.insert,
-    update: perms.update,
-    delete: perms.delete,
-    manage_permissions: perms.manage_permissions
-  }
-);
 
 const parseShareMData = (shareMData) => (
   {
