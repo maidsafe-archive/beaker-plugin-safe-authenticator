@@ -50,7 +50,7 @@ export const parseErrCode = (errStr) => {
         return err.description;
       }
     }
-  } catch(err) {
+  } catch (err) {
     return 'Something went wrong. Please try again';
   }
 };
