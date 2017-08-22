@@ -1,7 +1,6 @@
 import ref from 'ref';
 import ArrayType from 'ref-array';
 import StructType from 'ref-struct';
-import Enum from 'enum';
 
 export const u8 = ref.types.uint8;
 export const u32 = ref.types.uint32;
@@ -25,19 +24,17 @@ export const AppExchangeInfo = StructType({
   vendor: CString
 });
 
-export const Permission = new Enum({
-  Read: 0,
-  Insert: 1,
-  Update: 2,
-  Delete: 3,
-  ManagePermissions: 4
+export const PermissionSet = StructType({
+  read: bool,
+  insert: bool,
+  update: bool,
+  delete: bool,
+  manage_permissions: bool
 });
 
 export const ContainerPermissions = StructType({
   cont_name: CString,
-  access: ref.refType(Permission),
-  access_len: usize,
-  access_cap: usize
+  access: PermissionSet
 });
 
 export const RegisteredApp = StructType({
@@ -74,13 +71,6 @@ export const FfiResult = StructType({
 export const AccountInfo = StructType({
   mutations_done: u64,
   mutations_available: u64
-});
-
-export const PermissionSet = StructType({
-  insert: bool,
-  update: bool,
-  delete: bool,
-  manage_permissions: bool
 });
 
 export const ShareMData = StructType({
