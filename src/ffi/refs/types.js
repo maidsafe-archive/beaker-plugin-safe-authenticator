@@ -12,9 +12,11 @@ export const Void = ref.types.void;
 export const Null = ref.NULL;
 export const CString = ref.types.CString;
 export const XorName = ArrayType(u8, 32);
+export const U8Array = ArrayType(u8, 32);
 
 // Pointer Types
 export const voidPointer = ref.refType(Void);
+export const u8Pointer = ref.refType(u8);
 export const ClientHandlePointer = ref.refType(voidPointer);
 
 export const AppExchangeInfo = StructType({
@@ -90,11 +92,21 @@ export const UserMetadata = StructType({
   description: CString
 });
 
+export const AppAccess = StructType({
+  sign_key: U8Array,
+  permissions: PermissionSet,
+  app_name: CString,
+  app_id: u8Pointer,
+  app_id_len: usize
+});
+
 export const AccountInfoPointer = ref.refType(AccountInfo);
 
 export const ContainersReqPointer = ref.refType(ContainersReq);
 
 export const ShareMDataReqPointer = ref.refType(ShareMDataReq);
+
+export const AppAccessPointer = ref.refType(AppAccess);
 
 export const allocAppHandlePointer = () => (ref.alloc(ClientHandlePointer));
 

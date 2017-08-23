@@ -94,6 +94,7 @@ class Authenticator extends SafeLib {
       encode_unregistered_resp: [types.Void, [types.u32, types.bool, types.voidPointer, 'pointer']],
       auth_registered_apps: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
       auth_revoke_app: [types.Void, [types.voidPointer, types.CString, types.voidPointer, 'pointer']],
+      auth_apps_accessing_mutable_data: [types.Void, [types.voidPointer, 'pointer', types.u64, 'pointer', 'pointer']],
       auth_free: [types.Void, [types.voidPointer]],
       auth_init_logging: [types.Void, [types.CString, types.voidPointer, 'pointer']],
       auth_reconnect: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
@@ -341,10 +342,24 @@ class Authenticator extends SafeLib {
           const mDataReq = typeParser.parseShareMDataReq(req.deref());
           const metaData = typeParser.parseUserMetaDataArray(meta, mDataReq.mdata_len);
           this[_decodeReqPool][reqId] = mDataReq;
-          this[_mDataReqListener].broadcast(null, {
+          const result = {
             reqId,
             mDataReq,
             metaData
+          };
+          const appAccess = [];
+          const tempArr = [];
+          for (let i = 0; i < mDataReq.mdata_len; i++) {
+            tempArr[i] = i;
+          }
+          return Promise.all(tempArr.map((i) => {
+            const mdata = mDataReq.mdata[i];
+            return this._appsAccessingMData(mdata.name, mdata.type_tag)
+              .then((res) => (appAccess[i] = res));
+          }))
+          .then(() => {
+            result.appAccess = appAccess;
+            this[_mDataReqListener].broadcast(null, result);
           });
         }));
 
@@ -492,7 +507,6 @@ class Authenticator extends SafeLib {
             if (isAllowed) {
               this._updateAppList();
             }
-            console.warn('MData response', res);
             resolve(res);
           }));
 
@@ -603,6 +617,37 @@ class Authenticator extends SafeLib {
       try {
         this.safeLib.auth_account_info(
           this.registeredClientHandle,
+          types.Null,
+          this._getCb(cb)
+        );
+      } catch (e) {
+        reject(e.message);
+      }
+    });
+  }
+
+  _appsAccessingMData(name, typeTag) {
+    const nameBuf = types.XorName(Buffer.from(name, 'hex')).buffer;
+    return new Promise((resolve, reject) => {
+      if (!this.registeredClientHandle) {
+        return reject(new Error(i18n.__('messages.unauthorised')));
+      }
+      const cb = this._pushCb(ffi.Callback(types.Void,
+        [types.voidPointer, types.FfiResult, types.AppAccessPointer, types.usize],
+        (userData, result, appAccess, len) => {
+          const code = result.error_code;
+          if (code !== 0) {
+            return reject(JSON.stringify(result));
+          }
+          const appAccessInfo = typeParser.parseAppAccess(appAccess, len);
+          resolve(appAccessInfo);
+        }));
+
+      try {
+        this.safeLib.auth_apps_accessing_mutable_data(
+          this.registeredClientHandle,
+          nameBuf,
+          typeTag,
           types.Null,
           this._getCb(cb)
         );

@@ -55,16 +55,22 @@ export default class AppDetails extends Component {
   }
 
   getContainers(app) {
-    return app.containers.map((cont, ci) => (
-      <div key={`cont-${ci}`} className="app-detail-permission">
-        <div className="app-detail-permission-b">
-          <h3>{cont.cont_name}</h3>
-          <ul>
-            {cont.access.map((access, ai) => (<li key={`access-${ai}`}>{access}</li>))}
-          </ul>
+    return app.containers.map((cont, ci) => {
+      let contName = cont.cont_name;
+      if (contName === `apps/${app.app_info.id}`) {
+        contName = 'Apps own container';
+      }
+      return (
+        <div key={`cont-${ci}`} className="app-detail-permission">
+          <div className="app-detail-permission-b">
+            <h3 title={contName}>{contName}</h3>
+            <ul>
+              {Object.keys(cont.access).map((access, ai) => (<li key={`access-${ai}`}>{access}</li>))}
+            </ul>
+          </div>
         </div>
-      </div>
-    ));
+      );
+    });
   }
 
   render() {

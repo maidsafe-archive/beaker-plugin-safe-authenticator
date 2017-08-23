@@ -131,3 +131,25 @@ export const parseUserMetaDataArray = (metaArr, len) => {
   }
   return res;
 };
+
+const parseAppAccessInfo = (appAccess) => {
+  let signKey = types.U8Array(new Buffer(appAccess.sign_key));
+  signKey = new Buffer(signKey).toString('hex');
+  return {
+    sign_key: signKey,
+    permissions: parsePermissionSet(appAccess.permissions),
+    app_name: appAccess.app_name,
+    // app_id: appAccess.app_id,
+    // app_id_len: appAccess.app_id_len
+  };
+};
+
+export const parseAppAccess = (appAccess, len) => {
+  const res = [];
+  let i = 0;
+  const info = parseArray(types.AppAccess, appAccess, len);
+  for (i = 0; i < info.length; i++) {
+    res.push(parseAppAccessInfo(info[i]));
+  }
+  return res;
+};
