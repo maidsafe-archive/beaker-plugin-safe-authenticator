@@ -748,9 +748,13 @@ class Authenticator extends SafeLib {
     let app = null;
     const prepareOwnContainer = (appInfo) => ({
       cont_name: `apps/${appInfo.id}`,
-      access: ['Read', 'Insert', 'Delete', 'Update', 'ManagePermissions'],
-      access_len: 5,
-      access_cap: 5
+      access: {
+        read: true,
+        insert: true,
+        delete: true,
+        update: true,
+        manage_permissions: true
+      }
     });
 
     return new Promise((resolve, reject) => {
