@@ -55,9 +55,10 @@ export const parseErrCode = (errStr) => {
   }
 };
 
-export const parseAppName = (name) => (
-  name.split('_').map((i) => `${i[0].toUpperCase()}${i.slice(1)}`).join(' ')
-);
+export const parseAppName = (name) => {
+  const parsedName = name.replace(/-|_/g, ' ');
+  return parsedName.split(' ').map((i) => `${i[0].toUpperCase()}${i.slice(1)}`).join(' ');
+};
 
 export const getAppIconClassName = (i) => {
   const index = (parseInt(i, 10) + 1) % 6;
