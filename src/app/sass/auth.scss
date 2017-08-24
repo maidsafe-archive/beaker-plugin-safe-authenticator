@@ -121,7 +121,8 @@
           size: 11px;
           weight: normal;
         };
-        position: absolute;
+        display: block;
+        margin-bottom: -20px;
         bottom: 0;
         left: 0;
         color: $primary-blue;
