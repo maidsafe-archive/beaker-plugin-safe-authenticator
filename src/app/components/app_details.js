@@ -67,9 +67,9 @@ export default class AppDetails extends Component {
             <ul>
               {Object.keys(cont.access).map((access, ai) => {
                 if (!cont.access[access]) {
-                  return;
+                  return null;
                 }
-                return (<li key={`access-${ai}`}>{access}</li>);
+                return (<li key={`access-${ai}`}>{access.replace(/-|_/g, ' ')}</li>);
               })}
             </ul>
           </div>
