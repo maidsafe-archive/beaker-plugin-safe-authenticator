@@ -11,13 +11,16 @@ export default class AccountInfo extends Component {
 
   render() {
     const { done, available, isLoading, refresh } = this.props;
-    const total = (typeof available === 'string') ? '' : `/${(done + available)}`;
+    const total = done + available;
+    const totalStr = (typeof available === 'string') ? '' : `/${total}`;
+    const safePercentage = total / 2;
+    const warnPercentage = Math.floor(total / 1.1);
     const statusClassName = classNames(
       'acc-info-status',
       {
-        safer: (done > 0 && done < 250),
-        okay: (done > 250 && done < 400),
-        danger: (done > 400),
+        safer: (done > 0 && done < safePercentage),
+        okay: (done > safePercentage && done < warnPercentage),
+        danger: (done > warnPercentage),
       }
     );
     return (
@@ -25,7 +28,7 @@ export default class AccountInfo extends Component {
         <div className="acc-info-b">
           <div className={statusClassName}>
             <span className="label">Account Status:</span>
-            <span className="val">{done || 0}{total}</span>
+            <span className="val">{done || 0}{totalStr}</span>
             <button
               type="button"
               className="refresh"
