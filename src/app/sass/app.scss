@@ -94,7 +94,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
       }
-      ul {
+      ul { 
         list-style: none;
         padding: 10px;
         li {
@@ -104,6 +104,7 @@
           };
           white-space: nowrap;
           text-overflow: ellipsis;
+          text-transform: capitalize;
           overflow: hidden;
         }
       }

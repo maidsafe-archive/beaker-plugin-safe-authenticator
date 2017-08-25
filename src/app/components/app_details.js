@@ -65,7 +65,12 @@ export default class AppDetails extends Component {
           <div className="app-detail-permission-b">
             <h3 title={contName}>{contName}</h3>
             <ul>
-              {Object.keys(cont.access).map((access, ai) => (<li key={`access-${ai}`}>{access}</li>))}
+              {Object.keys(cont.access).map((access, ai) => {
+                if (!cont.access[access]) {
+                  return null;
+                }
+                return (<li key={`access-${ai}`}>{access.replace(/-|_/g, ' ')}</li>);
+              })}
             </ul>
           </div>
         </div>
