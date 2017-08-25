@@ -84,6 +84,13 @@ export default class AppList extends Component {
     }
   }
 
+  componentDidUpdate() {
+    // focus search
+    if (this.state.searchActive && !this.searchInput.value) {
+      this.searchInput.focus();
+    }
+  }
+
   getNoAppsContainer() {
     return (
       <div className="no-apps">
