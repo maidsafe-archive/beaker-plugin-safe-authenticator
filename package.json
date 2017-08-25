@@ -82,7 +82,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "deps_downloader": "git+https://github.com/maidsafe/deps_downloader.git",
+    "deps_downloader": "https://s3.eu-west-2.amazonaws.com/deps-downloader/deps_downloader-0.1.0.tgz",
     "enum": "^2.3.0",
     "i18n": "^0.8.3",
     "lodash": "^4.17.4",

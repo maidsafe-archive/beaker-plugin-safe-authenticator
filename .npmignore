@@ -4,7 +4,11 @@ locales
 src
 system_uri
 test
-
+docs
+*.dll
+*.so
+*.dylib
+.editorconfig
 .bablerc
 .eslintignore
 .eslintrc
