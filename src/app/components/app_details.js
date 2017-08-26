@@ -58,7 +58,7 @@ export default class AppDetails extends Component {
     return app.containers.map((cont, ci) => {
       let contName = cont.cont_name;
       if (contName === `apps/${app.app_info.id}`) {
-        contName = 'Apps own container';
+        contName = 'App\'s own container';
       }
       return (
         <div key={`cont-${ci}`} className="app-detail-permission">
