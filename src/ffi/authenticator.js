@@ -17,7 +17,6 @@ import * as types from './refs/types';
 import * as typeParser from './refs/parsers';
 import * as typeConstructor from './refs/constructors';
 import CONSTANTS from '../constants';
-import { isArrayEqual } from '../common';
 
 // private variables
 const _registeredClientHandle = Symbol('registeredClientHandle');
@@ -295,13 +294,15 @@ class Authenticator extends SafeLib {
             reqId,
             authReq
           };
-          if (this[_reAuthoriseState] !== CONSTANTS.RE_AUTHORISE.STATE.UNLOCK) {
-            this[_authReqListener].broadcast(null, result);
-            return resolve();
-          }
           return this._isAlreadyAuthorised(authReq)
             .then((isAuthorised) => {
               if (isAuthorised) {
+                // re authorise the app
+                if (this[_reAuthoriseState] !== CONSTANTS.RE_AUTHORISE.STATE.UNLOCK) {
+                  result.isAuthorized = true;
+                  this[_authReqListener].broadcast(null, result);
+                  return resolve();
+                }
                 return this.encodeAuthResp(result, true)
                   .then(resolve);
               }
@@ -744,43 +745,11 @@ class Authenticator extends SafeLib {
 
   _isAlreadyAuthorised(request) {
     const req = lodash.cloneDeep(request);
-    let containerLen = req.containers.length;
-    let app = null;
-    const prepareOwnContainer = (appInfo) => ({
-      cont_name: `apps/${appInfo.id}`,
-      access: {
-        read: true,
-        insert: true,
-        delete: true,
-        update: true,
-        manage_permissions: true
-      }
-    });
-
     return new Promise((resolve, reject) => {
       try {
-        this.getRegisteredApps().then((authorisedApps) => {
-          app = authorisedApps.filter((apps) => lodash.isEqual(apps.app_info, req.app));
-          // Return false if no apps found match with requested app
-          if (app.length === 0) {
-            return resolve(false);
-          }
-          app = app[0];
-          if (req.app_container) {
-            containerLen += 1;
-            // add app own container to the req container if newly requested
-            req.containers.push(prepareOwnContainer(req.app));
-          }
-          // Return false if container length of requested app is different from the filtered one
-          if (containerLen !== app.containers.length) {
-            return resolve(false);
-          }
-          // Return false if container and its permissions doesn't match with filtered one
-          if (!isArrayEqual(req.containers, app.containers)) {
-            return resolve(false);
-          }
-          return resolve(true);
-        });
+        this.getRegisteredApps().then((authorisedApps) => (
+          authorisedApps.filter((apps) => lodash.isEqual(apps.app_info, req.app)).length !== 0
+        )).then(resolve);
       } catch (err) {
         return reject(err);
       }
