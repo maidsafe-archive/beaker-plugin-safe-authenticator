@@ -42,10 +42,12 @@ class Response {
 }
 
 class ReqQueue {
-  constructor() {
+  constructor(resChannelName, errChannelName) {
     this.q = [];
     this.preocessing = false;
     this.req = null;
+    this.resChannelName = resChannelName;
+    this.errChannelName = errChannelName;
   }
 
   add(req) {
@@ -78,17 +80,18 @@ class ReqQueue {
         return;
       }
       if (decodeEvent) {
-        decodeEvent.sender.send('onAuthDecisionRes', new Response(reqQ.req, res));
+        decodeEvent.sender.send(self.resChannelName, new Response(self.req, res));
       }
       openExternal(res);
       self.next();
     }).catch((err) => {
-      decodeEvent.sender.send('onAuthResError', new Response(reqQ.req, err.message));
+      decodeEvent.sender.send(self.errChannelName, new Response(self.req, err.message));
     });
   }
 }
 
-const reqQ = new ReqQueue();
+const reqQ = new ReqQueue('onAuthDecisionRes', 'onAuthResError');
+const unregisteredReqQ = new ReqQueue('onUnAuthDecisionRes', 'onUnAuthResError');
 
 const registerNetworkListener = (e) => {
   authenticator.setListener(CONSTANTS.LISTENER_TYPES.NW_STATE_CHANGE, (err, state) => {
@@ -100,10 +103,14 @@ const registerNetworkListener = (e) => {
   });
 };
 
-const decodeRequest = (e, data) => {
+const decodeRequest = (e, data, isUnregisteredClient) => {
   const req = new Request(data);
   decodeEvent = e;
-  reqQ.add(req);
+  if (isUnregisteredClient) {
+    unregisteredReqQ.add(req);
+  } else {
+    reqQ.add(req);
+  }
 };
 
 const onAuthReq = (e) => {
