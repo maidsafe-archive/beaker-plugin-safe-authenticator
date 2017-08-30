@@ -8,7 +8,7 @@ import config from '../config';
 
 config.i18n();
 
-let decodeEvent = null;
+let ipcEvent = null;
 
 const parseResUrl = (url) => {
   const split = url.split(':');
@@ -29,15 +29,12 @@ const openExternal = (uri) => {
 
 class Request {
   constructor(req) {
+    this.id = req.id;
+    this.uri = req.uri;
+    this.isUnRegistered = req.isUnRegistered;
     this.type = CONSTANTS.CLIENT_TYPES[req.type];
-    this.uri = req.data;
-  }
-}
-
-class Response {
-  constructor(req, res) {
-    this.type = req.type;
-    this.res = res;
+    this.error = null;
+    this.res = null;
   }
 }
 
@@ -79,13 +76,16 @@ class ReqQueue {
       if (!res) {
         return;
       }
-      if (decodeEvent) {
-        decodeEvent.sender.send(self.resChannelName, new Response(self.req, res));
+      this.req.res = res;
+      if (ipcEvent) {
+        ipcEvent.sender.send(self.resChannelName, self.req);
       }
       openExternal(res);
       self.next();
     }).catch((err) => {
-      decodeEvent.sender.send(self.errChannelName, new Response(self.req, err.message));
+      // FIXME: if error occurs for unregistered client process next
+      self.req.error = err.message;
+      ipcEvent.sender.send(self.errChannelName, self.req);
     });
   }
 }
@@ -103,13 +103,21 @@ const registerNetworkListener = (e) => {
   });
 };
 
-const decodeRequest = (e, data, isUnregisteredClient) => {
-  const req = new Request(data);
-  decodeEvent = e;
-  if (isUnregisteredClient) {
-    unregisteredReqQ.add(req);
+const decodeRequest = (e, req, type) => {
+  const isWebReq = (type === CONSTANTS.CLIENT_TYPES.WEB);
+  const isUnRegistered = req.isUnRegistered;
+  const request = new Request({
+    id: req.id,
+    uri: isWebReq ? req.uri : req,
+    type,
+    isUnRegistered
+  });
+
+  ipcEvent = e;
+  if (isUnRegistered) {
+    unregisteredReqQ.add(request);
   } else {
-    reqQ.add(req);
+    reqQ.add(request);
   }
 };
 
@@ -141,12 +149,14 @@ const onAuthDecision = (e, authData, isAllowed) => {
   }
   authenticator.encodeAuthResp(authData, isAllowed)
     .then((res) => {
-      e.sender.send('onAuthDecisionRes', new Response(reqQ.req, res));
+      reqQ.req.res = res;
+      e.sender.send('onAuthDecisionRes', reqQ.req);
       openExternal(res);
       reqQ.next();
     })
     .catch((err) => {
-      e.sender.send('onAuthDecisionRes', new Response(reqQ.req, err));
+      reqQ.req.error = err;
+      e.sender.send('onAuthDecisionRes', reqQ.req);
       console.error('Auth decision error :: ', err.message);
       reqQ.next();
     });
@@ -163,12 +173,14 @@ const onContainerDecision = (e, contData, isAllowed) => {
 
   authenticator.encodeContainersResp(contData, isAllowed)
     .then((res) => {
-      e.sender.send('onContDecisionRes', new Response(reqQ.req, res));
+      reqQ.req.res = res;
+      e.sender.send('onContDecisionRes', reqQ.req);
       openExternal(res);
       reqQ.next();
     })
     .catch((err) => {
-      e.sender.send('onContDecisionRes', new Response(reqQ.req, err));
+      reqQ.req.error = err;
+      e.sender.send('onContDecisionRes', reqQ.req);
       console.error('Container decision error :: ', err.message);
       reqQ.next();
     });
@@ -185,20 +197,22 @@ const onSharedMDataDecision = (e, data, isAllowed) => {
 
   authenticator.encodeMDataResp(data, isAllowed)
     .then((res) => {
-      e.sender.send('onSharedMDataRes', new Response(reqQ.req, res));
+      reqQ.req.res = res;
+      e.sender.send('onSharedMDataRes', reqQ.req);
       openExternal(res);
       reqQ.next();
     })
     .catch((err) => {
-      e.sender.send('onSharedMDataRes', new Response(reqQ.req, err));
+      reqQ.req.error = err;
+      e.sender.send('onSharedMDataRes', reqQ.req);
       reqQ.next();
     });
 };
 
 const onReqError = (e) => {
   authenticator.setListener(CONSTANTS.LISTENER_TYPES.REQUEST_ERR, (err) => {
-    e.sender.send('onAuthResError', new Response(reqQ.req, err));
-    openExternal(err.msg);
+    reqQ.req.error = err;
+    e.sender.send('onAuthResError', reqQ.req);
     reqQ.next();
   });
 };
