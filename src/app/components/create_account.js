@@ -107,15 +107,8 @@ export default class CreateAccount extends Component {
         this.inviteCode.value = this.props.inviteCode;
       }
       this.inviteCode.focus();
-    } else if (this.props.navPos == CONSTANTS.CREATE_ACC_NAV.WELCOME) {
+    } else if (this.props.navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
       window.addEventListener('keyup', this.handleEnterEvent);
-    }
-  }
-
-  handleEnterEvent(e) {
-    if(e.key === 'Enter') {
-      this.props.setCreateAccNavPos(this.props.navPos + 1);
-      window.removeEventListener('keyup', this.handleEnterEvent);
     }
   }
 
@@ -441,6 +434,13 @@ export default class CreateAccount extends Component {
         style={{ width: `${Math.min((val / 16) * 100, 100)}%` }}
       >{''}</span>
     );
+  }
+
+  handleEnterEvent(e) {
+    if (e.key === 'Enter') {
+      this.props.setCreateAccNavPos(this.props.navPos + 1);
+      window.removeEventListener('keyup', this.handleEnterEvent);
+    }
   }
 
   handleInvitation(e) {
