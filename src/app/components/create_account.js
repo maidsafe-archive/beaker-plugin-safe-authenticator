@@ -70,6 +70,12 @@ export default class CreateAccount extends Component {
     this.handleEnterEvent = this.handleEnterEvent.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
+      window.addEventListener('keyup', this.handleEnterEvent);
+    }
+  }
+
   componentWillMount() {
     if (this.props.isAuthorised) {
       return this.context.router.push('/');
@@ -107,8 +113,6 @@ export default class CreateAccount extends Component {
         this.inviteCode.value = this.props.inviteCode;
       }
       this.inviteCode.focus();
-    } else if (this.props.navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
-      window.addEventListener('keyup', this.handleEnterEvent);
     }
   }
 
@@ -199,24 +203,24 @@ export default class CreateAccount extends Component {
                     }}
                   >Claim an Invitation</button>
                 </div>
-                <div className="auth-f no-border">
-                  <div className="auth-f-b">
-                    <button
-                      type="button"
-                      className="lft flat btn"
-                      onClick={() => {
-                        setCreateAccNavPos(navPos - 1);
-                      }}
-                    >Back
-                    </button>
-                    { this.getNav() }
-                    <button
-                      type="submit"
-                      className="rgt flat btn primary"
-                    >Continue</button>
-                  </div>
-                </div>
               </form>
+            </div>
+            <div className="auth-f no-border">
+              <div className="auth-f-b">
+                <button
+                  type="button"
+                  className="lft flat btn"
+                  onClick={() => {
+                    setCreateAccNavPos(navPos - 1);
+                  }}
+                >Back
+                </button>
+                { this.getNav() }
+                <button
+                  type="submit"
+                  className="rgt flat btn primary"
+                >Continue</button>
+              </div>
             </div>
           </div>
         </div>
@@ -284,25 +288,25 @@ export default class CreateAccount extends Component {
                     onClick={this.togglePassword}
                   >{' '}</button>
                 </div>
-                <div className="auth-f no-border">
-                  <div className="auth-f-b">
-                    <button
-                      type="button"
-                      className="lft flat btn"
-                      onClick={() => {
-                        setCreateAccNavPos(navPos - 1);
-                      }}
-                    >Back
-                    </button>
-                    { this.getNav() }
-                    <button
-                      type="submit"
-                      form="secretForm"
-                      className="rgt flat btn primary"
-                    >Continue</button>
-                  </div>
-                </div>
               </form>
+            </div>
+            <div className="auth-f no-border">
+              <div className="auth-f-b">
+                <button
+                  type="button"
+                  className="lft flat btn"
+                  onClick={() => {
+                    setCreateAccNavPos(navPos - 1);
+                  }}
+                >Back
+                </button>
+                { this.getNav() }
+                <button
+                  type="submit"
+                  form="secretForm"
+                  className="rgt flat btn primary"
+                >Continue</button>
+              </div>
             </div>
           </div>
         </div>
@@ -370,25 +374,25 @@ export default class CreateAccount extends Component {
                     onClick={this.togglePassword}
                   >{' '}</button>
                 </div>
-                <div className="auth-f no-border">
-                  <div className="auth-f-b">
-                    <button
-                      type="button"
-                      className="lft flat btn"
-                      onClick={() => {
-                        setCreateAccNavPos(navPos - 1);
-                      }}
-                    >Back
-                    </button>
-                    { this.getNav() }
-                    <button
-                      type="submit"
-                      form="passwordForm"
-                      className="rgt flat btn primary"
-                    >Continue</button>
-                  </div>
-                </div>
               </form>
+            </div>
+            <div className="auth-f no-border">
+              <div className="auth-f-b">
+                <button
+                  type="button"
+                  className="lft flat btn"
+                  onClick={() => {
+                    setCreateAccNavPos(navPos - 1);
+                  }}
+                >Back
+                </button>
+                { this.getNav() }
+                <button
+                  type="submit"
+                  form="passwordForm"
+                  className="rgt flat btn primary"
+                >Continue</button>
+              </div>
             </div>
           </div>
         </div>
