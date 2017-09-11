@@ -70,17 +70,17 @@ export default class CreateAccount extends Component {
     this.handleEnterEvent = this.handleEnterEvent.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
-      window.addEventListener('keyup', this.handleEnterEvent);
-    }
-  }
-
   componentWillMount() {
     if (this.props.isAuthorised) {
       return this.context.router.push('/');
     }
     this.reset();
+  }
+
+  componentDidMount() {
+    if (this.props.navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
+      window.addEventListener('keyup', this.handleEnterEvent);
+    }
   }
 
   componentWillUpdate(nextProps) {
