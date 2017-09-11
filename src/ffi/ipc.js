@@ -221,6 +221,14 @@ const skipAuthReq = () => {
   reqQ.next();
 };
 
+const requestMainResource = (e) => {
+  e.sender.send('getWinstonLogger');
+};
+
+const winstonLogger = (e, data) => {
+  data.info('calling winston singleton in authenticator plugin');
+};
+
 const init = () => {
   if (!ipcMain) {
     return;
@@ -235,6 +243,8 @@ const init = () => {
   ipcMain.on('registerSharedMDataDecision', onSharedMDataDecision);
   ipcMain.on('registerOnReqError', onReqError);
   ipcMain.on('skipAuthRequest', skipAuthReq);
+  ipcMain.on('sendRenderer', requestMainResource);
+  ipcMain.on('winstonLogger', winstonLogger);
 };
 
 export default init;

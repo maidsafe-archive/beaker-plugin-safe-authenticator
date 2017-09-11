@@ -43,7 +43,7 @@ export default class Login extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.secretEle.focus();
-    }, 100);
+    }, 200);
   }
 
   componentWillUpdate(nextProps) {
