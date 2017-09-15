@@ -113,6 +113,8 @@ export default class CreateAccount extends Component {
         this.inviteCode.value = this.props.inviteCode;
       }
       this.inviteCode.focus();
+    } else if (this.props.navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
+      window.addEventListener('keyup', this.handleEnterEvent);
     }
   }
 
@@ -219,6 +221,9 @@ export default class CreateAccount extends Component {
                 <button
                   type="submit"
                   className="rgt flat btn primary"
+                  onClick={(e) => {
+                    this.handleInvitation(e);
+                  }}
                 >Continue</button>
               </div>
             </div>
@@ -305,6 +310,9 @@ export default class CreateAccount extends Component {
                   type="submit"
                   form="secretForm"
                   className="rgt flat btn primary"
+                  onClick={(e) => {
+                    this.handleSecret(e);
+                  }}
                 >Continue</button>
               </div>
             </div>
@@ -391,6 +399,9 @@ export default class CreateAccount extends Component {
                   type="submit"
                   form="passwordForm"
                   className="rgt flat btn primary"
+                  onClick={(e) => {
+                    this.handlePassword(e);
+                  }}
                 >Continue</button>
               </div>
             </div>
