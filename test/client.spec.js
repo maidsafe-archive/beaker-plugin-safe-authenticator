@@ -6,7 +6,7 @@ import client from '../src/ffi/authenticator';
 import * as helper from './helper';
 import CONST from '../src/constants';
 
-describe('Client', function clientTest () {
+describe('Client', function clientTest() {
   this.timeout(20000);
   let randomCredentials = null;
   const encodedAuthUri = 'safe-auth:AAAAAAgMpeUAAAAAHgAAAAAAAABuZXQubWFpZHNhZmUuZXhh' +
