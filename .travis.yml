@@ -13,7 +13,7 @@ compiler:
 language: node_js
 
 node_js:
-  - "6.9.0"
+  - "7.9.0"
 
 addons:
   apt:
