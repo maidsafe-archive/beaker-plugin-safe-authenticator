@@ -89,7 +89,9 @@ export const ShareMDataReq = StructType({
 
 export const UserMetadata = StructType({
   name: CString,
-  description: CString
+  description: CString,
+  xor_name: XorName,
+  type_tag: u64
 });
 
 export const AppAccess = StructType({
