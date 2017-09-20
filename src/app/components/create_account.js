@@ -46,7 +46,7 @@ export default class CreateAccount extends Component {
       accPassErr: null,
       confirmAccPassErr: null,
     };
-    this.lastNavPos = 0;
+    this.lastNavPos = 1;
     this.secretEle = null;
     this.confirmSecretEle = null;
     this.passwordEle = null;
@@ -86,7 +86,7 @@ export default class CreateAccount extends Component {
     if (this.lastNavPos === this.props.navPos) {
       return;
     }
-    this.lastNavPos = this.props.navPos;
+    this.lastNavPos = this.props.navPos || 1;
     if (this.props.navPos === CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM) {
       if (this.props.userPassword) {
         this.passwordEle.value = this.props.userPassword;
@@ -120,6 +120,7 @@ export default class CreateAccount extends Component {
       case CONSTANTS.CREATE_ACC_NAV.PASSWORD_FORM:
         return this.getAccountPasswordContainer();
       default:
+        console.error('Error occured while loading create_account component screen. Current nav position: ', this.props.navPos);
         return (
           <div>Oops!!</div>
         );
