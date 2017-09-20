@@ -67,7 +67,6 @@ export default class CreateAccount extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.getNav = this.getNav.bind(this);
     this.reset = this.reset.bind(this);
-    this.handleEnterEvent = this.handleEnterEvent.bind(this);
   }
 
   componentWillMount() {
@@ -75,12 +74,6 @@ export default class CreateAccount extends Component {
       return this.context.router.push('/');
     }
     this.reset();
-  }
-
-  componentDidMount() {
-    if (this.props.navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
-      window.addEventListener('keyup', this.handleEnterEvent);
-    }
   }
 
   componentWillUpdate(nextProps) {
@@ -113,8 +106,6 @@ export default class CreateAccount extends Component {
         this.inviteCode.value = this.props.inviteCode;
       }
       this.inviteCode.focus();
-    } else if (this.props.navPos === CONSTANTS.CREATE_ACC_NAV.WELCOME) {
-      window.addEventListener('keyup', this.handleEnterEvent);
     }
   }
 
@@ -180,7 +171,7 @@ export default class CreateAccount extends Component {
               Enter an invitation token or claim an invitation below.
             </p>
             <div className="auth-form">
-              <form id="invitationForm" onSubmit={(e) => { e.preventDefault(); this.handleInvitation(e); }}>
+              <form id="invitationForm" onSubmit={(e) => { e.preventDefault(); }}>
                 <div className="inp-grp">
                   <input
                     type="text"
@@ -219,7 +210,7 @@ export default class CreateAccount extends Component {
                 </button>
                 { this.getNav() }
                 <button
-                  type="submit"
+                  type="button"
                   className="rgt flat btn primary"
                   onClick={(e) => {
                     this.handleInvitation(e);
@@ -247,7 +238,7 @@ export default class CreateAccount extends Component {
               shared with anyone.
             </p>
             <div className="auth-form bottom-pad">
-              <form id="secretForm" onSubmit={(e) => { e.preventDefault(); this.handleSecret(e); }}>
+              <form id="secretForm">
                 <div className="inp-grp">
                   <input
                     type="password"
@@ -307,7 +298,7 @@ export default class CreateAccount extends Component {
                 </button>
                 { this.getNav() }
                 <button
-                  type="submit"
+                  type="button"
                   form="secretForm"
                   className="rgt flat btn primary"
                   onClick={(e) => {
@@ -336,7 +327,7 @@ export default class CreateAccount extends Component {
               transmitted, it will not leave your computer.
             </p>
             <div className="auth-form bottom-pad">
-              <form id="passwordForm" onSubmit={(e) => { e.preventDefault(); this.handlePassword(e); }}>
+              <form id="passwordForm">
                 <div className="inp-grp">
                   <input
                     type="password"
@@ -396,7 +387,7 @@ export default class CreateAccount extends Component {
                 </button>
                 { this.getNav() }
                 <button
-                  type="submit"
+                  type="button"
                   form="passwordForm"
                   className="rgt flat btn primary"
                   onClick={(e) => {
@@ -449,13 +440,6 @@ export default class CreateAccount extends Component {
         style={{ width: `${Math.min((val / 16) * 100, 100)}%` }}
       >{''}</span>
     );
-  }
-
-  handleEnterEvent(e) {
-    if (e.key === 'Enter') {
-      this.props.setCreateAccNavPos(this.props.navPos + 1);
-      window.removeEventListener('keyup', this.handleEnterEvent);
-    }
   }
 
   handleInvitation(e) {
