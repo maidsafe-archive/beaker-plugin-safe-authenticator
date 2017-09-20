@@ -184,6 +184,7 @@ body {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.26);
     border-radius: 3px;
     overflow: hidden;
+    z-index: 9999;
   }
   &:hover {
     .nw-status-tooltip {
