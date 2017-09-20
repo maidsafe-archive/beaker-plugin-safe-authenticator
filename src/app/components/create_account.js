@@ -234,7 +234,7 @@ export default class CreateAccount extends Component {
         <div className="auth">
           <div className="auth-b">
             <p className="auth-cont-1">
-              Your &lsquo;Account Secret&lsquo; is private and should not be<br />
+              Your &lsquo;Account Secret&rsquo; is private and should not be<br />
               shared with anyone.
             </p>
             <div className="auth-form bottom-pad">
@@ -323,7 +323,7 @@ export default class CreateAccount extends Component {
         <div className="auth">
           <div className="auth-b">
             <p className="auth-cont-1">
-              Your &lsquo;Account Password&lsquo; is never stored or <br />
+              Your &lsquo;Account Password&rsquo; is never stored or <br />
               transmitted, it will not leave your computer.
             </p>
             <div className="auth-form bottom-pad">
