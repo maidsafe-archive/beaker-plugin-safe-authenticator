@@ -588,26 +588,26 @@ describe('Client', () => {
 
     after(() => helper.clearAccount());
 
-    it('same app can be registered again', () => (
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          const authL = client.setListener(CONST.LISTENER_TYPES.AUTH_REQ, (err, req) => (
-            client.encodeAuthResp(req, true)
-              .then(() => client.getRegisteredApps()
-                .then((apps) => {
-                  should(apps.length).be.equal(1);
-                  client.removeListener(CONST.LISTENER_TYPES.AUTH_REQ, authL);
-                  return resolve();
-                }))
-          ));
-          const errL = client.setListener(CONST.LISTENER_TYPES.REQUEST_ERR, (err) => {
-            client.removeListener(CONST.LISTENER_TYPES.REQUEST_ERR, errL);
-            reject(err);
-          });
-          client.decodeRequest(encodedAuthUri);
-        }, 1000);
-      }))
-    );
+    // it('same app can be registered again', () => (
+    //   new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //       const authL = client.setListener(CONST.LISTENER_TYPES.AUTH_REQ, (err, req) => (
+    //         client.encodeAuthResp(req, true)
+    //           .then(() => client.getRegisteredApps()
+    //             .then((apps) => {
+    //               should(apps.length).be.equal(1);
+    //               client.removeListener(CONST.LISTENER_TYPES.AUTH_REQ, authL);
+    //               return resolve();
+    //             }))
+    //       ));
+    //       const errL = client.setListener(CONST.LISTENER_TYPES.REQUEST_ERR, (err) => {
+    //         client.removeListener(CONST.LISTENER_TYPES.REQUEST_ERR, errL);
+    //         reject(err);
+    //       });
+    //       client.decodeRequest(encodedAuthUri);
+    //     }, 1000);
+    //   }))
+    // );
   });
 
   describe('re-authorising', () => {
