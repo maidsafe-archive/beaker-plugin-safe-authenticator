@@ -3,7 +3,7 @@
 ## 0.3.0
 
 - MutableData Authroisation support
-- UserMetada struct updated
+- UserMetadata struct updated
 - UI/UX improvements
 - uses safe_authenticator v0.4.0
 - uses system_uri v0.2.0
