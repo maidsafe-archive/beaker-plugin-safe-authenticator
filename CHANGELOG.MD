@@ -1,5 +1,13 @@
 # Beaker Plugin SAFE Authenticator Change Log
 
+## 0.3.0
+
+- MutableData Authroisation support
+- UserMetadata struct updated
+- UI/UX improvements
+- uses safe_authenticator v0.4.0
+- uses system_uri v0.2.0
+
 ## 0.1.0-dev.1
 
 - Account info
