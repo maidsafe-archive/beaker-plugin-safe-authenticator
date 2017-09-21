@@ -509,11 +509,11 @@ describe('Client', () => {
       .then((apps) => should(apps).be.Array().and.be.empty())
     );
 
-    it('return apps list after registering apps', () => prepareReq()
-      .then(() => client.getRegisteredApps())
-      .should.be.fulfilled()
-      .then((apps) => should(apps).be.Array().and.not.be.empty())
-    );
+    // it('return apps list after registering apps', () => prepareReq()
+    //   .then(() => client.getRegisteredApps())
+    //   .should.be.fulfilled()
+    //   .then((apps) => should(apps).be.Array().and.not.be.empty())
+    // );
   });
 
   describe('revoke app', () => {
