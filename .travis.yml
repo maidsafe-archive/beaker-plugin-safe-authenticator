@@ -39,4 +39,4 @@ install:
 
 script:
   # - npm run lint
-  - npm test
+  - yarn test

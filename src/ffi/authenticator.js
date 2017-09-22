@@ -32,7 +32,7 @@ const _cbRegistry = Symbol('cbRegistry');
 const _nwStateCb = Symbol('nwStateCb');
 const _decodeReqPool = Symbol('decodeReqPool');
 
-class Authenticator extends SafeLib {
+export class Authenticator extends SafeLib {
   constructor() {
     super();
     ipc();
@@ -102,6 +102,8 @@ class Authenticator extends SafeLib {
   }
 
   setListener(type, cb) {
+
+    // console.log("Setting a listenerrrrr", type, cb);
     // FIXME check .key required
     switch (type.key) {
       case CONSTANTS.LISTENER_TYPES.APP_LIST_UPDATE.key: {
@@ -183,6 +185,8 @@ class Authenticator extends SafeLib {
   }
 
   createAccount(locator, secret, invitation) {
+
+    console.log("CREATING AN ACCOUNT");
     return new Promise((resolve, reject) => {
       const validationErr = this._isUserCredentialsValid(locator, secret);
       if (validationErr) {
@@ -192,17 +196,21 @@ class Authenticator extends SafeLib {
       if (!(invitation && (typeof invitation === 'string') && invitation.trim())) {
         return Promise.reject(new Error(i18n.__('messages.invalid_invite_code')));
       }
+      console.log("randomg before");
 
       try {
         const createAccCb = this._pushCb(ffi.Callback(types.Void,
           [types.voidPointer, types.FfiResult, types.ClientHandlePointer],
           (userData, result, clientHandle) => {
+            console.log("this is a callbackkkkk", result);
             const code = result.error_code;
             if (code !== 0 && clientHandle.length === 0) {
               return reject(JSON.stringify(result));
             }
             this.registeredClientHandle = clientHandle;
             this._pushNetworkState(CONSTANTS.NETWORK_STATUS.CONNECTED);
+
+            console.log("before resolutionnn");
             resolve();
           }));
 
@@ -211,7 +219,7 @@ class Authenticator extends SafeLib {
             return reject(err);
           }
         };
-
+        console.log("randomg tryyyy");
         this.safeLib.create_acc.async(
           types.allocCString(locator),
           types.allocCString(secret),
@@ -222,6 +230,8 @@ class Authenticator extends SafeLib {
           this._getCb(createAccCb),
           onResult);
       } catch (e) {
+        console.log("randomg errorrororrr", e);
+
         reject(e);
       }
     });

@@ -10,8 +10,12 @@ export default class Listener {
 
   add(cb) {
     if (typeof cb !== 'function') {
+
+      // console.log("not a func");
       return;
     }
+
+    // console.log("adding cbbb", cb);
     const rand = crypto.randomBytes(32).toString('hex');
     this[_cbFunctions][rand] = cb;
     return rand;
@@ -36,13 +40,16 @@ export default class Listener {
   }
 
   broadcast(err, data) {
+    // console.log("attempting to broadcast", err, data, this[_cbFunctions]);
     Object.keys(this[_cbFunctions]).forEach((id) => {
       try {
+        // console.log("trying");
         this[_cbFunctions][id].call(this[_cbFunctions][id], err, data);
       } catch (e) {
         // remove the callback if object destroyed
-        console.warn('Listener warn :', e.message);
+        console.warn('Listener problemmmmmsssssss warn :', e.message);
         this.remove(id);
+        throw e;
       }
     });
   }
