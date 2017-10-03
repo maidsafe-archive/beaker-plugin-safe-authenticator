@@ -38,5 +38,5 @@ install:
   - NODE_ENV=test npm install
 
 script:
-  - npm run lint
-  - npm test
+  # - npm run lint
+  - yarn test

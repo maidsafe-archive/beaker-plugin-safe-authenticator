@@ -104,6 +104,9 @@ const registerNetworkListener = (e) => {
 };
 
 const decodeRequest = (e, req, type) => {
+
+  console.log("decoooodinngggg");
+  console.log("decoooodinngggg",  e, req, type);
   const isWebReq = (type === CONSTANTS.CLIENT_TYPES.WEB);
   const isUnRegistered = req.isUnRegistered;
   const request = new Request({
