@@ -18,7 +18,14 @@ const appInfo = {
   icon: 'iconPath'
 };
 
+// OSX: Add bundle for electron in dev mode
+if( isDevMode && process.platform === 'darwin' )
+{
+	appInfo.bundle = 'com.github.electron'
+}
+
 const registerSafeAuthProtocol = () => {
+
   sysUri.registerUriScheme(appInfo, safeAuthScheme);
 
   protocol.registerBufferProtocol(safeAuthScheme, (req, cb) => {
