@@ -11,12 +11,17 @@ const safeAuthScheme = 'safe-auth';
 const isDevMode = process.execPath.match(/[\\/]electron/);
 
 const appInfo = {
-  id: 'net.maidsafe.safebrowser',
+  id: 'net.maidsafe.app.browser.authenticator',
   exec: isDevMode ? `${process.execPath} ${app.getAppPath()}` : app.getPath('exe'),
-  vendor: 'maidsafe',
-  name: 'safe-browser',
+  vendor: 'MaidSafe.net Ltd',
+  name: 'SAFE Browser Authenticator plugin',
   icon: 'iconPath'
 };
+
+// OSX: Add bundle for electron in dev mode
+if (isDevMode && process.platform === 'darwin') {
+  appInfo.bundle = 'com.github.electron';
+}
 
 const registerSafeAuthProtocol = () => {
   sysUri.registerUriScheme(appInfo, safeAuthScheme);
