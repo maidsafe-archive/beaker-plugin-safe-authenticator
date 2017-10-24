@@ -34,7 +34,7 @@ export default class App extends Component {
       <div className="h-opt">
         <button
           type="button"
-          className="logout"
+          className="logout  js-spectron__auth__logout"
           onClick={() => {
             logout();
           }}

@@ -143,7 +143,7 @@ export default class CreateAccount extends Component {
                 { this.getNav() }
                 <button
                   type="button"
-                  className="rgt flat btn primary"
+                  className="rgt flat btn primary   js-spectron__create-continue"
                   onClick={() => {
                     setCreateAccNavPos(navPos + 1);
                   }}
@@ -170,12 +170,13 @@ export default class CreateAccount extends Component {
             <p className="auth-cont-1">
               Enter an invitation token or claim an invitation below.
             </p>
-            <div className="auth-form">
+            <div className="auth-form  js-spectron__auth__form">
               <form id="invitationForm" onSubmit={(e) => { e.preventDefault(); }}>
                 <div className="inp-grp">
                   <input
                     type="text"
                     id="invitation-code"
+                    className="js-spectron__invitation-code"
                     name="invitation-code"
                     key="invitation-code"
                     ref={(c) => {
@@ -211,7 +212,7 @@ export default class CreateAccount extends Component {
                 { this.getNav() }
                 <button
                   type="button"
-                  className="rgt flat btn primary"
+                  className="rgt flat btn primary  js-spectron__create-continue"
                   onClick={(e) => {
                     this.handleInvitation(e);
                   }}
@@ -237,12 +238,13 @@ export default class CreateAccount extends Component {
               Your &lsquo;Account Secret&rsquo; is private and should not be<br />
               shared with anyone.
             </p>
-            <div className="auth-form bottom-pad">
+            <div className="auth-form bottom-pad  js-spectron__auth__form">
               <form id="secretForm">
                 <div className="inp-grp">
                   <input
                     type="password"
                     id="acc-secret"
+					className="js-spectron__account-secret"
                     name="acc-secret"
                     key="acc-secret"
                     ref={(c) => {
@@ -268,6 +270,7 @@ export default class CreateAccount extends Component {
                   <input
                     type="password"
                     id="cacc-secret"
+					className="js-spectron__confirm-account-secret"
                     name="cacc-secret"
                     key="cacc-secret"
                     ref={(c) => {
@@ -300,7 +303,7 @@ export default class CreateAccount extends Component {
                 <button
                   type="button"
                   form="secretForm"
-                  className="rgt flat btn primary"
+                  className="rgt flat btn primary  js-spectron__create-continue"
                   onClick={(e) => {
                     this.handleSecret(e);
                   }}
@@ -326,12 +329,13 @@ export default class CreateAccount extends Component {
               Your &lsquo;Account Password&rsquo; is never stored or <br />
               transmitted, it will not leave your computer.
             </p>
-            <div className="auth-form bottom-pad">
+            <div className="auth-form bottom-pad  js-spectron__auth__form">
               <form id="passwordForm">
                 <div className="inp-grp">
                   <input
                     type="password"
                     id="acc-password"
+					className="js-spectron__account-password"
                     name="acc-password"
                     key="acc-password"
                     ref={(c) => {
@@ -357,6 +361,7 @@ export default class CreateAccount extends Component {
                   <input
                     type="password"
                     id="cacc-password"
+					className="js-spectron__confirm-account-password"
                     name="cacc-password"
                     key="cacc-password"
                     ref={(c) => {
@@ -389,7 +394,7 @@ export default class CreateAccount extends Component {
                 <button
                   type="button"
                   form="passwordForm"
-                  className="rgt flat btn primary"
+                  className="rgt flat btn primary  js-spectron__create-continue"
                   onClick={(e) => {
                     this.handlePassword(e);
                   }}
