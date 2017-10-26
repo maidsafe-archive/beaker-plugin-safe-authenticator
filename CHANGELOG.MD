@@ -1,5 +1,8 @@
 # Beaker Plugin SAFE Authenticator Change Log
 
+## 0.3.1
+- uses safe_authenticator e9080ac
+
 ## 0.3.0
 
 - MutableData Authroisation support
