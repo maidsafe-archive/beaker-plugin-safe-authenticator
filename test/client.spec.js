@@ -109,7 +109,7 @@ describe('Client', () => {
 
   describe('login', () => {
     before(() => helper.createRandomAccount()
-      .then((credential) => (randomCredentials = credential))
+      .then((credential) => { randomCredentials = credential; })
     );
 
     after(() => helper.clearAccount());
