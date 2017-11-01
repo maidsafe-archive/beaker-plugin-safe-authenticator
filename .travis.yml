@@ -1,42 +1,23 @@
 sudo: true
 dist: trusty
-
 os:
-  - linux
-  - osx
-osx_image: xcode8.2
-
-compiler:
-  - gcc
-  - clang
-
+- linux
 language: node_js
-
 node_js:
-  - "7.9.0"
-
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-      - desktop-file-utils
-      - xdg-utils
-
-cache:
-  directories:
-    - node_modules
-
-before_install:
-  - "[[ ${TRAVIS_OS_NAME} = linux ]] && export CXX=g++-4.8 || echo 'skipped'"
-
+- '7'
 install:
-  - node --version
-  - npm --version
-  # also downloads the build for release version
-  - NODE_ENV=test npm install
-
-script:
-  - npm run lint
-  - npm test
+- node --version
+- npm --version
+- npm i
+- npm run build
+before_deploy:
+- rm -rf node_modules
+deploy:
+  provider: s3
+  region: us-west-2
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  skip_cleanup: true
+  bucket: test-beaker-plugin-safe-authenticator
+  on:
+    branch: s3deploy
