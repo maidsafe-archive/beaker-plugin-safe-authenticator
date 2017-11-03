@@ -10,14 +10,22 @@ install:
 - npm --version
 - npm i
 - npm run build
+script:
+- npm run lint
 before_deploy:
 - rm -rf node_modules
+- rm -f dist/*.so
+- npm pack
+- mkdir packaged
+- mv ./*.tgz packaged
+- ls packaged
 deploy:
   provider: s3
-  region: us-west-2
+  region: eu-west-2
   access_key_id: $AWS_ACCESS_KEY_ID
   secret_access_key: $AWS_SECRET_ACCESS_KEY
   skip_cleanup: true
-  bucket: test-beaker-plugin-safe-authenticator
+  local-dir: packaged
+  bucket: beaker-plugin-safe-authenticator
   on:
-    branch: s3deploy
+    tags: true
