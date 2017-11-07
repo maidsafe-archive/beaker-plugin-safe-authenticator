@@ -1,11 +1,12 @@
 {
   "name": "beaker-plugin-safe-authenticator",
-  "version": "0.3.1",
+  "version": "0.3.2-ci-test",
   "description": "SAFE Browser add-on for authenticating user to access SAFE Network",
   "main": "index.js",
   "scripts": {
     "grep-error-codes": "./node_modules/.bin/babel-node grep_error_codes.js",
-    "lint": "eslint src test *.js",
+    "lint": "eslint src test",
+    "fix-lint": "eslint --fix src test",
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.spec.js",
     "init-submodule": "git submodule update --init --recursive",
     "build-app": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.development.js --progress --profile --colors",
@@ -63,7 +64,7 @@
     "css-loader": "^0.26.0",
     "electron": "^1.7.6",
     "eslint": "^3.10.2",
-    "eslint-config-airbnb": "^13.0.0",
+    "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.7.1",
