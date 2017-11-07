@@ -49,7 +49,7 @@ class Authenticator extends SafeLib {
     this[_cbRegistry] = {};
     this[_decodeReqPool] = {};
     this[_netDisconnectCb] = ffi.Callback(types.Void,
-      [types.voidPointer, types.int32, types.int32], (userData) => {
+      [types.voidPointer, types.int32, types.int32], () => {
         this._pushNetworkState(CONSTANTS.NETWORK_STATUS.DISCONNECTED);
       });
   }
@@ -412,7 +412,8 @@ class Authenticator extends SafeLib {
 
       try {
         const authDecisionCb = this._pushCb(ffi.Callback(types.Void,
-          [types.voidPointer, types.FfiResultPointer, types.CString], (userData, resultPtr, res) => {
+          [types.voidPointer, types.FfiResultPointer, types.CString],
+          (userData, resultPtr, res) => {
             const result = resultPtr.deref();
             const code = result.error_code;
             if (code !== 0 && !res) {
@@ -457,7 +458,8 @@ class Authenticator extends SafeLib {
 
       try {
         const contDecisionCb = this._pushCb(ffi.Callback(types.Void,
-          [types.voidPointer, types.FfiResultPointer, types.CString], (userData, resultPtr, res) => {
+          [types.voidPointer, types.FfiResultPointer, types.CString],
+          (userData, resultPtr, res) => {
             const result = resultPtr.deref();
             const code = result.error_code;
             if (code !== 0 && !res) {
@@ -504,7 +506,8 @@ class Authenticator extends SafeLib {
 
       try {
         const mDataDecisionCb = this._pushCb(ffi.Callback(types.Void,
-          [types.voidPointer, types.FfiResultPointer, types.CString], (userData, resultPtr, res) => {
+          [types.voidPointer, types.FfiResultPointer, types.CString],
+          (userData, resultPtr, res) => {
             const result = resultPtr.deref();
             const code = result.error_code;
             if (code !== 0 && !res) {
