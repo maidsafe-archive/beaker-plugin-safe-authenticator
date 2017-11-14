@@ -357,7 +357,7 @@ class Authenticator extends SafeLib {
           return Promise.all(tempArr.map((i) => {
             const mdata = mDataReq.mdata[i];
             return this._appsAccessingMData(mdata.name, mdata.type_tag)
-              .then((res) => (appAccess[i] = res));
+              .then((res) => { appAccess[i] = res; });
           }))
           .then(() => {
             result.appAccess = appAccess;
