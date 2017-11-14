@@ -1,5 +1,10 @@
 # Beaker Plugin SAFE Authenticator Change Log
 
+## 0.3.2
+- Adapt to the changes in safe_client_libs API post-v0.4.0
+- Uses safe_authenticator lib 8aa35d4
+- Automate deploy on S3 server upon git tag push
+
 ## 0.3.1
 - uses safe_authenticator e9080ac
 
