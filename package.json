@@ -1,6 +1,6 @@
 {
   "name": "beaker-plugin-safe-authenticator",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "SAFE Browser add-on for authenticating user to access SAFE Network",
   "main": "index.js",
   "scripts": {
@@ -116,7 +116,7 @@
     },
     "safe_authenticator": {
       "mirror": "https://s3.eu-west-2.amazonaws.com/safe-client-libs",
-      "version": "18fca04",
+      "version": "8aa35d4",
       "targetDir": "dist",
       "filename": "safe_authenticator",
       "filePattern": "^.*\\.(dll|so|dylib)$",
