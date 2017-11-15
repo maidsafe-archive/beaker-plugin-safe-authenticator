@@ -96,6 +96,7 @@ class Authenticator extends SafeLib {
       auth_apps_accessing_mutable_data: [types.Void, [types.voidPointer, 'pointer', types.u64, 'pointer', 'pointer']],
       auth_free: [types.Void, [types.voidPointer]],
       auth_init_logging: [types.Void, [types.CString, types.voidPointer, 'pointer']],
+      auth_set_additional_search_path: [types.Void, [types.CString, types.voidPointer, 'pointer']],
       auth_reconnect: [types.Void, [types.voidPointer, types.voidPointer, 'pointer']],
       auth_account_info: [types.Void, [types.voidPointer, 'pointer', 'pointer']]
     };
@@ -165,8 +166,7 @@ class Authenticator extends SafeLib {
           [types.voidPointer, types.FfiResultPointer],
           (userData, resultPtr) => {
             const result = resultPtr.deref();
-            const code = result.error_code;
-            if (code !== 0) {
+            if (result.error_code !== 0) {
               return reject(JSON.stringify(result));
             }
             resolve();
@@ -199,8 +199,7 @@ class Authenticator extends SafeLib {
           [types.voidPointer, types.FfiResultPointer, types.ClientHandlePointer],
           (userData, resultPtr, clientHandle) => {
             const result = resultPtr.deref();
-            const code = result.error_code;
-            if (code !== 0 && clientHandle.length === 0) {
+            if (result.error_code !== 0 && clientHandle.length === 0) {
               return reject(JSON.stringify(result));
             }
             this.registeredClientHandle = clientHandle;
@@ -240,8 +239,7 @@ class Authenticator extends SafeLib {
           [types.voidPointer, types.FfiResultPointer, types.ClientHandlePointer],
           (userData, resultPtr, clientHandle) => {
             const result = resultPtr.deref();
-            const code = result.error_code;
-            if (code !== 0 && clientHandle.length === 0) {
+            if (result.error_code !== 0 && clientHandle.length === 0) {
               return reject(JSON.stringify(result));
             }
             this.registeredClientHandle = clientHandle;
@@ -415,8 +413,7 @@ class Authenticator extends SafeLib {
           [types.voidPointer, types.FfiResultPointer, types.CString],
           (userData, resultPtr, res) => {
             const result = resultPtr.deref();
-            const code = result.error_code;
-            if (code !== 0 && !res) {
+            if (result.error_code !== 0 && !res) {
               return reject(JSON.stringify(result));
             }
             if (isAllowed) {
@@ -461,8 +458,7 @@ class Authenticator extends SafeLib {
           [types.voidPointer, types.FfiResultPointer, types.CString],
           (userData, resultPtr, res) => {
             const result = resultPtr.deref();
-            const code = result.error_code;
-            if (code !== 0 && !res) {
+            if (result.error_code !== 0 && !res) {
               return reject(JSON.stringify(result));
             }
             if (isAllowed) {
@@ -509,8 +505,7 @@ class Authenticator extends SafeLib {
           [types.voidPointer, types.FfiResultPointer, types.CString],
           (userData, resultPtr, res) => {
             const result = resultPtr.deref();
-            const code = result.error_code;
-            if (code !== 0 && !res) {
+            if (result.error_code !== 0 && !res) {
               return reject(JSON.stringify(result));
             }
             if (isAllowed) {
@@ -556,8 +551,7 @@ class Authenticator extends SafeLib {
           [types.voidPointer, types.FfiResultPointer, types.CString],
           (userData, resultPtr, res) => {
             const result = resultPtr.deref();
-            const code = result.error_code;
-            if (code !== 0) {
+            if (result.error_code !== 0) {
               return reject(JSON.stringify(result));
             }
             this._updateAppList();
@@ -615,8 +609,7 @@ class Authenticator extends SafeLib {
         [types.voidPointer, types.FfiResultPointer, types.AccountInfoPointer],
         (userData, resultPtr, accInfo) => {
           const result = resultPtr.deref();
-          const code = result.error_code;
-          if (code !== 0) {
+          if (result.error_code !== 0) {
             return reject(JSON.stringify(result));
           }
           const info = accInfo.deref();
@@ -648,8 +641,7 @@ class Authenticator extends SafeLib {
         [types.voidPointer, types.FfiResultPointer, types.AppAccessPointer, types.usize],
         (userData, resultPtr, appAccess, len) => {
           const result = resultPtr.deref();
-          const code = result.error_code;
-          if (code !== 0) {
+          if (result.error_code !== 0) {
             return reject(JSON.stringify(result));
           }
           const appAccessInfo = typeParser.parseAppAccess(appAccess, len);
@@ -727,8 +719,7 @@ class Authenticator extends SafeLib {
           [types.voidPointer, types.FfiResultPointer, types.CString],
           (userData, resultPtr, res) => {
             const result = resultPtr.deref();
-            const code = result.error_code;
-            if (code !== 0 && !res) {
+            if (result.error_code !== 0 && !res) {
               return reject(JSON.stringify(result));
             }
             resolve(res);
