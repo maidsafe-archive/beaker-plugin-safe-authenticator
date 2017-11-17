@@ -742,9 +742,10 @@ class Authenticator extends SafeLib {
             if (result.error_code !== 0 && !res) {
               return reject(JSON.stringify(result));
             }
-
-            const appUri = genAppUri(reqId);
-            resolve(`${appUri}:${res}`);
+            // FIXME: we depend on some changes in safe_client_libs to
+            // be able to obtain the app id from the request.
+            // const appUri = genAppUri(req.unregReq.user_str);
+            resolve(res);
           }));
         this.safeLib.encode_unregistered_resp(
           reqId,
