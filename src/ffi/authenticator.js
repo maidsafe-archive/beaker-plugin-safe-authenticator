@@ -32,6 +32,22 @@ const _cbRegistry = Symbol('cbRegistry');
 const _netDisconnectCb = Symbol('netDisconnectCb');
 const _decodeReqPool = Symbol('decodeReqPool');
 
+/**
+* @private
+* Generates the app's URI converting the string into a base64 format, removing
+* characters or symbols which are not valid for a URL like '=' sign,
+* and making it lower case.
+*/
+const genAppUri = (str) => {
+  const urlSafeBase64 = (new Buffer(str))
+                          .toString('base64')
+                          .replace(/\+/g, '-') // Convert '+' to '-'
+                          .replace(/\//g, '_') // Convert '/' to '_'
+                          .replace(/=+$/, '') // Remove ending '='
+                          .toLowerCase();
+  return `safe-${urlSafeBase64}`;
+};
+
 class Authenticator extends SafeLib {
   constructor() {
     super();
@@ -352,6 +368,7 @@ class Authenticator extends SafeLib {
           for (let i = 0; i < mDataReq.mdata_len; i++) {
             tempArr[i] = i;
           }
+
           return Promise.all(tempArr.map((i) => {
             const mdata = mDataReq.mdata[i];
             return this._appsAccessingMData(mdata.name, mdata.type_tag)
@@ -419,7 +436,8 @@ class Authenticator extends SafeLib {
             if (isAllowed) {
               this._updateAppList();
             }
-            resolve(res);
+            const appUri = genAppUri(req.authReq.app.id);
+            resolve(`${appUri}:${res}`);
           }));
         this.safeLib.encode_auth_resp(
           this.registeredClientHandle,
@@ -464,7 +482,8 @@ class Authenticator extends SafeLib {
             if (isAllowed) {
               this._updateAppList();
             }
-            resolve(res);
+            const appUri = genAppUri(req.contReq.app.id);
+            resolve(`${appUri}:${res}`);
           }));
 
         this.safeLib.encode_containers_resp(
@@ -511,7 +530,8 @@ class Authenticator extends SafeLib {
             if (isAllowed) {
               this._updateAppList();
             }
-            resolve(res);
+            const appUri = genAppUri(req.mDataReq.app.id);
+            resolve(`${appUri}:${res}`);
           }));
 
         this.safeLib.encode_share_mdata_resp(
@@ -722,7 +742,13 @@ class Authenticator extends SafeLib {
             if (result.error_code !== 0 && !res) {
               return reject(JSON.stringify(result));
             }
-            resolve(res);
+
+            // FIXME: we need the app ID in order to be able to send the
+            // auth response to a desktop app. We are missing this information
+            // at the moment since the auth request doesn't contain
+            // such information.
+            const appUri = genAppUri(''/*appId*/);
+            resolve(`${appUri}:${res}`);
           }));
         this.safeLib.encode_unregistered_resp(
           reqId,
