@@ -62,15 +62,33 @@ class LibLoader {
           mod.safeLib = safeLib;
         });
 
+        const setConfigSearchPath = () => {
+          if (process.env.SAFE_CONFIG_PATH && process.env.SAFE_CONFIG_PATH.length > 0) {
+            const configPath = types.allocCString(process.env.SAFE_CONFIG_PATH);
+            safeLib.auth_set_additional_search_path(configPath, types.Null, ffi.Callback(types.Void,
+              [types.voidPointer, types.FfiResultPointer],
+              (userData, resultPtr) => {
+                const result = resultPtr.deref();
+                if (result.error_code !== 0) {
+                  return reject(JSON.stringify(result));
+                }
+                resolve();
+              }));
+          } else {
+            resolve();
+          }
+        };
+
         // init logging
         safeLib.auth_init_logging(types.allocCString('authenticator.log'), types.Null, ffi.Callback(types.Void,
-          [types.voidPointer, types.FfiResult],
-          (userData, result) => {
-            const code = result.error_code;
-            if (code !== 0) {
+          [types.voidPointer, types.FfiResultPointer],
+          (userData, resultPtr) => {
+            const result = resultPtr.deref();
+            if (result.error_code !== 0) {
               return reject(JSON.stringify(result));
             }
-            resolve();
+
+            setConfigSearchPath();
           }));
       } catch (err) {
         this[_mods].forEach((mod) => {
