@@ -743,11 +743,7 @@ class Authenticator extends SafeLib {
               return reject(JSON.stringify(result));
             }
 
-            // FIXME: we need the app ID in order to be able to send the
-            // auth response to a desktop app. We are missing this information
-            // at the moment since the auth request doesn't contain
-            // such information.
-            const appUri = genAppUri(''/*appId*/);
+            const appUri = genAppUri(reqId);
             resolve(`${appUri}:${res}`);
           }));
         this.safeLib.encode_unregistered_resp(
