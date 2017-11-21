@@ -1,5 +1,11 @@
 # Beaker Plugin SAFE Authenticator Change Log
 
+## 0.4.0
+- Upgrade system_uri to v0.3.0
+- Automated S3 deployment with Travis
+- Adapt to changes in safe_client_libs API
+- Support for setting additional config search path
+
 ## 0.3.2
 - Adapt to the changes in safe_client_libs API post-v0.4.0
 - Uses safe_authenticator lib 8aa35d4
