@@ -15,7 +15,7 @@ class SystemUriLoader {
   constructor() {
     this[_libPath] = CONSTANTS.LIB_PATH.SYSTEM_URI[os.platform()];
     this[_ffiFunctions] = {
-      open: [type.Void, ['string', 'pointer', 'pointer']],
+      open_uri: [type.Void, ['string', 'pointer', 'pointer']],
       install: [type.Void, ['string',
         'string',
         'string',
@@ -72,7 +72,7 @@ class SystemUriLoader {
     return new Promise((resolve, reject) => {
       try {
         const cb = this._handleError(resolve, reject);
-        this.lib.open(str, type.Null, cb);
+        this.lib.open_uri(str, type.Null, cb);
       } catch (err) {
         return reject(err);
       }
