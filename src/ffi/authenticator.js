@@ -185,6 +185,7 @@ class Authenticator extends SafeLib {
             if (result.error_code !== 0) {
               return reject(JSON.stringify(result));
             }
+            this._pushNetworkState(CONSTANTS.NETWORK_STATUS.CONNECTED);
             resolve();
           }));
 
