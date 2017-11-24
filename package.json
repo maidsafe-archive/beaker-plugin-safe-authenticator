@@ -116,7 +116,7 @@
     },
     "safe_authenticator": {
       "mirror": "https://s3.eu-west-2.amazonaws.com/safe-client-libs",
-      "version": "d5d9253",
+      "version": "57f3afb",
       "targetDir": "dist",
       "filename": "safe_authenticator",
       "filePattern": "^.*\\.(dll|so|dylib)$",

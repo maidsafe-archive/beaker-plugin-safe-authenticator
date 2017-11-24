@@ -4,6 +4,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-unresolved, import/extensions */
 import ffi from 'ffi';
+import ref from 'ref';
 /* eslint-enable import/no-unresolved, import/extensions */
 import crypto from 'crypto';
 import lodash from 'lodash';
@@ -733,7 +734,7 @@ class Authenticator extends SafeLib {
     }
   }
 
-  _encodeUnRegisteredResp(reqId) {
+  _encodeUnRegisteredResp(reqId, appId) {
     return new Promise((resolve, reject) => {
       try {
         const encodeCb = this._pushCb(ffi.Callback(types.Void,
@@ -743,10 +744,8 @@ class Authenticator extends SafeLib {
             if (result.error_code !== 0 && !res) {
               return reject(JSON.stringify(result));
             }
-            // FIXME: we depend on some changes in safe_client_libs to
-            // be able to obtain the app id from the request.
-            // const appUri = genAppUri(req.unregReq.user_str);
-            resolve(res);
+            const appUri = genAppUri(appId);
+            resolve(`${appUri}:${res}`);
           }));
         this.safeLib.encode_unregistered_resp(
           reqId,
@@ -762,11 +761,14 @@ class Authenticator extends SafeLib {
 
   _getUnregisteredClientCb(resolve, reject) {
     return this._pushCb(ffi.Callback(types.Void,
-      [types.voidPointer, types.u32], (userData, reqId) => {
-        if (!reqId) {
+      [types.voidPointer, types.u32, types.u8Pointer, types.usize],
+      (userData, reqId, appIdPtr, appIdLen) => {
+        if (!reqId || appIdLen <= 0) {
           return reject(new Error('Invalid Response while decoding Unregisterd client request'));
         }
-        return this._encodeUnRegisteredResp(reqId)
+
+        const appId = ref.reinterpret(appIdPtr, appIdLen);
+        return this._encodeUnRegisteredResp(reqId, appId)
           .then((res) => resolve(res));
       }));
   }
