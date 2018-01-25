@@ -179,7 +179,7 @@ export default class AppList extends Component {
         <div className="app-list-i">
           <div className="app-list-i-b">
             <div className={getAppIconClassName(i)}>{app.app_info.name.slice(0, 2)}</div>
-            <div className="app-list-i-name">{parseAppName(app.app_info.name)}</div>
+            <div className="app-list-i-name js-spectron__auth__app-name">{parseAppName(app.app_info.name)}</div>
           </div>
         </div>
       </Link>
@@ -242,7 +242,7 @@ export default class AppList extends Component {
             title={popupTitle}
             desc={popupDesc}
           />
-          <div className="app-list">
+          <div className="app-list js-spectron__auth__app-list">
             { authorisedApps.length === 0 ? null : this.getSearchContainer() }
             { this.getApps() }
           </div>

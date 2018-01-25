@@ -98,12 +98,13 @@ export default class Login extends Component {
             }
             <div className="auth">
               <div className="auth-b login-b">
-                <div className="auth-form">
+                <div className="auth-form  js-spectron__auth__form">
                   <form onSubmit={this.handleSubmit}>
                     <div className="inp-grp">
                       <input
                         type="password"
                         id="acc-secret"
+						className="js-spectron__account-secret"
                         name="acc-secret"
                         ref={(c) => { this.secretEle = c; }}
                         required
@@ -121,6 +122,7 @@ export default class Login extends Component {
                       <input
                         type="password"
                         id="acc-password"
+						className="js-spectron__account-password"
                         name="acc-password"
                         ref={(c) => { this.passwordEle = c; }}
                         required
@@ -136,7 +138,7 @@ export default class Login extends Component {
                     <div className="btn-grp">
                       <button
                         type="submit"
-                        className="btn primary long"
+                        className="btn primary long  js-spectron__login"
                         disabled={this.props.libErrPopup}
                       >Log in</button>
                     </div>
@@ -148,7 +150,9 @@ export default class Login extends Component {
         </div>
         <div className="card-f">
           Don&lsquo;t have an account? <Link
-            className={classNames({ disabled: this.props.loading || this.props.libErrPopup })}
+            className={
+				`${classNames({ disabled: this.props.loading || this.props.libErrPopup })}  js-spectron__auth__create-account`
+			}
             onClick={(e) => {
               e.preventDefault();
               if (this.props.loading || this.props.libErrPopup) {
