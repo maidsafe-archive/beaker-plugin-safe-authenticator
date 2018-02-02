@@ -1,6 +1,6 @@
 # Beaker Plugin SAFE Authenticator Change Log
 
-## [Unreleased]
+## [0.4.3] - 2-2-2018
 ### Changed
 - Upgrade system_uri to v0.4.0
 - Remove `libwinpthread.dll` as a dependency
