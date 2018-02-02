@@ -7,7 +7,6 @@ export default {
     DISCONNECTED: -1
   },
   LIB_PATH: {
-    PTHREAD: './libwinpthread-1.dll',
     SAFE_AUTH: {
       win32: './safe_authenticator.dll',
       darwin: './libsafe_authenticator.dylib',
