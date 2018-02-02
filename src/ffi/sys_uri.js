@@ -4,9 +4,9 @@ import ffi from 'ffi';
 /* eslint-enable import/no-unresolved, import/extensions */
 import os from 'os';
 import path from 'path';
+import ArrayType from 'ref-array';
 import CONSTANTS from '../constants';
 import * as type from './refs/types';
-import ArrayType from 'ref-array';
 
 const StringArray = ArrayType(type.CString);
 
@@ -53,7 +53,7 @@ class SystemUriLoader {
     }
 
     if (appInfo.exec && !Array.isArray(appInfo.exec)) {
-      throw new Error("Exec command must be an array of string arguments");
+      throw new Error('Exec command must be an array of string arguments');
     }
 
     const bundle = appInfo.bundle || appInfo.id;
@@ -66,7 +66,8 @@ class SystemUriLoader {
     return new Promise((resolve, reject) => {
       try {
         const cb = this._handleError(resolve, reject);
-        this.lib.install(bundle, vendor, name, exec, exec.length, icon, joinedSchemes, type.Null, cb);
+        this.lib.install(bundle, vendor, name, exec, exec.length,
+          icon, joinedSchemes, type.Null, cb);
       } catch (err) {
         return reject(err);
       }
