@@ -1,5 +1,13 @@
 # Beaker Plugin SAFE Authenticator Change Log
 
+## [0.5.0] - 5-3-2018
+### Changed
+- Upgrade safe_authenticator to v0.6.0
+
+### SAFE libraries Dependencies
+- safe_authenticator: v0.6.0
+- system_uri: v0.4.0
+
 ## [0.4.3] - 2-2-2018
 ### Changed
 - Upgrade system_uri to v0.4.0
