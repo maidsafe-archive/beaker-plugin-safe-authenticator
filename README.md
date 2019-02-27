@@ -4,9 +4,9 @@
 
 SAFE Authenticator plugin for SAFE Browser.
 
-|Linux/OS X|Windows|
+|Linux/macOS|Windows|
 |:---:|:--------:|
-|[![Build Status](https://travis-ci.org/maidsafe/beaker-plugin-safe-authenticator.svg?branch=master)](https://travis-ci.org/maidsafe/beaker-plugin-safe-authenticator)|[![Build status](https://ci.appveyor.com/api/projects/status/04100mp7gtjnr3c1/branch/master?svg=true)](https://ci.appveyor.com/project/MaidSafe-QA/beaker-plugin-safe-authenticator/branch/master)|
+|[![Build Status](https://travis-ci.com/maidsafe/beaker-plugin-safe-authenticator.svg?branch=master)](https://travis-ci.com/maidsafe/beaker-plugin-safe-authenticator)|[![Build status](https://ci.appveyor.com/api/projects/status/04100mp7gtjnr3c1/branch/master?svg=true)](https://ci.appveyor.com/project/MaidSafe-QA/beaker-plugin-safe-authenticator/branch/master)|
 
 ## Dependency
 
